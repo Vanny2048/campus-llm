@@ -1,0 +1,14 @@
+[
+  {
+    "feedback": "The LMU assistant is really helpful! It answered my questions about tutoring quickly.",
+    "rating": 5,
+    "user_id": "DEMO001",
+    "timestamp": "2024-01-15T10:30:00"
+  },
+  {
+    "feedback": "Would love to see more information about events with free food!",
+    "rating": 4,
+    "user_id": "DEMO002",
+    "timestamp": "2024-01-15T14:20:00"
+  }
+]
