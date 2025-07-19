@@ -1,0 +1,57 @@
+[
+  {
+    "title": "Study Abroad Information Session",
+    "description": "Learn about LMU's study abroad programs in over 40 countries. Pizza will be provided!",
+    "date": "2025-07-21",
+    "time": "6:00 PM - 7:30 PM",
+    "location": "Student Union, Room 201",
+    "category": "Academic",
+    "free_food": true,
+    "points": 8,
+    "contact": "studyabroad@lmu.edu"
+  },
+  {
+    "title": "Career Fair - Tech & Engineering",
+    "description": "Meet with top tech companies and engineering firms. Bring your resume!",
+    "date": "2025-07-24",
+    "time": "10:00 AM - 4:00 PM",
+    "location": "Gersten Pavilion",
+    "category": "Career",
+    "free_food": false,
+    "points": 10,
+    "contact": "career@lmu.edu"
+  },
+  {
+    "title": "Mental Health Awareness Workshop",
+    "description": "Join CPS for a workshop on stress management and wellness strategies.",
+    "date": "2025-07-22",
+    "time": "2:00 PM - 3:30 PM",
+    "location": "Foley Annex",
+    "category": "Wellness",
+    "free_food": true,
+    "points": 5,
+    "contact": "cps@lmu.edu"
+  },
+  {
+    "title": "Lions Basketball vs USC",
+    "description": "Cheer on the Lions at our rivalry game! Free t-shirts for students.",
+    "date": "2025-07-26",
+    "time": "7:00 PM",
+    "location": "Gersten Pavilion",
+    "category": "Athletics",
+    "free_food": false,
+    "points": 5,
+    "contact": "athletics@lmu.edu"
+  },
+  {
+    "title": "Taco Tuesday at the Lair",
+    "description": "Special taco bar with build-your-own options. $2 tacos all day!",
+    "date": "2025-07-19",
+    "time": "11:00 AM - 8:00 PM",
+    "location": "The Lair Dining Hall",
+    "category": "Dining",
+    "free_food": false,
+    "points": 2,
+    "contact": "dining@lmu.edu"
+  }
+]

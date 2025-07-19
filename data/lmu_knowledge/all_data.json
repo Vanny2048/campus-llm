@@ -1,0 +1,150 @@
+{
+  "basic_info": [
+    {
+      "content": "Loyola Marymount University (LMU) is a private Jesuit research university located in Los Angeles, California. Founded in 1911, LMU serves over 9,000 students across undergraduate and graduate programs.",
+      "source": "LMU Official Website",
+      "category": "About LMU"
+    },
+    {
+      "content": "LMU's main campus is located in the Westchester area of Los Angeles, near LAX airport. The campus features modern facilities, beautiful architecture, and stunning views of the Pacific Ocean.",
+      "source": "LMU Campus Information",
+      "category": "Campus"
+    },
+    {
+      "content": "LMU offers undergraduate degrees through six schools: Bellarmine College of Liberal Arts, College of Business Administration, School of Education, Seaver College of Science and Engineering, School of Film and Television, and College of Communication and Fine Arts.",
+      "source": "LMU Academic Programs",
+      "category": "Academics"
+    },
+    {
+      "content": "The LMU Lions compete in NCAA Division I athletics. Popular sports include basketball, soccer, tennis, and volleyball. The Gersten Pavilion hosts basketball and volleyball games.",
+      "source": "LMU Athletics",
+      "category": "Athletics"
+    }
+  ],
+  "events": [
+    {
+      "title": "Study Abroad Information Session",
+      "description": "Learn about LMU's study abroad programs in over 40 countries. Pizza will be provided!",
+      "date": "2025-07-21",
+      "time": "6:00 PM - 7:30 PM",
+      "location": "Student Union, Room 201",
+      "category": "Academic",
+      "free_food": true,
+      "points": 8,
+      "contact": "studyabroad@lmu.edu"
+    },
+    {
+      "title": "Career Fair - Tech & Engineering",
+      "description": "Meet with top tech companies and engineering firms. Bring your resume!",
+      "date": "2025-07-24",
+      "time": "10:00 AM - 4:00 PM",
+      "location": "Gersten Pavilion",
+      "category": "Career",
+      "free_food": false,
+      "points": 10,
+      "contact": "career@lmu.edu"
+    },
+    {
+      "title": "Mental Health Awareness Workshop",
+      "description": "Join CPS for a workshop on stress management and wellness strategies.",
+      "date": "2025-07-22",
+      "time": "2:00 PM - 3:30 PM",
+      "location": "Foley Annex",
+      "category": "Wellness",
+      "free_food": true,
+      "points": 5,
+      "contact": "cps@lmu.edu"
+    },
+    {
+      "title": "Lions Basketball vs USC",
+      "description": "Cheer on the Lions at our rivalry game! Free t-shirts for students.",
+      "date": "2025-07-26",
+      "time": "7:00 PM",
+      "location": "Gersten Pavilion",
+      "category": "Athletics",
+      "free_food": false,
+      "points": 5,
+      "contact": "athletics@lmu.edu"
+    },
+    {
+      "title": "Taco Tuesday at the Lair",
+      "description": "Special taco bar with build-your-own options. $2 tacos all day!",
+      "date": "2025-07-19",
+      "time": "11:00 AM - 8:00 PM",
+      "location": "The Lair Dining Hall",
+      "category": "Dining",
+      "free_food": false,
+      "points": 2,
+      "contact": "dining@lmu.edu"
+    }
+  ],
+  "faqs": [
+    {
+      "content": "Q: How do I register for classes?\nA: Students register for classes through PROWL (LMU's student portal). Registration dates are assigned based on class standing and credit hours. Check your registration date in PROWL and prepare an alternate schedule in case your preferred classes are full.",
+      "source": "LMU FAQ",
+      "category": "Registration"
+    },
+    {
+      "content": "Q: Where can I find my academic advisor?\nA: Your academic advisor assignment depends on your major. Check PROWL for your advisor's contact information, or contact your department directly. Advisors help with course planning, degree requirements, and academic guidance.",
+      "source": "LMU FAQ",
+      "category": "Academic Support"
+    },
+    {
+      "content": "Q: How do I apply for financial aid?\nA: Complete the FAFSA (Free Application for Federal Student Aid) by the priority deadline. LMU's school code is 001234. Also complete the CSS Profile for institutional aid. Contact the Financial Aid office for assistance.",
+      "source": "LMU FAQ",
+      "category": "Financial Aid"
+    },
+    {
+      "content": "Q: What are the library hours?\nA: The William H. Hannon Library is typically open Monday-Thursday 7:30 AM to 2:00 AM, Friday 7:30 AM to 8:00 PM, Saturday 9:00 AM to 8:00 PM, and Sunday 10:00 AM to 2:00 AM. Hours may vary during finals week and holidays.",
+      "source": "LMU FAQ",
+      "category": "Campus Resources"
+    },
+    {
+      "content": "Q: How do I get involved on campus?\nA: LMU has over 200 student organizations. Attend the Activities Fair at the beginning of each semester, check LionsConnect for organizations, or start your own group. Popular activities include Greek life, cultural organizations, academic clubs, and service groups.",
+      "source": "LMU FAQ",
+      "category": "Student Life"
+    },
+    {
+      "content": "Q: Where can I get tutoring help?\nA: The Academic Resource Center (ARC) in the library offers free tutoring for many subjects. You can also find subject-specific tutoring through departments, peer tutoring programs, or the Writing Center for help with papers and presentations.",
+      "source": "LMU FAQ",
+      "category": "Academic Support"
+    },
+    {
+      "content": "Q: How do I report a maintenance issue in my dorm?\nA: Report maintenance issues through the Residence Life portal or call the Facilities Management work order desk. For emergencies (no heat, water leaks, safety issues), call Campus Safety immediately.",
+      "source": "LMU FAQ",
+      "category": "Housing"
+    },
+    {
+      "content": "Q: What meal plan options are available?\nA: LMU offers several meal plan options including unlimited dining, block plans (14, 10, or 5 meals per week), and commuter plans. All residential students are required to have a meal plan. Plans include Lion Cash for use at retail locations.",
+      "source": "LMU FAQ",
+      "category": "Dining"
+    }
+  ],
+  "academic": [
+    {
+      "content": "The academic year at LMU consists of two semesters (fall and spring) plus optional summer sessions. Each semester is approximately 15 weeks long. Finals week occurs at the end of each semester.",
+      "source": "LMU Academic Calendar",
+      "category": "Academic Calendar"
+    },
+    {
+      "content": "To maintain good academic standing, undergraduate students must maintain a cumulative GPA of 2.0 or higher. Students below this threshold may be placed on academic probation and must meet with an academic advisor.",
+      "source": "LMU Academic Policies",
+      "category": "Academic Requirements"
+    },
+    {
+      "content": "The pass/no pass grading option allows students to take certain courses without affecting their GPA. Students must declare pass/no pass by the deadline (usually mid-semester). Some courses and majors do not allow pass/no pass grading.",
+      "source": "LMU Grading Policies",
+      "category": "Grading"
+    },
+    {
+      "content": "LMU's core curriculum includes requirements in theology, philosophy, history, literature, science, mathematics, and fine arts. All undergraduate students must complete these requirements regardless of major.",
+      "source": "LMU Core Curriculum",
+      "category": "Graduation Requirements"
+    },
+    {
+      "content": "Students can appeal grades by first discussing with the instructor, then the department chair, and finally the dean of the school. Grade appeals must be filed within one year of receiving the grade.",
+      "source": "LMU Grade Appeal Process",
+      "category": "Academic Policies"
+    }
+  ]
+}
