@@ -327,3 +327,6 @@ if __name__ == "__main__":
         share=False,  # Set to True if you want a public link
         show_api=False
     )
+
+demo = gr.Interface(fn=greet, inputs="text", outputs="text")
+demo.launch()
