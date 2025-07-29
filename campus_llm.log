@@ -143,3 +143,40 @@
 2025-07-19 06:35:08,810 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
 2025-07-19 06:35:08,821 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
 2025-07-19 06:35:08,946 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-29 06:09:10,625 - src.utils - INFO - Database initialized successfully
+2025-07-29 06:09:32,990 - src.utils - INFO - Database initialized successfully
+2025-07-29 06:09:36,403 - src.utils - INFO - Loading embedding model: all-MiniLM-L6-v2
+2025-07-29 06:09:36,404 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-29 06:09:36,404 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-07-29 06:09:37,570 - src.utils - INFO - Embedding model loaded successfully
+2025-07-29 06:09:37,570 - src.utils - INFO - Loaded 78 knowledge chunks
+2025-07-29 06:09:37,759 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-29 06:09:37,774 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-29 06:09:37,864 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-29 06:24:36,389 - src.utils - INFO - Database initialized successfully
+2025-07-29 06:24:45,082 - src.utils - INFO - Database initialized successfully
+2025-07-29 06:24:52,680 - src.utils - INFO - Database initialized successfully
+2025-07-29 06:24:55,413 - src.utils - INFO - Loading embedding model: all-MiniLM-L6-v2
+2025-07-29 06:24:55,414 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-29 06:24:55,414 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-07-29 06:24:56,020 - src.utils - INFO - Embedding model loaded successfully
+2025-07-29 06:24:56,021 - src.utils - INFO - Loaded 78 knowledge chunks
+2025-07-29 06:24:56,333 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-29 06:25:21,818 - src.utils - INFO - Database initialized successfully
+2025-07-29 06:25:24,645 - src.utils - INFO - Loading embedding model: all-MiniLM-L6-v2
+2025-07-29 06:25:24,645 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-29 06:25:24,645 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-07-29 06:25:25,260 - src.utils - INFO - Embedding model loaded successfully
+2025-07-29 06:25:25,261 - src.utils - INFO - Loaded 78 knowledge chunks
+2025-07-29 06:25:25,444 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-29 06:25:25,459 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-29 06:25:25,573 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-29 06:25:55,392 - src.utils - INFO - Database initialized successfully
+2025-07-29 06:25:58,229 - src.utils - INFO - Loading embedding model: all-MiniLM-L6-v2
+2025-07-29 06:25:58,230 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-29 06:25:58,230 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-07-29 06:25:58,838 - src.utils - INFO - Embedding model loaded successfully
+2025-07-29 06:25:58,838 - src.utils - INFO - Loaded 78 knowledge chunks
+2025-07-29 06:25:59,030 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-29 06:25:59,045 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-29 06:25:59,143 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"

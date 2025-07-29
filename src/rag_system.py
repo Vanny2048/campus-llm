@@ -92,12 +92,82 @@ class RAGSystem:
             logger.error(f"Error loading knowledge base: {e}")
 
     def _create_default_knowledge_base(self):
-        """Create a default knowledge base with basic LMU information"""
+        """Create a default knowledge base with basic LMU information and Gen Z culture"""
         default_knowledge = [
             {
-                "content": "LMU's Academic Resource Center (ARC) provides free tutoring services for students. The ARC is located in the library and offers tutoring in math, science, writing, and other subjects. Students can schedule appointments online or drop in during business hours.",
+                "content": "LMU's Academic Resource Center (ARC) provides free tutoring services for students. The ARC is located in the library and offers tutoring in math, science, writing, and other subjects. Students can schedule appointments online or drop in during business hours. It's the place to go when you're struggling fr.",
                 "source": "LMU ARC Website",
                 "category": "Academic Support"
+            },
+            {
+                "content": "The Rock is the most popular hangout spot on campus with amazing views of LA. It's the spot fr fr, best vibes on campus. Students go there to chill, study, or just vibe with friends.",
+                "source": "LMU Campus Culture",
+                "category": "Campus Life"
+            },
+            {
+                "content": "Burns Backcourt is the 24/7 study space in the library. It's where the grind happens, lowkey the best study spot. Perfect for all-nighters and cram sessions.",
+                "source": "LMU Campus Culture",
+                "category": "Academic Support"
+            },
+            {
+                "content": "The Lair is the main dining hall on campus. The food be bussin sometimes ngl. It's where everyone goes for meals and to hang out.",
+                "source": "LMU Campus Culture",
+                "category": "Campus Life"
+            },
+            {
+                "content": "PROWL is LMU's student portal that everyone hates but we need it. It's where you register for classes, check grades, and handle all the admin stuff. Sometimes it crashes during registration which is a whole PROWL moment.",
+                "source": "LMU Student Portal",
+                "category": "Administrative"
+            },
+            {
+                "content": "First Fridays are monthly campus events that always slap. It's the monthly vibe check where students come together for fun activities and free food.",
+                "source": "LMU Campus Events",
+                "category": "Campus Life"
+            },
+            {
+                "content": "Gersten Pavilion is where basketball games happen and it gets wild fr. The energy is unmatched when the Lions are playing. Free t-shirts and lots of school spirit.",
+                "source": "LMU Athletics",
+                "category": "Athletics"
+            },
+            {
+                "content": "Sunset Strip is the walkway with the most aesthetic sunset views on campus, periodt. Perfect for evening walks and taking pics for the gram.",
+                "source": "LMU Campus Culture",
+                "category": "Campus Life"
+            },
+            {
+                "content": "The Quad is the main campus green space perfect for vibing and people watching. Students hang out there between classes and during nice weather.",
+                "source": "LMU Campus Culture",
+                "category": "Campus Life"
+            },
+            {
+                "content": "Lion Dollars are campus currency for dining and other campus services. You can use them at the C-Store, dining halls, and other campus locations. Some students flex their Lion Dollars balance.",
+                "source": "LMU Campus Services",
+                "category": "Campus Life"
+            },
+            {
+                "content": "The C-Store is the convenience store on campus where you can get snacks, drinks, and basic supplies. Students make C-Store runs for quick snacks between classes.",
+                "source": "LMU Campus Services",
+                "category": "Campus Life"
+            },
+            {
+                "content": "The Village is the off-campus housing area where upperclassmen live. It's Village life and has its own community vibe separate from on-campus housing.",
+                "source": "LMU Housing",
+                "category": "Housing"
+            },
+            {
+                "content": "U-Hall is University Hall, the main admin building where you handle all the U-Hall hustle like registration, financial aid, and other administrative stuff.",
+                "source": "LMU Administration",
+                "category": "Administrative"
+            },
+            {
+                "content": "The Writing Center helps with papers and writing assignments. It saves your essays fr fr. Located in the library and offers both in-person and online appointments.",
+                "source": "LMU Academic Support",
+                "category": "Academic Support"
+            },
+            {
+                "content": "CPS (Counseling and Psychological Services) is where you go when you need to talk to someone fr. They provide mental health support and are located in Foley Annex.",
+                "source": "LMU Wellness",
+                "category": "Wellness"
             },
             {
                 "content": "The minimum GPA requirement to remain in good academic standing at LMU is 2.0. Students with a GPA below 2.0 may be placed on academic probation. To graduate, students typically need a cumulative GPA of 2.0 or higher.",
