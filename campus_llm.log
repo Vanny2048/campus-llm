@@ -143,3 +143,7 @@
 2025-07-19 06:35:08,810 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
 2025-07-19 06:35:08,821 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
 2025-07-19 06:35:08,946 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-29 06:02:24,673 - src.utils - INFO - Database initialized successfully
+2025-07-29 06:02:40,283 - src.utils - INFO - Database initialized successfully
+2025-07-29 06:02:44,301 - src.utils - INFO - Database initialized successfully
+2025-07-29 06:02:44,311 - src.utils - INFO - Added 5 points to TEST001 for demo_test
