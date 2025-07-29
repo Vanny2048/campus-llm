@@ -122,6 +122,28 @@ class CampusLLMApp:
         except Exception as e:
             return f"Error loading events: {str(e)}"
 
+    # New method for leaderboard HTML
+    def get_leaderboard_html(self, limit: int = 10):
+        """Generate HTML representation of the leaderboard"""
+        leaderboard = self.points_system.get_leaderboard(limit)
+        if not leaderboard:
+            return "<p>No leaderboard data available yet.</p>"
+
+        html = """
+        <h3>🏅 Leaderboard</h3>
+        <table class='leaderboard'>
+            <tr>
+                <th>Rank</th>
+                <th>User</th>
+                <th>Points</th>
+                <th>Level</th>
+            </tr>
+        """
+        for entry in leaderboard:
+            html += f"<tr><td>{entry['rank']}</td><td>{entry['user_id']}</td><td>{entry['total_points']}</td><td>{entry['level']}</td></tr>"
+        html += "</table>"
+        return html
+
 def create_interface():
     """Create and configure the Gradio interface"""
     app = CampusLLMApp()
@@ -147,6 +169,23 @@ def create_interface():
         padding: 15px;
         text-align: center;
     }
+    .leaderboard {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    .leaderboard th, .leaderboard td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    .leaderboard th {
+        background: #8B0000;
+        color: white;
+    }
+    .leaderboard tr:nth-child(even) {
+        background: #f9f9f9;
+    }
     """
     
     with gr.Blocks(css=css, title="LMU Campus LLM") as interface:
@@ -157,99 +196,115 @@ def create_interface():
             <p>Your AI assistant for everything LMU - built by students, for students!</p>
         </div>
         """)
-        
-        with gr.Row():
-            with gr.Column(scale=2):
-                # Main chat interface
-                chatbot = gr.Chatbot(
-                    label="Chat with LMU Assistant",
-                    height=400,
-                    show_label=True
-                )
-                
+
+        with gr.Tabs():
+            # -------------------- Home / Dashboard Tab --------------------
+            with gr.Tab("Home/Dashboard"):
                 with gr.Row():
-                    user_input = gr.Textbox(
-                        placeholder="Ask me anything about LMU! (e.g., 'Where can I find tutoring?')",
-                        container=False,
-                        scale=4
-                    )
-                    submit_btn = gr.Button("Ask", variant="primary", scale=1)
-                
-                # Example questions
-                gr.Examples(
-                    examples=[
-                        "Where can I find a math tutor?",
-                        "What's the GPA requirement for study abroad?",
-                        "What events are happening this week?",
-                        "How do I file an academic grievance?",
-                        "Where is the counseling center?",
-                        "What are the library hours?",
-                        "How do I add/drop a class?",
-                        "Draft an email to my professor asking for help"
-                    ],
-                    inputs=user_input,
-                    label="Try these example questions:"
-                )
-            
-            with gr.Column(scale=1):
-                # Student ID input
-                student_id = gr.Textbox(
-                    label="Student ID (Optional)",
-                    placeholder="Enter your ID to track points",
-                    type="text"
-                )
-                
-                # Points display
-                points_display = gr.HTML(
-                    value="""
-                    <div class="points-display">
-                        <h3>🏆 Your Points</h3>
-                        <p>Enter your student ID to track points!</p>
-                        <hr>
-                        <p><b>Earn points by:</b></p>
-                        <ul style="text-align: left;">
-                            <li>Asking questions (1 pt)</li>
-                            <li>Attending events (5-10 pts)</li>
-                            <li>Giving feedback (3 pts)</li>
-                        </ul>
-                    </div>
-                    """,
-                    label="Points Status"
-                )
-                
-                # Events section
+                    with gr.Column(scale=2):
+                        # Main chat interface
+                        chatbot = gr.Chatbot(
+                            label="Chat with LMU Assistant",
+                            height=400,
+                            show_label=True
+                        )
+
+                        with gr.Row():
+                            user_input = gr.Textbox(
+                                placeholder="Ask me anything about LMU! (e.g., 'Where can I find tutoring?')",
+                                container=False,
+                                scale=4
+                            )
+                            submit_btn = gr.Button("Ask", variant="primary", scale=1)
+
+                        # Example questions
+                        gr.Examples(
+                            examples=[
+                                "Where can I find a math tutor?",
+                                "What's the GPA requirement for study abroad?",
+                                "What events are happening this week?",
+                                "How do I file an academic grievance?",
+                                "Where is the counseling center?",
+                                "What are the library hours?",
+                                "How do I add/drop a class?",
+                                "Draft an email to my professor asking for help"
+                            ],
+                            inputs=user_input,
+                            label="Try these example questions:"
+                        )
+
+                    with gr.Column(scale=1):
+                        # Student ID input
+                        student_id = gr.Textbox(
+                            label="Student ID (Optional)",
+                            placeholder="Enter your ID to track points",
+                            type="text"
+                        )
+
+                        # Points display
+                        points_display = gr.HTML(
+                            value="""
+                            <div class="points-display">
+                                <h3>🏆 Your Points</h3>
+                                <p>Enter your student ID to track points!</p>
+                                <hr>
+                                <p><b>Earn points by:</b></p>
+                                <ul style="text-align: left;">
+                                    <li>Asking questions (1 pt)</li>
+                                    <li>Attending events (5-10 pts)</li>
+                                    <li>Giving feedback (3 pts)</li>
+                                </ul>
+                            </div>
+                            """,
+                            label="Points Status"
+                        )
+
+                        # Feedback section
+                        with gr.Accordion("📝 Give Feedback", open=False):
+                            feedback_text = gr.Textbox(
+                                label="Your feedback",
+                                placeholder="How can we improve the LMU Campus LLM?",
+                                lines=3
+                            )
+                            rating = gr.Slider(
+                                minimum=1,
+                                maximum=5,
+                                value=5,
+                                step=1,
+                                label="Rating (1-5 stars)"
+                            )
+                            feedback_btn = gr.Button("Submit Feedback")
+                            feedback_status = gr.Textbox(label="Status", interactive=False)
+
+            # -------------------- Events Tab --------------------
+            with gr.Tab("Events"):
                 events_btn = gr.Button("🎉 Show This Week's Events", variant="secondary")
                 events_display = gr.Markdown(label="Upcoming Events")
-                
-                # Feedback section
-                with gr.Accordion("📝 Give Feedback", open=False):
-                    feedback_text = gr.Textbox(
-                        label="Your feedback",
-                        placeholder="How can we improve the LMU Campus LLM?",
-                        lines=3
-                    )
-                    rating = gr.Slider(
-                        minimum=1,
-                        maximum=5,
-                        value=5,
-                        step=1,
-                        label="Rating (1-5 stars)"
-                    )
-                    feedback_btn = gr.Button("Submit Feedback")
-                    feedback_status = gr.Textbox(label="Status", interactive=False)
-        
-        # Event handlers
+
+            # -------------------- Game Day Tab --------------------
+            with gr.Tab("Game Day"):
+                game_day_placeholder = gr.HTML("""
+                <h3>🏈 Game Day features coming soon!</h3>
+                <p>Stay tuned for real-time check-ins, live challenges, and more.</p>
+                """)
+
+            # -------------------- Leaderboard Tab --------------------
+            with gr.Tab("Leaderboard"):
+                leaderboard_refresh_btn = gr.Button("🔄 Refresh Leaderboard")
+                leaderboard_display = gr.HTML(value=app.get_leaderboard_html())
+
+        # -------------------- Event handlers --------------------
         def respond(message, history, user_id):
             if not message.strip():
                 return history, ""
-            
+
             # Get response from the app
             response = app.process_message(message, history, user_id)
-            
+
             # Update history
             history.append([message, response])
             return history, ""
-        
+
         def update_points(user_id):
             if user_id:
                 stats = app.get_user_points(user_id)
@@ -267,7 +322,10 @@ def create_interface():
                 </div>
                 """
             return points_display.value
-        
+
+        def update_leaderboard():
+            return app.get_leaderboard_html()
+
         # Connect event handlers
         submit_btn.click(
             respond,
@@ -278,7 +336,7 @@ def create_interface():
             inputs=[student_id],
             outputs=[points_display]
         )
-        
+
         user_input.submit(
             respond,
             inputs=[user_input, chatbot, student_id],
@@ -288,12 +346,17 @@ def create_interface():
             inputs=[student_id],
             outputs=[points_display]
         )
-        
+
         events_btn.click(
             app.get_events_this_week,
             outputs=[events_display]
         )
-        
+
+        leaderboard_refresh_btn.click(
+            update_leaderboard,
+            outputs=[leaderboard_display]
+        )
+
         feedback_btn.click(
             app.submit_feedback,
             inputs=[feedback_text, rating, student_id],
@@ -303,7 +366,7 @@ def create_interface():
             inputs=[student_id],
             outputs=[points_display]
         )
-        
+
         student_id.change(
             update_points,
             inputs=[student_id],
@@ -327,6 +390,3 @@ if __name__ == "__main__":
         share=False,  # Set to True if you want a public link
         show_api=False
     )
-
-demo = gr.Interface(fn=greet, inputs="text", outputs="text")
-demo.launch()
