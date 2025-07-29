@@ -1,0 +1,255 @@
+{
+  "genz_terminology": {
+    "campus_slang": [
+      "The Bluff - LMU's campus (because it's literally on a bluff overlooking LA)",
+      "U-Hall - University Hall, the main admin building",
+      "The Lair - main dining hall",
+      "Burns Backcourt - popular study spot in the library",
+      "Lion Dollars - campus currency for dining",
+      "C-Store - convenience store on campus",
+      "First Fridays - monthly campus events",
+      "The Rock - popular hangout spot",
+      "Sunset Strip - the walkway with amazing sunset views",
+      "The Grove - student center area",
+      "PROWL - LMU's student portal (everyone hates it but we need it)",
+      "Gersten - basketball arena",
+      "The Leavey - Leavey Library",
+      "The Annex - Foley Annex",
+      "The Quad - main campus green space",
+      "The Village - off-campus housing area",
+      "The Shuttle - campus shuttle service",
+      "The Loop - campus bus route"
+    ],
+    "genz_expressions": [
+      "fr fr - for real for real",
+      "no cap - no lie, being honest",
+      "bet - okay, sure, agreed",
+      "slay - doing something really well",
+      "vibes - the energy/atmosphere",
+      "lowkey - secretly, kind of",
+      "highkey - obviously, definitely",
+      "periodt - end of discussion",
+      "tea - gossip, drama",
+      "bussin - really good",
+      "ngl - not gonna lie",
+      "tbh - to be honest",
+      "idk - I don't know",
+      "rn - right now",
+      "wyd - what you doing",
+      "wym - what you mean",
+      "fr - for real",
+      "nah - no",
+      "yeah no - no",
+      "no yeah - yes",
+      "literally - actually, really",
+      "deadass - seriously",
+      "finna - going to",
+      "boutta - about to",
+      "ion - I don't",
+      "rn - right now",
+      "asf - as f*ck",
+      "ngl - not gonna lie",
+      "tbh - to be honest",
+      "idk - I don't know",
+      "wyd - what you doing",
+      "wym - what you mean",
+      "fr - for real",
+      "nah - no",
+      "yeah no - no",
+      "no yeah - yes",
+      "literally - actually, really",
+      "deadass - seriously",
+      "finna - going to",
+      "boutta - about to",
+      "ion - I don't",
+      "rn - right now",
+      "asf - as f*ck"
+    ],
+    "lmu_specific_slang": [
+      "Lion up - get hyped for LMU",
+      "Bluff life - living on campus",
+      "Sunset sesh - studying during sunset",
+      "C-Store run - quick snack trip",
+      "PROWL moment - when the portal crashes",
+      "Gersten vibes - basketball game energy",
+      "The Rock crew - people who hang at The Rock",
+      "Burns backcourt grind - late night studying",
+      "Lair food - dining hall meals",
+      "Shuttle struggle - waiting for campus shuttle",
+      "Village life - off-campus living",
+      "Quad squad - people who hang on the quad",
+      "First Friday fam - regular First Friday attendees",
+      "Lion Dollars flex - showing off campus currency",
+      "Bluff view - the amazing LA skyline view",
+      "Sunset Strip walk - evening stroll",
+      "The Grove gang - student center regulars",
+      "Annex squad - people who study in Foley Annex",
+      "Leavey legends - library regulars",
+      "U-Hall hustle - dealing with admin stuff"
+    ]
+  },
+  "campus_culture": {
+    "popular_spots": [
+      {
+        "name": "The Rock",
+        "description": "Popular hangout spot with amazing views",
+        "genz_description": "the spot fr fr, best vibes on campus"
+      },
+      {
+        "name": "Burns Backcourt",
+        "description": "24/7 study space in the library",
+        "genz_description": "where the grind happens, lowkey the best study spot"
+      },
+      {
+        "name": "The Lair",
+        "description": "Main dining hall",
+        "genz_description": "the food be bussin sometimes ngl"
+      },
+      {
+        "name": "The Quad",
+        "description": "Main campus green space",
+        "genz_description": "perfect for vibing and people watching"
+      },
+      {
+        "name": "Sunset Strip",
+        "description": "Walkway with sunset views",
+        "genz_description": "the most aesthetic spot on campus, periodt"
+      }
+    ],
+    "campus_events": [
+      {
+        "name": "First Fridays",
+        "description": "Monthly campus events",
+        "genz_description": "the monthly vibe check, always slaps"
+      },
+      {
+        "name": "Basketball Games",
+        "description": "LMU Lions basketball",
+        "genz_description": "Gersten gets wild fr, the energy is unmatched"
+      },
+      {
+        "name": "Spring Concert",
+        "description": "Annual spring concert",
+        "genz_description": "the highlight of spring semester, no cap"
+      },
+      {
+        "name": "Homecoming",
+        "description": "Annual homecoming celebration",
+        "genz_description": "the most lit weekend of the year fr fr"
+      }
+    ],
+    "student_life": [
+      {
+        "topic": "Greek Life",
+        "description": "Fraternities and sororities",
+        "genz_description": "the social scene be poppin fr"
+      },
+      {
+        "topic": "Study Abroad",
+        "description": "International programs",
+        "genz_description": "the best way to level up your college experience"
+      },
+      {
+        "topic": "Campus Jobs",
+        "description": "Student employment",
+        "genz_description": "get that bag while staying on campus"
+      },
+      {
+        "topic": "Clubs & Organizations",
+        "description": "Student groups",
+        "genz_description": "find your people and make it happen"
+      }
+    ]
+  },
+  "academic_genz": {
+    "common_phrases": [
+      "the grind - studying hard",
+      "cram sesh - last minute studying",
+      "all-nighter - studying all night",
+      "the struggle - academic difficulty",
+      "the flex - showing off good grades",
+      "the L - taking a loss (bad grade)",
+      "the W - getting a win (good grade)",
+      "the curve - grade curve",
+      "the drop - dropping a class",
+      "the add - adding a class",
+      "the waitlist - waiting for a class",
+      "the syllabus - class overview",
+      "the final - final exam",
+      "the midterm - midterm exam",
+      "the paper - essay/assignment",
+      "the project - group or individual project",
+      "the presentation - class presentation",
+      "the discussion - class discussion",
+      "the lecture - class lecture",
+      "the lab - laboratory class",
+      "the recitation - review session",
+      "the office hours - professor meeting time",
+      "the TA - teaching assistant",
+      "the professor - instructor",
+      "the advisor - academic advisor"
+    ],
+    "lmu_academic_slang": [
+      "PROWL moment - when the portal crashes during registration",
+      "Burns grind - late night studying in the library",
+      "The Rock study sesh - studying with a view",
+      "Lair brain fuel - dining hall coffee",
+      "Quad reading - studying outside",
+      "Annex focus - serious study time",
+      "Leavey legends - library regulars",
+      "U-Hall hustle - dealing with admin",
+      "The Grove group project - working in the student center",
+      "Sunset Strip walk - post-study decompression"
+    ]
+  },
+  "campus_resources_genz": {
+    "academic_support": [
+      {
+        "name": "Academic Resource Center (ARC)",
+        "description": "Free tutoring and academic support",
+        "genz_description": "the place to go when you're struggling fr",
+        "location": "Library, 2nd floor",
+        "hours": "Mon-Thu 9AM-9PM, Fri 9AM-5PM"
+      },
+      {
+        "name": "Writing Center",
+        "description": "Help with papers and writing",
+        "genz_description": "saves your essays fr fr",
+        "location": "Library, 1st floor",
+        "hours": "Mon-Thu 10AM-8PM, Fri 10AM-4PM"
+      },
+      {
+        "name": "Math Lab",
+        "description": "Math tutoring and help",
+        "genz_description": "when math hits different and you need backup",
+        "location": "Seaver College",
+        "hours": "Mon-Fri 9AM-5PM"
+      }
+    ],
+    "wellness": [
+      {
+        "name": "Counseling and Psychological Services (CPS)",
+        "description": "Mental health support",
+        "genz_description": "when you need to talk to someone fr",
+        "location": "Foley Annex",
+        "hours": "Mon-Fri 8AM-5PM"
+      },
+      {
+        "name": "Student Health Services",
+        "description": "Medical care for students",
+        "genz_description": "when you're not feeling it",
+        "location": "Foley Annex",
+        "hours": "Mon-Fri 8AM-5PM"
+      }
+    ],
+    "career": [
+      {
+        "name": "Career and Professional Development",
+        "description": "Career counseling and job search help",
+        "genz_description": "helping you get that bag after graduation",
+        "location": "University Hall",
+        "hours": "Mon-Fri 9AM-5PM"
+      }
+    ]
+  }
+}
