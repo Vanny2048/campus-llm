@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-LMU Campus LLM - Main Application
-A student-centered AI assistant for Loyola Marymount University
+LMU Campus LLM - Ultimate School Spirit Platform
+A student-centered AI assistant and gamified spirit engine for Loyola Marymount University
 
 Author: Vanessa Akaraiwe
 """
@@ -9,7 +9,10 @@ Author: Vanessa Akaraiwe
 import gradio as gr
 import json
 import os
-from datetime import datetime
+import qrcode
+import io
+import base64
+from datetime import datetime, timedelta
 from src.llm_handler import LLMHandler
 from src.points_system import PointsSystem
 from src.rag_system import RAGSystem
@@ -27,6 +30,200 @@ class CampusLLMApp:
         self.current_user = None
         self.conversation_history = []
         
+        # Game Day & Spirit System
+        self.game_events = self._load_game_events()
+        self.tailgates = self._load_tailgates()
+        self.watch_parties = self._load_watch_parties()
+        self.spirit_challenges = self._load_spirit_challenges()
+        self.premium_prizes = self._load_premium_prizes()
+        
+    def _load_game_events(self):
+        """Load upcoming game events"""
+        return [
+            {
+                "id": "bb_001",
+                "sport": "Basketball",
+                "opponent": "Pepperdine",
+                "date": "2024-02-15",
+                "time": "19:00",
+                "venue": "Gersten Pavilion",
+                "type": "home",
+                "spirit_points": 50,
+                "tailgate_id": "tg_001"
+            },
+            {
+                "id": "bb_002", 
+                "sport": "Basketball",
+                "opponent": "Gonzaga",
+                "date": "2024-02-22",
+                "time": "20:00",
+                "venue": "McCarthy Athletic Center",
+                "type": "away",
+                "spirit_points": 30,
+                "watch_party_id": "wp_001"
+            },
+            {
+                "id": "fb_001",
+                "sport": "Football", 
+                "opponent": "San Diego",
+                "date": "2024-03-02",
+                "time": "14:00",
+                "venue": "Sullivan Field",
+                "type": "home",
+                "spirit_points": 75,
+                "tailgate_id": "tg_002"
+            }
+        ]
+    
+    def _load_tailgates(self):
+        """Load tailgate events"""
+        return [
+            {
+                "id": "tg_001",
+                "name": "Lions Den Tailgate",
+                "host": "Alpha Phi Omega",
+                "date": "2024-02-15",
+                "time": "16:00-18:30",
+                "location": "Gersten Pavilion Parking Lot",
+                "theme": "Red Sea Night",
+                "features": ["BBQ", "Live Music", "Face Painting", "Spirit Contests"],
+                "spirit_points": 25,
+                "max_capacity": 200,
+                "rsvp_count": 45,
+                "qr_code": "TG001_QR"
+            },
+            {
+                "id": "tg_002",
+                "name": "Greek Row Tailgate",
+                "host": "Interfraternity Council",
+                "date": "2024-03-02", 
+                "time": "12:00-14:00",
+                "location": "Greek Row",
+                "theme": "Blue & White Bash",
+                "features": ["Food Trucks", "DJ", "Cornhole Tournament", "Photo Booth"],
+                "spirit_points": 30,
+                "max_capacity": 300,
+                "rsvp_count": 78,
+                "qr_code": "TG002_QR"
+            }
+        ]
+    
+    def _load_watch_parties(self):
+        """Load watch party events"""
+        return [
+            {
+                "id": "wp_001",
+                "name": "Away Game Watch Party",
+                "host": "LMU Athletics",
+                "partner": "The Lion's Den Bar",
+                "date": "2024-02-22",
+                "time": "19:30-22:00", 
+                "location": "The Lion's Den (Off-campus)",
+                "features": ["Big Screen", "Happy Hour", "Spirit Contests", "Free Appetizers"],
+                "spirit_points": 20,
+                "max_capacity": 100,
+                "rsvp_count": 23,
+                "qr_code": "WP001_QR"
+            }
+        ]
+    
+    def _load_spirit_challenges(self):
+        """Load active spirit challenges"""
+        return [
+            {
+                "id": "sc_001",
+                "title": "Best Face Paint",
+                "description": "Show off your LMU spirit with the most creative face paint!",
+                "points": 50,
+                "deadline": "2024-02-15 18:00",
+                "type": "photo_submission",
+                "active": True
+            },
+            {
+                "id": "sc_002", 
+                "title": "Chant Master",
+                "description": "Record the most spirited group chant at the tailgate",
+                "points": 75,
+                "deadline": "2024-02-15 18:30",
+                "type": "video_submission",
+                "active": True
+            },
+            {
+                "id": "sc_003",
+                "title": "Spirit Squad",
+                "description": "Bring 5+ friends to the tailgate for bonus points",
+                "points": 100,
+                "deadline": "2024-02-15 18:00",
+                "type": "group_checkin",
+                "active": True
+            }
+        ]
+    
+    def _load_premium_prizes(self):
+        """Load premium experience prizes"""
+        return [
+            {
+                "id": "pp_001",
+                "title": "Day as LMU President",
+                "description": "Shadow the president, attend meetings, take over LMU socials",
+                "points_required": 1000,
+                "available": 1,
+                "claimed": 0,
+                "category": "premium_experience",
+                "image": "👔"
+            },
+            {
+                "id": "pp_002",
+                "title": "Voice of the Lions",
+                "description": "Announce starting lineups and control music for a game",
+                "points_required": 750,
+                "available": 2,
+                "claimed": 0,
+                "category": "game_experience",
+                "image": "🎤"
+            },
+            {
+                "id": "pp_003",
+                "title": "Tailgate Marshal",
+                "description": "Lead the pregame parade with custom banner and cape",
+                "points_required": 500,
+                "available": 3,
+                "claimed": 0,
+                "category": "spirit_leadership",
+                "image": "🎖️"
+            },
+            {
+                "id": "pp_004",
+                "title": "Coach for a Day",
+                "description": "Join team practice and be on the sidelines",
+                "points_required": 800,
+                "available": 1,
+                "claimed": 0,
+                "category": "athletics_experience",
+                "image": "🏀"
+            },
+            {
+                "id": "pp_005",
+                "title": "Jumbotron Shout-out",
+                "description": "Personalized halftime message on the big screen",
+                "points_required": 300,
+                "available": 5,
+                "claimed": 0,
+                "category": "recognition",
+                "image": "📺"
+            },
+            {
+                "id": "pp_006",
+                "title": "Spirit Trophy",
+                "description": "Traveling trophy for your org/house for a month",
+                "points_required": 600,
+                "available": 1,
+                "claimed": 0,
+                "category": "prestige",
+                "image": "🏆"
+            }
+        ]
+
     def process_message(self, message, history, user_id=None):
         """Process user message and return response"""
         try:
@@ -62,14 +259,17 @@ class CampusLLMApp:
         if not user_id:
             return """
             <div class="points-display">
-                <h3>🏆 Your Points</h3>
-                <p>Enter your student ID above ☝️ to track points!</p>
+                <h3>🏆 Your Spirit Points</h3>
+                <p>Enter your student ID above ☝️ to track your spirit journey!</p>
                 <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
-                <p style="font-weight: 600; margin-bottom: 8px;">💡 Earn points by:</p>
+                <p style="font-weight: 600; margin-bottom: 8px;">💡 Earn Spirit Points by:</p>
                 <ul style="text-align: left; margin: 0; padding-left: 20px;">
                     <li>Asking questions (1 pt)</li>
-                    <li>Attending events (5-10 pts)</li>
-                    <li>Giving feedback (3 pts)</li>
+                    <li>Attending tailgates (25-30 pts)</li>
+                    <li>Going to games (50-75 pts)</li>
+                    <li>Watch parties (20 pts)</li>
+                    <li>Spirit challenges (50-100 pts)</li>
+                    <li>Bringing friends (bonus pts)</li>
                 </ul>
             </div>
             """
@@ -86,225 +286,531 @@ class CampusLLMApp:
             
             return f"""
             <div class="points-display">
-                <h3>🏆 Your Points</h3>
-                <p style="font-size: 2rem; font-weight: 700; margin: 10px 0;">{points} pts</p>
+                <h3>🏆 Your Spirit Points</h3>
+                <p style="font-size: 2rem; font-weight: 700; margin: 10px 0; color: #FFD700;">{points} pts</p>
                 <p style="font-size: 0.9rem; opacity: 0.8;">Rank #{rank_info.get('rank', 'N/A')} of {rank_info.get('total_users', 0)} students</p>
                 <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
-                <p style="font-weight: 600; margin-bottom: 8px;">💡 Earn points by:</p>
+                <p style="font-weight: 600; margin-bottom: 8px;">💡 Earn Spirit Points by:</p>
                 <ul style="text-align: left; margin: 0; padding-left: 20px;">
                     <li>Asking questions (1 pt)</li>
-                    <li>Attending events (5-10 pts)</li>
-                    <li>Giving feedback (3 pts)</li>
+                    <li>Attending tailgates (25-30 pts)</li>
+                    <li>Going to games (50-75 pts)</li>
+                    <li>Watch parties (20 pts)</li>
+                    <li>Spirit challenges (50-100 pts)</li>
+                    <li>Bringing friends (bonus pts)</li>
                 </ul>
             </div>
             """
         except Exception as e:
-            return f"""
-            <div class="points-display">
-                <h3>🏆 Your Points</h3>
-                <p>Error loading stats: {str(e)}</p>
-            </div>
-            """
-    
-    def submit_feedback(self, feedback, rating, user_id=None):
-        """Submit user feedback"""
-        try:
-            feedback_data = {
-                "feedback": feedback,
-                "rating": rating,
-                "user_id": user_id,
-                "timestamp": datetime.now().isoformat()
-            }
-            
-            # Save feedback
-            feedback_file = "data/student_feedback/feedback.json"
-            if os.path.exists(feedback_file):
-                with open(feedback_file, 'r') as f:
-                    all_feedback = json.load(f)
-            else:
-                all_feedback = []
-            
-            all_feedback.append(feedback_data)
-            
-            with open(feedback_file, 'w') as f:
-                json.dump(all_feedback, f, indent=2)
-            
-            # Award points for feedback
-            if user_id:
-                self.points_system.add_points(user_id, 3, "feedback_submitted")
-            
-            return "Thank you for your feedback! You earned 3 points! 🎉"
-            
-        except Exception as e:
-            return f"Error submitting feedback: {str(e)}"
-    
-    def get_events_this_week(self):
-        """Get upcoming events for this week"""
-        try:
-            events_file = "data/events/current_events.json"
-            if not os.path.exists(events_file):
-                return "No events data available yet. Check back soon!"
-            
-            with open(events_file, 'r') as f:
-                events = json.load(f)
-            
-            if not events:
-                return "No events scheduled for this week."
-            
-            event_list = "🎉 **This Week's Vibes:**\n\n"
-            for event in events[:5]:  # Show top 5 events
-                event_list += f"**{event.get('title', 'Unknown Event')}**\n"
-                event_list += f"📅 {event.get('date', 'TBD')}\n"
-                event_list += f"📍 {event.get('location', 'TBD')}\n"
-                if event.get('free_food'):
-                    event_list += "🍕 Free food fr fr!\n"
-                event_list += f"Points: {event.get('points', 5)}\n\n"
-            
-            return event_list
-            
-        except Exception as e:
-            return f"Error loading events: {str(e)}"
+            return f"Error loading points: {str(e)}"
 
-    # New method for leaderboard HTML
-    def get_leaderboard_html(self, limit: int = 10):
-        """Generate HTML representation of the leaderboard"""
-        # Add some sample data if leaderboard is empty
-        self._ensure_sample_data()
+    def get_game_day_dashboard(self):
+        """Get the main game day dashboard"""
+        next_game = None
+        upcoming_events = []
         
-        leaderboard = self.points_system.get_leaderboard(limit)
-        if not leaderboard:
-            return "<div class='dashboard-card'><p>No leaderboard data available yet.</p></div>"
-
-        html = """
-        <div class='dashboard-card'>
-            <h3 style="margin: 0 0 16px 0; color: #667eea;">🏅 Spirit Leaderboard</h3>
-            <table class='leaderboard'>
-                <tr>
-                    <th>Rank</th>
-                    <th>Student</th>
-                    <th>Points</th>
-                    <th>Level</th>
-                    <th>Activity</th>
-                </tr>
-        """
-        for entry in leaderboard:
-            rank_emoji = "🥇" if entry['rank'] == 1 else "🥈" if entry['rank'] == 2 else "🥉" if entry['rank'] == 3 else f"#{entry['rank']}"
-            activity = f"Q: {entry['questions_asked']} | E: {entry['events_attended']} | F: {entry['feedback_submitted']}"
-            html += f"""
-            <tr>
-                <td style="font-weight: bold; font-size: 1.2em;">{rank_emoji}</td>
-                <td style="font-weight: 600;">{entry['user_id']}</td>
-                <td style="font-weight: bold; color: #667eea;">{entry['total_points']} pts</td>
-                <td><span style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.8em;">{entry['level']}</span></td>
-                <td style="font-size: 0.9em; color: #666;">{activity}</td>
-            </tr>
-            """
-        html += "</table></div>"
-        return html
-
-    def _ensure_sample_data(self):
-        """Add sample data to the database for testing"""
-        try:
-            # Check if we already have data
-            leaderboard = self.points_system.get_leaderboard(5)
-            if len(leaderboard) > 0:
-                return  # Already has data
-            
-            # Add sample users
-            sample_users = [
-                ("12345", 245, 15, 8, 3),  # Sarah Johnson
-                ("67890", 189, 12, 6, 2),  # Mike Chen
-                ("11111", 156, 10, 5, 1),  # Alex Rodriguez
-                ("22222", 134, 8, 4, 2),   # Emma Wilson
-                ("33333", 98, 6, 3, 1),    # David Kim
-                ("44444", 87, 5, 2, 1),    # Lisa Park
-                ("55555", 76, 4, 2, 0),    # James Brown
-                ("66666", 65, 3, 1, 1),    # Maria Garcia
-                ("77777", 54, 2, 1, 0),    # Tom Anderson
-                ("88888", 43, 1, 1, 0),    # Rachel Green
-            ]
-            
-            for user_id, points, questions, events, feedback in sample_users:
-                # Add points for questions
-                for _ in range(questions):
-                    self.points_system.add_points(user_id, 1, "question_asked", "Sample question")
-                
-                # Add points for events
-                for _ in range(events):
-                    self.points_system.add_points(user_id, 5, "event_attended", "Sample event")
-                
-                # Add points for feedback
-                for _ in range(feedback):
-                    self.points_system.add_points(user_id, 3, "feedback_submitted", "Sample feedback")
-                
-                # Add remaining points to reach target
-                current_points = questions + (events * 5) + (feedback * 3)
-                if current_points < points:
-                    self.points_system.add_points(user_id, points - current_points, "bonus", "Sample bonus")
-            
-            print("✅ Sample data added to leaderboard")
-            
-        except Exception as e:
-            print(f"Error adding sample data: {e}")
-
-    # New method: prizes catalog HTML
-    def get_prizes_html(self):
-        """Return HTML table of available prizes from points system"""
-        prizes = self.points_system.get_reward_catalog()
-        if not prizes:
-            return "<div class='dashboard-card'><p>No prizes available yet.</p></div>"
+        # Find next game
+        today = datetime.now().date()
+        for game in self.game_events:
+            game_date = datetime.strptime(game['date'], '%Y-%m-%d').date()
+            if game_date >= today:
+                if not next_game or game_date < datetime.strptime(next_game['date'], '%Y-%m-%d').date():
+                    next_game = game
+                upcoming_events.append(game)
         
-        html = """
-        <div class='dashboard-card'>
-            <h3 style="margin: 0 0 16px 0; color: #667eea;">🎁 Available Rewards</h3>
-            <div style="display: grid; gap: 16px;">
-        """
+        # Get related tailgates and watch parties
+        related_tailgates = []
+        related_watch_parties = []
         
-        for pts, reward in sorted(prizes.items()):
-            # Determine color based on points required
-            if pts <= 50:
-                color = "linear-gradient(135deg, #10b981, #059669)"  # Green
-            elif pts <= 100:
-                color = "linear-gradient(135deg, #f59e0b, #d97706)"  # Orange
-            elif pts <= 200:
-                color = "linear-gradient(135deg, #667eea, #764ba2)"  # Purple
-            else:
-                color = "linear-gradient(135deg, #8b5cf6, #7c3aed)"  # Violet
+        if next_game:
+            if next_game.get('tailgate_id'):
+                related_tailgates = [t for t in self.tailgates if t['id'] == next_game['tailgate_id']]
+            if next_game.get('watch_party_id'):
+                related_watch_parties = [w for w in self.watch_parties if w['id'] == next_game['watch_party_id']]
+        
+        # Countdown to next game
+        countdown_html = ""
+        if next_game:
+            game_datetime = datetime.strptime(f"{next_game['date']} {next_game['time']}", '%Y-%m-%d %H:%M')
+            now = datetime.now()
+            time_diff = game_datetime - now
             
-            html += f"""
-            <div style="background: {color}; color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h4 style="margin: 0 0 8px 0;">{reward}</h4>
-                    <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Exclusive LMU experience</p>
+            if time_diff.total_seconds() > 0:
+                days = time_diff.days
+                hours = time_diff.seconds // 3600
+                minutes = (time_diff.seconds % 3600) // 60
+                
+                countdown_html = f"""
+                <div class="countdown-container">
+                    <h2>🦁 Next Game: {next_game['sport']} vs {next_game['opponent']}</h2>
+                    <div class="countdown-timer">
+                        <div class="countdown-unit">
+                            <span class="countdown-number">{days}</span>
+                            <span class="countdown-label">Days</span>
+                        </div>
+                        <div class="countdown-unit">
+                            <span class="countdown-number">{hours}</span>
+                            <span class="countdown-label">Hours</span>
+                        </div>
+                        <div class="countdown-unit">
+                            <span class="countdown-number">{minutes}</span>
+                            <span class="countdown-label">Minutes</span>
+                        </div>
+                    </div>
+                    <p class="game-details">
+                        📅 {next_game['date']} at {next_game['time']}<br>
+                        🏟️ {next_game['venue']}<br>
+                        🏆 {next_game['spirit_points']} Spirit Points Available!
+                    </p>
                 </div>
-                <div style="text-align: right;">
-                    <div style="font-size: 1.5rem; font-weight: 700;">{pts}</div>
-                    <div style="font-size: 0.8rem; opacity: 0.8;">points</div>
-                </div>
-            </div>
-            """
+                """
         
-        html += "</div></div>"
-        return html
-
-    # New method: dynamic dashboard feed (events + leaderboard highlight)
-    def get_dynamic_feed_html(self):
-        """Combine upcoming events and leaderboard snippet for dashboard"""
-        events_md = self.get_events_this_week()
-        leaderboard_html = self.get_leaderboard_html(limit=3)
+        # Active challenges
+        active_challenges = [c for c in self.spirit_challenges if c['active']]
+        challenges_html = ""
+        if active_challenges:
+            challenges_html = """
+            <div class="challenges-section">
+                <h3>🔥 Active Spirit Challenges</h3>
+                <div class="challenges-grid">
+            """
+            for challenge in active_challenges:
+                challenges_html += f"""
+                    <div class="challenge-card">
+                        <h4>{challenge['title']}</h4>
+                        <p>{challenge['description']}</p>
+                        <div class="challenge-meta">
+                            <span class="points">🏆 {challenge['points']} pts</span>
+                            <span class="deadline">⏰ {challenge['deadline']}</span>
+                        </div>
+                        <button class="challenge-btn">Participate</button>
+                    </div>
+                """
+            challenges_html += "</div></div>"
+        
         return f"""
-        <div style='display:flex;gap:24px;flex-wrap:wrap;'>
-            <div style='flex:1;min-width:300px'>
-                <div class='dashboard-card'>
-                    <h3 style="margin: 0 0 16px 0; color: #667eea;">📅 This Week</h3>
-                    {events_md}
+        <div class="game-day-dashboard">
+            {countdown_html}
+            
+            <div class="quick-actions">
+                <h3>⚡ Quick Actions</h3>
+                <div class="action-buttons">
+                    <button class="action-btn primary">🎫 RSVP to Tailgate</button>
+                    <button class="action-btn secondary">📱 Generate QR Code</button>
+                    <button class="action-btn secondary">📸 Submit Challenge</button>
+                    <button class="action-btn secondary">🏆 View Leaderboard</button>
                 </div>
             </div>
-            <div style='flex:1;min-width:300px'>
-                {leaderboard_html}
+            
+            {challenges_html}
+            
+            <div class="upcoming-events">
+                <h3>📅 Upcoming Spirit Events</h3>
+                <div class="events-grid">
+        """
+        
+        # Add upcoming events
+        for event in upcoming_events[:3]:  # Show next 3 events
+            event_html = f"""
+                    <div class="event-card">
+                        <div class="event-header">
+                            <h4>{event['sport']} vs {event['opponent']}</h4>
+                            <span class="event-type {event['type']}">{event['type'].title()}</span>
+                        </div>
+                        <p>📅 {event['date']} at {event['time']}</p>
+                        <p>🏟️ {event['venue']}</p>
+                        <p>🏆 {event['spirit_points']} pts</p>
+                        <button class="event-btn">Learn More</button>
+                    </div>
+            """
+            dashboard_html += event_html
+        
+        dashboard_html += """
+                </div>
             </div>
         </div>
         """
+        
+        return dashboard_html
+
+    def get_tailgates_html(self):
+        """Get tailgates section HTML"""
+        html = """
+        <div class="tailgates-section">
+            <h2>🎉 Official LMU Tailgates</h2>
+            <p class="section-description">Join the ultimate pre-game experience! RSVP, earn points, and show your Lion pride.</p>
+            
+            <div class="tailgates-grid">
+        """
+        
+        for tailgate in self.tailgates:
+            # Calculate days until tailgate
+            tailgate_date = datetime.strptime(tailgate['date'], '%Y-%m-%d').date()
+            days_until = (tailgate_date - datetime.now().date()).days
+            
+            status_class = "upcoming" if days_until > 0 else "today" if days_until == 0 else "past"
+            
+            html += f"""
+                <div class="tailgate-card {status_class}">
+                    <div class="tailgate-header">
+                        <h3>{tailgate['name']}</h3>
+                        <span class="host-badge">Hosted by {tailgate['host']}</span>
+                    </div>
+                    
+                    <div class="tailgate-details">
+                        <p><strong>📅 Date:</strong> {tailgate['date']}</p>
+                        <p><strong>⏰ Time:</strong> {tailgate['time']}</p>
+                        <p><strong>📍 Location:</strong> {tailgate['location']}</p>
+                        <p><strong>🎭 Theme:</strong> {tailgate['theme']}</p>
+                    </div>
+                    
+                    <div class="tailgate-features">
+                        <h4>🎪 Features:</h4>
+                        <ul>
+            """
+            for feature in tailgate['features']:
+                html += f"<li>{feature}</li>"
+            
+            html += f"""
+                        </ul>
+                    </div>
+                    
+                    <div class="tailgate-stats">
+                        <div class="stat">
+                            <span class="stat-number">🏆 {tailgate['spirit_points']}</span>
+                            <span class="stat-label">Spirit Points</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">👥 {tailgate['rsvp_count']}/{tailgate['max_capacity']}</span>
+                            <span class="stat-label">RSVPs</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">📅 {days_until}</span>
+                            <span class="stat-label">Days Away</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tailgate-actions">
+                        <button class="rsvp-btn">🎫 RSVP Now</button>
+                        <button class="qr-btn">📱 Get QR Code</button>
+                        <button class="share-btn">📤 Share</button>
+                    </div>
+                </div>
+            """
+        
+        html += """
+            </div>
+            
+            <div class="host-info">
+                <h3>🏠 Want to Host a Tailgate?</h3>
+                <p>RSOs, fraternities, sororities, and student groups can apply to host official LMU tailgates!</p>
+                <button class="host-btn">Apply to Host</button>
+            </div>
+        </div>
+        """
+        
+        return html
+
+    def get_watch_parties_html(self):
+        """Get watch parties section HTML"""
+        html = """
+        <div class="watch-parties-section">
+            <h2>📺 Away Game Watch Parties</h2>
+            <p class="section-description">Can't make it to the away game? Join fellow Lions at these official watch parties!</p>
+            
+            <div class="watch-parties-grid">
+        """
+        
+        for party in self.watch_parties:
+            # Calculate days until watch party
+            party_date = datetime.strptime(party['date'], '%Y-%m-%d').date()
+            days_until = (party_date - datetime.now().date()).days
+            
+            html += f"""
+                <div class="watch-party-card">
+                    <div class="party-header">
+                        <h3>{party['name']}</h3>
+                        <span class="partner-badge">Partner: {party['partner']}</span>
+                    </div>
+                    
+                    <div class="party-details">
+                        <p><strong>📅 Date:</strong> {party['date']}</p>
+                        <p><strong>⏰ Time:</strong> {party['time']}</p>
+                        <p><strong>📍 Location:</strong> {party['location']}</p>
+                    </div>
+                    
+                    <div class="party-features">
+                        <h4>🎉 Features:</h4>
+                        <ul>
+            """
+            for feature in party['features']:
+                html += f"<li>{feature}</li>"
+            
+            html += f"""
+                        </ul>
+                    </div>
+                    
+                    <div class="party-stats">
+                        <div class="stat">
+                            <span class="stat-number">🏆 {party['spirit_points']}</span>
+                            <span class="stat-label">Spirit Points</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">👥 {party['rsvp_count']}/{party['max_capacity']}</span>
+                            <span class="stat-label">RSVPs</span>
+                        </div>
+                    </div>
+                    
+                    <div class="party-actions">
+                        <button class="rsvp-btn">🎫 RSVP Now</button>
+                        <button class="directions-btn">🗺️ Get Directions</button>
+                        <button class="share-btn">📤 Share</button>
+                    </div>
+                </div>
+            """
+        
+        html += """
+            </div>
+            
+            <div class="partner-info">
+                <h3>🤝 Partner with Us</h3>
+                <p>Local businesses can host official LMU watch parties and earn exposure to our student community!</p>
+                <button class="partner-btn">Become a Partner</button>
+            </div>
+        </div>
+        """
+        
+        return html
+
+    def get_premium_prizes_html(self):
+        """Get premium prizes section HTML"""
+        html = """
+        <div class="premium-prizes-section">
+            <h2>🏆 Premium Spirit Experiences</h2>
+            <p class="section-description">Unlock legendary experiences that money can't buy! These exclusive rewards are earned through pure Lion spirit.</p>
+            
+            <div class="prizes-grid">
+        """
+        
+        for prize in self.premium_prizes:
+            availability = prize['available'] - prize['claimed']
+            availability_class = "available" if availability > 0 else "claimed"
+            
+            html += f"""
+                <div class="prize-card {availability_class}">
+                    <div class="prize-icon">
+                        {prize['image']}
+                    </div>
+                    
+                    <div class="prize-content">
+                        <h3>{prize['title']}</h3>
+                        <p class="prize-description">{prize['description']}</p>
+                        
+                        <div class="prize-meta">
+                            <div class="points-required">
+                                <span class="points-number">🏆 {prize['points_required']}</span>
+                                <span class="points-label">Spirit Points</span>
+                            </div>
+                            <div class="availability">
+                                <span class="availability-number">{availability}</span>
+                                <span class="availability-label">Available</span>
+                            </div>
+                        </div>
+                        
+                        <div class="prize-category">
+                            <span class="category-badge">{prize['category'].replace('_', ' ').title()}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="prize-actions">
+                        <button class="redeem-btn" {'disabled' if availability <= 0 else ''}>
+                            {'Redeemed' if availability <= 0 else 'Redeem Now'}
+                        </button>
+                        <button class="details-btn">Learn More</button>
+                    </div>
+                </div>
+            """
+        
+        html += """
+            </div>
+            
+            <div class="prize-info">
+                <h3>💡 How to Earn Premium Prizes</h3>
+                <div class="earning-tips">
+                    <div class="tip">
+                        <h4>🎯 Attend Everything</h4>
+                        <p>Go to games, tailgates, and watch parties consistently</p>
+                    </div>
+                    <div class="tip">
+                        <h4>🔥 Complete Challenges</h4>
+                        <p>Participate in spirit challenges and creative contests</p>
+                    </div>
+                    <div class="tip">
+                        <h4>👥 Bring Friends</h4>
+                        <p>Earn bonus points for bringing new people to events</p>
+                    </div>
+                    <div class="tip">
+                        <h4>📸 Share Content</h4>
+                        <p>Post about your LMU spirit on social media</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
+        
+        return html
+
+    def generate_qr_code(self, event_id, event_type):
+        """Generate QR code for event check-in"""
+        try:
+            # Create QR code data
+            qr_data = f"LMU_SPIRIT_{event_type.upper()}_{event_id}_{datetime.now().strftime('%Y%m%d')}"
+            
+            # Generate QR code
+            qr = qrcode.QRCode(version=1, box_size=10, border=5)
+            qr.add_data(qr_data)
+            qr.make(fit=True)
+            
+            # Create image
+            img = qr.make_image(fill_color="black", back_color="white")
+            
+            # Convert to base64
+            buffer = io.BytesIO()
+            img.save(buffer, format='PNG')
+            img_str = base64.b64encode(buffer.getvalue()).decode()
+            
+            return f"data:image/png;base64,{img_str}"
+            
+        except Exception as e:
+            print(f"Error generating QR code: {e}")
+            return None
+
+    def check_in_user(self, user_id, event_id, event_type, qr_code_data):
+        """Process user check-in for an event"""
+        try:
+            # Validate QR code
+            expected_data = f"LMU_SPIRIT_{event_type.upper()}_{event_id}_{datetime.now().strftime('%Y%m%d')}"
+            
+            if qr_code_data != expected_data:
+                return {"success": False, "message": "Invalid QR code or expired"}
+            
+            # Determine points based on event type
+            points = 0
+            if event_type == "tailgate":
+                points = 25
+            elif event_type == "game":
+                points = 50
+            elif event_type == "watch_party":
+                points = 20
+            elif event_type == "challenge":
+                points = 50
+            
+            # Add points
+            self.points_system.add_points(user_id, points, f"{event_type}_checkin")
+            
+            return {
+                "success": True, 
+                "message": f"Check-in successful! +{points} Spirit Points",
+                "points_earned": points
+            }
+            
+        except Exception as e:
+            return {"success": False, "message": f"Check-in error: {str(e)}"}
+
+    def submit_spirit_challenge(self, user_id, challenge_id, submission_type, submission_data):
+        """Submit a spirit challenge entry"""
+        try:
+            # Find the challenge
+            challenge = next((c for c in self.spirit_challenges if c['id'] == challenge_id), None)
+            
+            if not challenge or not challenge['active']:
+                return {"success": False, "message": "Challenge not found or inactive"}
+            
+            # Validate submission type
+            if submission_type != challenge['type']:
+                return {"success": False, "message": "Invalid submission type for this challenge"}
+            
+            # Award points
+            self.points_system.add_points(user_id, challenge['points'], f"challenge_{challenge_id}")
+            
+            return {
+                "success": True,
+                "message": f"Challenge submitted! +{challenge['points']} Spirit Points",
+                "points_earned": challenge['points']
+            }
+            
+        except Exception as e:
+            return {"success": False, "message": f"Submission error: {str(e)}"}
+
+    def rsvp_to_event(self, user_id, event_id, event_type):
+        """RSVP to an event"""
+        try:
+            # Find the event
+            if event_type == "tailgate":
+                event = next((t for t in self.tailgates if t['id'] == event_id), None)
+            elif event_type == "watch_party":
+                event = next((w for w in self.watch_parties if w['id'] == event_id), None)
+            else:
+                return {"success": False, "message": "Invalid event type"}
+            
+            if not event:
+                return {"success": False, "message": "Event not found"}
+            
+            # Check capacity
+            if event['rsvp_count'] >= event['max_capacity']:
+                return {"success": False, "message": "Event is at full capacity"}
+            
+            # Update RSVP count (in real app, this would be stored in database)
+            event['rsvp_count'] += 1
+            
+            # Add points for RSVP
+            self.points_system.add_points(user_id, 5, f"{event_type}_rsvp")
+            
+            return {
+                "success": True,
+                "message": f"RSVP successful! +5 Spirit Points",
+                "event_name": event['name']
+            }
+            
+        except Exception as e:
+            return {"success": False, "message": f"RSVP error: {str(e)}"}
+
+    def redeem_prize(self, user_id, prize_id):
+        """Redeem a premium prize"""
+        try:
+            # Find the prize
+            prize = next((p for p in self.premium_prizes if p['id'] == prize_id), None)
+            
+            if not prize:
+                return {"success": False, "message": "Prize not found"}
+            
+            # Check availability
+            if prize['claimed'] >= prize['available']:
+                return {"success": False, "message": "Prize is no longer available"}
+            
+            # Get user points
+            stats = self.points_system.get_user_stats(user_id)
+            user_points = 0
+            if "Total Points:" in stats:
+                points_str = stats.split("Total Points:")[1].split()[0]
+                user_points = int(points_str)
+            
+            # Check if user has enough points
+            if user_points < prize['points_required']:
+                return {"success": False, "message": f"Need {prize['points_required'] - user_points} more Spirit Points"}
+            
+            # Deduct points and claim prize
+            self.points_system.add_points(user_id, -prize['points_required'], f"prize_redemption_{prize_id}")
+            prize['claimed'] += 1
+            
+            return {
+                "success": True,
+                "message": f"Prize redeemed! You now have: {prize['title']}",
+                "prize_title": prize['title']
+            }
+            
+        except Exception as e:
+            return {"success": False, "message": f"Redemption error: {str(e)}"}
 
 def create_interface():
     """Create and configure the Gradio interface"""
