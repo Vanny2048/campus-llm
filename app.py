@@ -60,8 +60,51 @@ class CampusLLMApp:
     def get_user_points(self, user_id):
         """Get current points for a user"""
         if not user_id:
-            return "Please enter your student ID to track points!"
-        return self.points_system.get_user_stats(user_id)
+            return """
+            <div class="points-display">
+                <h3>🏆 Your Points</h3>
+                <p>Enter your student ID above ☝️ to track points!</p>
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
+                <p style="font-weight: 600; margin-bottom: 8px;">💡 Earn points by:</p>
+                <ul style="text-align: left; margin: 0; padding-left: 20px;">
+                    <li>Asking questions (1 pt)</li>
+                    <li>Attending events (5-10 pts)</li>
+                    <li>Giving feedback (3 pts)</li>
+                </ul>
+            </div>
+            """
+        
+        try:
+            stats = self.points_system.get_user_stats(user_id)
+            rank_info = self.points_system.get_user_rank(user_id)
+            
+            # Parse the stats string to extract points
+            points = 0
+            if "Total Points:" in stats:
+                points_str = stats.split("Total Points:")[1].split()[0]
+                points = int(points_str)
+            
+            return f"""
+            <div class="points-display">
+                <h3>🏆 Your Points</h3>
+                <p style="font-size: 2rem; font-weight: 700; margin: 10px 0;">{points} pts</p>
+                <p style="font-size: 0.9rem; opacity: 0.8;">Rank #{rank_info.get('rank', 'N/A')} of {rank_info.get('total_users', 0)} students</p>
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
+                <p style="font-weight: 600; margin-bottom: 8px;">💡 Earn points by:</p>
+                <ul style="text-align: left; margin: 0; padding-left: 20px;">
+                    <li>Asking questions (1 pt)</li>
+                    <li>Attending events (5-10 pts)</li>
+                    <li>Giving feedback (3 pts)</li>
+                </ul>
+            </div>
+            """
+        except Exception as e:
+            return f"""
+            <div class="points-display">
+                <h3>🏆 Your Points</h3>
+                <p>Error loading stats: {str(e)}</p>
+            </div>
+            """
     
     def submit_feedback(self, feedback, rating, user_id=None):
         """Submit user feedback"""
@@ -125,26 +168,84 @@ class CampusLLMApp:
     # New method for leaderboard HTML
     def get_leaderboard_html(self, limit: int = 10):
         """Generate HTML representation of the leaderboard"""
+        # Add some sample data if leaderboard is empty
+        self._ensure_sample_data()
+        
         leaderboard = self.points_system.get_leaderboard(limit)
         if not leaderboard:
             return "<div class='dashboard-card'><p>No leaderboard data available yet.</p></div>"
 
         html = """
         <div class='dashboard-card'>
-            <h3 style="margin: 0 0 16px 0; color: #667eea;">🏅 Leaderboard</h3>
+            <h3 style="margin: 0 0 16px 0; color: #667eea;">🏅 Spirit Leaderboard</h3>
             <table class='leaderboard'>
                 <tr>
                     <th>Rank</th>
-                    <th>User</th>
+                    <th>Student</th>
                     <th>Points</th>
                     <th>Level</th>
+                    <th>Activity</th>
                 </tr>
         """
         for entry in leaderboard:
             rank_emoji = "🥇" if entry['rank'] == 1 else "🥈" if entry['rank'] == 2 else "🥉" if entry['rank'] == 3 else f"#{entry['rank']}"
-            html += f"<tr><td>{rank_emoji}</td><td>{entry['user_id']}</td><td>{entry['total_points']}</td><td>{entry['level']}</td></tr>"
+            activity = f"Q: {entry['questions_asked']} | E: {entry['events_attended']} | F: {entry['feedback_submitted']}"
+            html += f"""
+            <tr>
+                <td style="font-weight: bold; font-size: 1.2em;">{rank_emoji}</td>
+                <td style="font-weight: 600;">{entry['user_id']}</td>
+                <td style="font-weight: bold; color: #667eea;">{entry['total_points']} pts</td>
+                <td><span style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.8em;">{entry['level']}</span></td>
+                <td style="font-size: 0.9em; color: #666;">{activity}</td>
+            </tr>
+            """
         html += "</table></div>"
         return html
+
+    def _ensure_sample_data(self):
+        """Add sample data to the database for testing"""
+        try:
+            # Check if we already have data
+            leaderboard = self.points_system.get_leaderboard(5)
+            if len(leaderboard) > 0:
+                return  # Already has data
+            
+            # Add sample users
+            sample_users = [
+                ("12345", 245, 15, 8, 3),  # Sarah Johnson
+                ("67890", 189, 12, 6, 2),  # Mike Chen
+                ("11111", 156, 10, 5, 1),  # Alex Rodriguez
+                ("22222", 134, 8, 4, 2),   # Emma Wilson
+                ("33333", 98, 6, 3, 1),    # David Kim
+                ("44444", 87, 5, 2, 1),    # Lisa Park
+                ("55555", 76, 4, 2, 0),    # James Brown
+                ("66666", 65, 3, 1, 1),    # Maria Garcia
+                ("77777", 54, 2, 1, 0),    # Tom Anderson
+                ("88888", 43, 1, 1, 0),    # Rachel Green
+            ]
+            
+            for user_id, points, questions, events, feedback in sample_users:
+                # Add points for questions
+                for _ in range(questions):
+                    self.points_system.add_points(user_id, 1, "question_asked", "Sample question")
+                
+                # Add points for events
+                for _ in range(events):
+                    self.points_system.add_points(user_id, 5, "event_attended", "Sample event")
+                
+                # Add points for feedback
+                for _ in range(feedback):
+                    self.points_system.add_points(user_id, 3, "feedback_submitted", "Sample feedback")
+                
+                # Add remaining points to reach target
+                current_points = questions + (events * 5) + (feedback * 3)
+                if current_points < points:
+                    self.points_system.add_points(user_id, points - current_points, "bonus", "Sample bonus")
+            
+            print("✅ Sample data added to leaderboard")
+            
+        except Exception as e:
+            print(f"Error adding sample data: {e}")
 
     # New method: prizes catalog HTML
     def get_prizes_html(self):
@@ -152,15 +253,38 @@ class CampusLLMApp:
         prizes = self.points_system.get_reward_catalog()
         if not prizes:
             return "<div class='dashboard-card'><p>No prizes available yet.</p></div>"
+        
         html = """
         <div class='dashboard-card'>
-            <h3 style="margin: 0 0 16px 0; color: #667eea;">🎁 Prize Shop</h3>
-            <table class='leaderboard'>
-                <tr><th>Required Points</th><th>Reward</th></tr>
+            <h3 style="margin: 0 0 16px 0; color: #667eea;">🎁 Available Rewards</h3>
+            <div style="display: grid; gap: 16px;">
         """
+        
         for pts, reward in sorted(prizes.items()):
-            html += f"<tr><td><strong>{pts}</strong></td><td>{reward}</td></tr>"
-        html += "</table></div>"
+            # Determine color based on points required
+            if pts <= 50:
+                color = "linear-gradient(135deg, #10b981, #059669)"  # Green
+            elif pts <= 100:
+                color = "linear-gradient(135deg, #f59e0b, #d97706)"  # Orange
+            elif pts <= 200:
+                color = "linear-gradient(135deg, #667eea, #764ba2)"  # Purple
+            else:
+                color = "linear-gradient(135deg, #8b5cf6, #7c3aed)"  # Violet
+            
+            html += f"""
+            <div style="background: {color}; color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="margin: 0 0 8px 0;">{reward}</h4>
+                    <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Exclusive LMU experience</p>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 1.5rem; font-weight: 700;">{pts}</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;">points</div>
+                </div>
+            </div>
+            """
+        
+        html += "</div></div>"
         return html
 
     # New method: dynamic dashboard feed (events + leaderboard highlight)
@@ -193,6 +317,9 @@ def create_interface():
         max-width: 1400px !important;
         margin: auto !important;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+        min-height: 100vh !important;
+        padding: 20px !important;
     }
     
     /* Header with modern gradient */
@@ -235,15 +362,17 @@ def create_interface():
     
     /* Modern Points Display */
     .points-display {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        border-radius: 16px;
-        padding: 20px;
+        border-radius: 20px;
+        padding: 24px;
         text-align: center;
-        box-shadow: 0 8px 32px rgba(240, 147, 251, 0.2);
+        box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
         border: none;
         position: relative;
         overflow: hidden;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .points-display::before {
@@ -383,17 +512,31 @@ def create_interface():
     
     /* Modern Cards */
     .dashboard-card {
-        background: white;
-        border: 1px solid #e1e5e9;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        transition: all 0.2s ease;
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
     
     .dashboard-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        transform: translateY(-4px);
+        box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+        border-color: rgba(102, 126, 234, 0.3);
     }
     
     /* Modern Tables */
@@ -401,35 +544,61 @@ def create_interface():
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
-        margin-top: 16px;
-        border-radius: 12px;
+        margin-top: 20px;
+        border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        background: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
     .leaderboard th {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        padding: 16px 12px;
-        font-weight: 600;
+        padding: 20px 16px;
+        font-weight: 700;
         text-align: center;
         border: none;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
     .leaderboard td {
-        padding: 12px;
+        padding: 16px;
         text-align: center;
         border: none;
-        border-bottom: 1px solid #e1e5e9;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
         background: white;
+        font-weight: 500;
+        transition: all 0.2s ease;
     }
     
     .leaderboard tr:nth-child(even) td {
-        background: #f8fafc;
+        background: rgba(248, 250, 252, 0.8);
     }
     
     .leaderboard tr:hover td {
-        background: #f1f5f9;
+        background: rgba(102, 126, 234, 0.05);
+        transform: scale(1.02);
+    }
+    
+    .leaderboard tr:first-child td {
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #333;
+        font-weight: 700;
+    }
+    
+    .leaderboard tr:nth-child(2) td {
+        background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+        color: white;
+        font-weight: 600;
+    }
+    
+    .leaderboard tr:nth-child(3) td {
+        background: linear-gradient(135deg, #cd7f32, #b8860b);
+        color: white;
+        font-weight: 600;
     }
     
     /* Modern Buttons */
@@ -521,15 +690,7 @@ def create_interface():
                 scale=1
             )
             points_display = gr.HTML(
-                value="""
-                <div class='points-display'>
-                    <h3>🏆 Your Points</h3>
-                    <p>Enter your student ID to track points!</p>
-                    <div style="font-size: 0.9rem; opacity: 0.8;">
-                        💡 Ask questions, attend events, give feedback
-                    </div>
-                </div>
-                """,
+                value=app.get_user_points(""),
                 label="Points"
             )
 
@@ -760,7 +921,7 @@ def create_interface():
                         
                         # Main Leaderboard
                         leaderboard_refresh_btn = gr.Button("🔄 Refresh Leaderboard", variant="secondary", elem_classes=["refresh-btn"])
-                        leaderboard_display = gr.HTML(value=app.get_leaderboard_html())
+                        leaderboard_display = gr.HTML(value=app.get_leaderboard_html(15))
                     
                     with gr.Column(scale=1):
                         # This Week's MVP
@@ -900,7 +1061,7 @@ def create_interface():
                         """)
                         
                         # Profile Stats
-                        profile_points = gr.HTML(value="""<div class='points-display'>Enter your ID above ☝️ and ask a question to see points.</div>""")
+                        profile_points = gr.HTML(value=app.get_user_points(""))
                         refresh_profile_btn = gr.Button("🔄 Refresh Stats", elem_classes=["refresh-btn"])
                         
                         # Badges and Achievements
@@ -1261,22 +1422,7 @@ def create_interface():
             return history, ""
 
         def update_points(user_id):
-            if user_id:
-                stats = app.get_user_points(user_id)
-                return f"""
-                <div class="points-display">
-                    <h3>🏆 Your Points</h3>
-                    <p>{stats}</p>
-                    <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
-                    <p style="font-weight: 600; margin-bottom: 8px;">💡 Earn points by:</p>
-                    <ul style="text-align: left; margin: 0; padding-left: 20px;">
-                        <li>Asking questions (1 pt)</li>
-                        <li>Attending events (5-10 pts)</li>
-                        <li>Giving feedback (3 pts)</li>
-                    </ul>
-                </div>
-                """
-            return points_display.value
+            return app.get_user_points(user_id)
 
         def update_leaderboard():
             return app.get_leaderboard_html()
