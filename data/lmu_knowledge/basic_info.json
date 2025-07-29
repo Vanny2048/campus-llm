@@ -1,22 +1,102 @@
 [
   {
-    "content": "Loyola Marymount University (LMU) is a private Jesuit research university located in Los Angeles, California. Founded in 1911, LMU serves over 9,000 students across undergraduate and graduate programs.",
+    "content": "Loyola Marymount University (LMU) is a private Jesuit research university located in Los Angeles, California. Founded in 1911, LMU serves over 9,000 students across undergraduate and graduate programs. The campus is known as 'The Bluff' due to its stunning hilltop location overlooking the Pacific Ocean.",
     "source": "LMU Official Website",
     "category": "About LMU"
   },
   {
-    "content": "LMU's main campus is located in the Westchester area of Los Angeles, near LAX airport. The campus features modern facilities, beautiful architecture, and stunning views of the Pacific Ocean.",
+    "content": "LMU's main campus is located in the Westchester area of Los Angeles, near LAX airport. The campus features modern facilities, beautiful architecture, and stunning views of the Pacific Ocean. Students often reference 'living on the Bluff' when talking about campus life.",
     "source": "LMU Campus Information",
     "category": "Campus"
   },
   {
-    "content": "LMU offers undergraduate degrees through six schools: Bellarmine College of Liberal Arts, College of Business Administration, School of Education, Seaver College of Science and Engineering, School of Film and Television, and College of Communication and Fine Arts.",
+    "content": "LMU offers undergraduate degrees through six schools: Bellarmine College of Liberal Arts, College of Business Administration, School of Education, Seaver College of Science and Engineering, School of Film and Television, and College of Communication and Fine Arts. The Film School is particularly prestigious and well-known in the industry.",
     "source": "LMU Academic Programs",
     "category": "Academics"
   },
   {
-    "content": "The LMU Lions compete in NCAA Division I athletics. Popular sports include basketball, soccer, tennis, and volleyball. The Gersten Pavilion hosts basketball and volleyball games.",
+    "content": "The LMU Lions compete in NCAA Division I athletics in the West Coast Conference (WCC). Popular sports include basketball, soccer, tennis, and volleyball. The Gersten Pavilion hosts basketball and volleyball games and gets pretty hype during games.",
     "source": "LMU Athletics",
     "category": "Athletics"
+  },
+  {
+    "content": "PROWL is LMU's student portal where students handle everything academic - course registration, grades, transcripts, financial aid, and more. It's basically your one-stop shop for all things LMU administrative.",
+    "source": "LMU Student Services",
+    "category": "Technology"
+  },
+  {
+    "content": "Lion Dollars are LMU's campus currency used for dining, laundry, printing, and purchases at campus stores. You can add money to your Lion Card account online or at kiosks around campus.",
+    "source": "LMU Dining Services",
+    "category": "Campus Life"
+  },
+  {
+    "content": "The Lair is the main dining hall located near Doheny Memorial Library. It offers various food stations and is a popular hangout spot. Other dining options include Iggy's Cafe (great coffee), Roski Dining, and the C-Store for late-night snacks.",
+    "source": "LMU Dining Services",
+    "category": "Dining"
+  },
+  {
+    "content": "First Fridays are monthly campus-wide social events that bring the entire LMU community together. They feature live music, food, activities, and are genuinely fun - these events actually slap and are a great way to meet people.",
+    "source": "LMU Student Life",
+    "category": "Events"
+  },
+  {
+    "content": "University Hall (U-Hall) is the main administrative building where you'll find the registrar, admissions, financial aid, and other key offices. It's the go-to spot for handling official business.",
+    "source": "LMU Campus Map",
+    "category": "Buildings"
+  },
+  {
+    "content": "Doheny Memorial Library is the main library and a popular study spot. It has multiple floors with different noise levels - quiet study areas, group study rooms, and collaborative spaces. It hits different during finals week.",
+    "source": "LMU Libraries",
+    "category": "Academic Resources"
+  },
+  {
+    "content": "Hannon Library is another major library on campus, known for being a quieter study sanctuary. It's perfect when you need to focus and get in the zone for serious studying.",
+    "source": "LMU Libraries",
+    "category": "Academic Resources"
+  },
+  {
+    "content": "Burns Backcourt is where students play pickup basketball and other recreational sports. It's where the real ones go to hoop and stay active between classes.",
+    "source": "LMU Recreation",
+    "category": "Recreation"
+  },
+  {
+    "content": "The Lion's Den is the student activities and involvement office where you can learn about clubs, organizations, leadership opportunities, and campus events. They help you get plugged into campus life.",
+    "source": "LMU Student Life",
+    "category": "Student Services"
+  },
+  {
+    "content": "Whelan Center houses many student services including the health center, counseling and psychological services, disability support services, and career services. It's your hub for health and wellness support.",
+    "source": "LMU Student Services",
+    "category": "Student Services"
+  },
+  {
+    "content": "Sacred Heart Chapel is a beautiful campus chapel that hosts masses, weddings, and other religious services. It reflects LMU's Jesuit values and provides a peaceful space for reflection.",
+    "source": "LMU Campus Ministry",
+    "category": "Spiritual Life"
+  },
+  {
+    "content": "Alumni Mall is the main walkway and quad area where students gather, study outside, and attend outdoor events. It's the heart of campus social life on nice days.",
+    "source": "LMU Campus Map",
+    "category": "Campus Life"
+  },
+  {
+    "content": "LMU Marina is the university's waterfront facility used for marine science research and recreation. It's a unique campus feature that showcases LMU's coastal location.",
+    "source": "LMU Facilities",
+    "category": "Unique Features"
+  },
+  {
+    "content": "Residence halls like Del Rey offer the full campus living experience. Living on campus, especially as a first-year, is a great way to build community and friendships. The residential education program creates a supportive environment.",
+    "source": "LMU Housing",
+    "category": "Housing"
+  },
+  {
+    "content": "LMU's location in Los Angeles provides incredible opportunities for internships, entertainment industry connections, beach access, and cultural experiences. You're literally in one of the world's most dynamic cities.",
+    "source": "LMU Advantages",
+    "category": "Location Benefits"
+  },
+  {
+    "content": "The Jesuit tradition at LMU emphasizes social justice, service learning, and educating the whole person. This creates a campus culture focused on making a positive impact in the world.",
+    "source": "LMU Mission",
+    "category": "Values"
   }
 ]
