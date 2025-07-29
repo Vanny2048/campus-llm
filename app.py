@@ -144,6 +144,39 @@ class CampusLLMApp:
         html += "</table>"
         return html
 
+    # New method: prizes catalog HTML
+    def get_prizes_html(self):
+        """Return HTML table of available prizes from points system"""
+        prizes = self.points_system.get_reward_catalog()
+        if not prizes:
+            return "<p>No prizes available yet.</p>"
+        html = """
+        <h3>🎁 Prize Shop</h3>
+        <table class='leaderboard'>
+            <tr><th>Required Points</th><th>Reward</th></tr>
+        """
+        for pts, reward in sorted(prizes.items()):
+            html += f"<tr><td>{pts}</td><td>{reward}</td></tr>"
+        html += "</table>"
+        return html
+
+    # New method: dynamic dashboard feed (events + leaderboard highlight)
+    def get_dynamic_feed_html(self):
+        """Combine upcoming events and leaderboard snippet for dashboard"""
+        events_md = self.get_events_this_week()
+        leaderboard_html = self.get_leaderboard_html(limit=3)
+        return f"""
+        <div style='display:flex;gap:20px;flex-wrap:wrap;'>
+            <div style='flex:1;min-width:300px'>
+                <h3>📅 This Week</h3>
+                <div class='dashboard-card'>{events_md}</div>
+            </div>
+            <div style='flex:1;min-width:300px'>
+                {leaderboard_html}
+            </div>
+        </div>
+        """
+
 def create_interface():
     """Create and configure the Gradio interface"""
     app = CampusLLMApp()
@@ -186,6 +219,13 @@ def create_interface():
     .leaderboard tr:nth-child(even) {
         background: #f9f9f9;
     }
+    .dashboard-card {
+        background: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
     """
     
     with gr.Blocks(css=css, title="LMU Campus LLM") as interface:
@@ -196,6 +236,25 @@ def create_interface():
             <p>Your AI assistant for everything LMU - built by students, for students!</p>
         </div>
         """)
+
+        # ---- Global student id + points row ----
+        with gr.Row():
+            student_id = gr.Textbox(
+                label="Student ID (Optional)",
+                placeholder="Enter your ID to track points",
+                type="text",
+                scale=1
+            )
+            points_display = gr.HTML(
+                value="""
+                <div class='points-display'>
+                    <h3>🏆 Your Points</h3>
+                    <p>Enter your student ID to track points!</p>
+                </div>
+                """,
+                label="Points"
+            )
+
 
         with gr.Tabs():
             # -------------------- Home / Dashboard Tab --------------------
@@ -234,47 +293,9 @@ def create_interface():
                         )
 
                     with gr.Column(scale=1):
-                        # Student ID input
-                        student_id = gr.Textbox(
-                            label="Student ID (Optional)",
-                            placeholder="Enter your ID to track points",
-                            type="text"
-                        )
-
-                        # Points display
-                        points_display = gr.HTML(
-                            value="""
-                            <div class="points-display">
-                                <h3>🏆 Your Points</h3>
-                                <p>Enter your student ID to track points!</p>
-                                <hr>
-                                <p><b>Earn points by:</b></p>
-                                <ul style="text-align: left;">
-                                    <li>Asking questions (1 pt)</li>
-                                    <li>Attending events (5-10 pts)</li>
-                                    <li>Giving feedback (3 pts)</li>
-                                </ul>
-                            </div>
-                            """,
-                            label="Points Status"
-                        )
-
-                        # Feedback section
-                        with gr.Accordion("📝 Give Feedback", open=False):
-                            feedback_text = gr.Textbox(
-                                label="Your feedback",
-                                placeholder="How can we improve the LMU Campus LLM?",
-                                lines=3
-                            )
-                            rating = gr.Slider(
-                                minimum=1,
-                                maximum=5,
-                                value=5,
-                                step=1,
-                                label="Rating (1-5 stars)"
-                            )
-                            feedback_btn = gr.Button("Submit Feedback")
-                            feedback_status = gr.Textbox(label="Status", interactive=False)
+                        # Dashboard feed
+                        feed_refresh_btn = gr.Button("🔄 Refresh Feed", variant="secondary")
+                        feed_display = gr.HTML(value=app.get_dynamic_feed_html())
 
             # -------------------- Events Tab --------------------
             with gr.Tab("Events"):
@@ -292,6 +313,52 @@ def create_interface():
             with gr.Tab("Leaderboard"):
                 leaderboard_refresh_btn = gr.Button("🔄 Refresh Leaderboard")
                 leaderboard_display = gr.HTML(value=app.get_leaderboard_html())
+
+            # -------------------- Prizes Tab --------------------
+            with gr.Tab("Prizes"):
+                prizes_display = gr.HTML(value=app.get_prizes_html())
+
+            # -------------------- My Profile Tab --------------------
+            with gr.Tab("My Profile"):
+                gr.Markdown("## Your Stats & Feedback")
+                profile_points = gr.HTML(value="""<div class='points-display'>Enter your ID above ☝️ and ask a question to see points.</div>""")
+
+                def sync_profile(user_id):
+                    return app.get_user_points(user_id)
+                # Button to refresh profile stats
+                refresh_profile_btn = gr.Button("🔄 Refresh My Stats")
+
+                with gr.Accordion("📝 Give Feedback", open=False):
+                    feedback_text = gr.Textbox(
+                        label="Your feedback",
+                        placeholder="How can we improve the LMU Campus LLM?",
+                        lines=3
+                    )
+                    rating = gr.Slider(
+                        minimum=1,
+                        maximum=5,
+                        value=5,
+                        step=1,
+                        label="Rating (1-5 stars)"
+                    )
+                    feedback_btn = gr.Button("Submit Feedback")
+                    feedback_status = gr.Textbox(label="Status", interactive=False)
+
+            # -------------------- Submit Event / Host Tab --------------------
+            with gr.Tab("Submit Event/Host"):
+                gr.Markdown("### Propose a Collab Event 📝")
+                host_title = gr.Textbox(label="Event Title")
+                host_desc = gr.Textbox(label="Description", lines=3)
+                host_date = gr.Textbox(label="Date & Time")
+                host_submit = gr.Button("Submit Proposal (Coming Soon)")
+                host_status = gr.Textbox(label="Status", interactive=False)
+
+            # -------------------- Community Board Tab --------------------
+            with gr.Tab("Community Board (Beta)"):
+                gr.HTML("""
+                <h3>🤝 Community wall coming soon!</h3>
+                <p>Share memes, watch-party signups, and more.</p>
+                """)
 
         # -------------------- Event handlers --------------------
         def respond(message, history, user_id):
@@ -334,7 +401,7 @@ def create_interface():
         ).then(
             update_points,
             inputs=[student_id],
-            outputs=[points_display]
+            outputs=[points_display, profile_points]
         )
 
         user_input.submit(
@@ -344,7 +411,7 @@ def create_interface():
         ).then(
             update_points,
             inputs=[student_id],
-            outputs=[points_display]
+            outputs=[points_display, profile_points]
         )
 
         events_btn.click(
@@ -357,6 +424,17 @@ def create_interface():
             outputs=[leaderboard_display]
         )
 
+        feed_refresh_btn.click(
+            app.get_dynamic_feed_html,
+            outputs=[feed_display]
+        )
+
+        refresh_profile_btn.click(
+            update_points,
+            inputs=[student_id],
+            outputs=[profile_points]
+        )
+
         feedback_btn.click(
             app.submit_feedback,
             inputs=[feedback_text, rating, student_id],
@@ -364,13 +442,13 @@ def create_interface():
         ).then(
             update_points,
             inputs=[student_id],
-            outputs=[points_display]
+            outputs=[points_display, profile_points]
         )
 
         student_id.change(
             update_points,
             inputs=[student_id],
-            outputs=[points_display]
+            outputs=[points_display, profile_points]
         )
     
     return interface
