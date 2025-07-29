@@ -388,3 +388,21 @@
 2025-07-29 16:47:10,558 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
 2025-07-29 16:47:10,573 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
 2025-07-29 16:47:10,682 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-29 16:50:49,637 - src.utils - INFO - Database initialized successfully
+2025-07-29 16:50:52,604 - src.utils - INFO - Loading embedding model: all-MiniLM-L6-v2
+2025-07-29 16:50:52,605 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-29 16:50:52,605 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-07-29 16:50:53,187 - src.utils - INFO - Embedding model loaded successfully
+2025-07-29 16:50:53,188 - src.utils - INFO - Loaded 78 knowledge chunks
+2025-07-29 16:50:53,379 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-29 16:50:53,394 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-29 16:50:53,493 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-29 16:51:29,703 - src.utils - INFO - Database initialized successfully
+2025-07-29 16:51:32,565 - src.utils - INFO - Loading embedding model: all-MiniLM-L6-v2
+2025-07-29 16:51:32,566 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-29 16:51:32,566 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-07-29 16:51:33,241 - src.utils - INFO - Embedding model loaded successfully
+2025-07-29 16:51:33,242 - src.utils - INFO - Loaded 78 knowledge chunks
+2025-07-29 16:51:33,429 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-29 16:51:33,444 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-29 16:51:33,560 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
