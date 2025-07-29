@@ -21,6 +21,92 @@
       "category": "Athletics"
     }
   ],
+  "campus_locations": [
+    {
+      "name": "The Bluff",
+      "description": "That's what we call our entire campus - it's literally on a bluff overlooking LA with the best views fr fr",
+      "category": "Campus Nicknames"
+    },
+    {
+      "name": "U-Hall",
+      "description": "University Hall - the main admin building where you go for everything from transcripts to parking passes",
+      "category": "Academic Buildings"
+    },
+    {
+      "name": "The Lair",
+      "description": "Main dining hall where everyone vibes and gets their grub. The food is lowkey fire sometimes",
+      "category": "Dining"
+    },
+    {
+      "name": "Burns Backcourt",
+      "description": "The outdoor dining area behind Burns Rec Center - perfect for studying in the sun and people watching",
+      "category": "Outdoor Spaces"
+    },
+    {
+      "name": "Gersten",
+      "description": "Gersten Pavilion - where basketball games go down and it gets LIT. The student section goes crazy fr",
+      "category": "Athletics"
+    },
+    {
+      "name": "The Library",
+      "description": "William H. Hannon Library - your study spot when you need to grind. Gets packed during finals week 💀",
+      "category": "Study Spaces"
+    },
+    {
+      "name": "Sunken Gardens",
+      "description": "The beautiful garden area in the middle of campus - perfect for photos and chilling",
+      "category": "Outdoor Spaces"
+    },
+    {
+      "name": "Greek Row",
+      "description": "Where all the frats and sororities are located - the social scene is wild",
+      "category": "Student Life"
+    },
+    {
+      "name": "The Village",
+      "description": "Off-campus housing area where upperclassmen live - it's like a mini college town",
+      "category": "Housing"
+    },
+    {
+      "name": "C-Store",
+      "description": "Campus store for snacks, drinks, and essentials. Your late night snack spot",
+      "category": "Campus Services"
+    }
+  ],
+  "student_life": [
+    {
+      "content": "First Fridays are monthly events with free food and activities - literally the best way to meet people",
+      "category": "Events"
+    },
+    {
+      "content": "Lion Dollars are campus currency for laundry, vending machines, and some dining locations",
+      "category": "Campus Services"
+    },
+    {
+      "content": "LMU CARES is the campus wellness and support program - they're literally there for you",
+      "category": "Wellness"
+    },
+    {
+      "content": "PROWL is the student portal where you register for classes and check grades - basically your academic lifeline",
+      "category": "Technology"
+    },
+    {
+      "content": "LionsConnect is where you find clubs and organizations - there's literally something for everyone",
+      "category": "Student Organizations"
+    },
+    {
+      "content": "The campus vibe is super chill - everyone's friendly and the weather is literally perfect year-round",
+      "category": "Campus Culture"
+    },
+    {
+      "content": "Greek life is pretty big here - rush week is wild and the parties are legendary",
+      "category": "Social Life"
+    },
+    {
+      "content": "The bluff views are literally everything - you can see the ocean and downtown LA from campus",
+      "category": "Campus Features"
+    }
+  ],
   "events": [
     {
       "title": "Study Abroad Information Session",
@@ -76,6 +162,28 @@
       "free_food": false,
       "points": 2,
       "contact": "dining@lmu.edu"
+    },
+    {
+      "title": "First Friday: Welcome Back Bash",
+      "description": "Kick off the semester with free food, games, and live music! Meet new people and get hyped for the year.",
+      "date": "2025-08-01",
+      "time": "5:00 PM - 8:00 PM",
+      "location": "Sunken Gardens",
+      "category": "Social",
+      "free_food": true,
+      "points": 10,
+      "contact": "studentlife@lmu.edu"
+    },
+    {
+      "title": "Midnight Breakfast",
+      "description": "Free breakfast during finals week! Because studying is hard enough without being hangry.",
+      "date": "2025-12-15",
+      "time": "10:00 PM - 12:00 AM",
+      "location": "The Lair",
+      "category": "Academic",
+      "free_food": true,
+      "points": 5,
+      "contact": "dining@lmu.edu"
     }
   ],
   "faqs": [
@@ -118,6 +226,21 @@
       "content": "Q: What meal plan options are available?\nA: LMU offers several meal plan options including unlimited dining, block plans (14, 10, or 5 meals per week), and commuter plans. All residential students are required to have a meal plan. Plans include Lion Cash for use at retail locations.",
       "source": "LMU FAQ",
       "category": "Dining"
+    },
+    {
+      "content": "Q: Where's the best place to study on campus?\nA: The library is lowkey packed during finals week 💀 but Burns Backcourt is perfect for outdoor studying when the weather's nice. The library has quiet floors and group study rooms too.",
+      "source": "LMU FAQ",
+      "category": "Study Spaces"
+    },
+    {
+      "content": "Q: How do I get Lion Dollars?\nA: You can add Lion Dollars to your student account through PROWL or at the Campus Card office. They're perfect for laundry, vending machines, and some dining spots.",
+      "source": "LMU FAQ",
+      "category": "Campus Services"
+    },
+    {
+      "content": "Q: What's the vibe like at basketball games?\nA: Gersten gets LIT during basketball games fr fr! The student section goes crazy and it's literally the best way to show school spirit. Free t-shirts and sometimes free food too.",
+      "source": "LMU FAQ",
+      "category": "Athletics"
     }
   ],
   "academic": [
@@ -145,6 +268,78 @@
       "content": "Students can appeal grades by first discussing with the instructor, then the department chair, and finally the dean of the school. Grade appeals must be filed within one year of receiving the grade.",
       "source": "LMU Grade Appeal Process",
       "category": "Academic Policies"
+    }
+  ],
+  "gen_z_terms": [
+    {
+      "term": "fr fr",
+      "meaning": "For real for real - emphasizing something is true",
+      "usage": "The bluff views are fr fr the best"
+    },
+    {
+      "term": "no cap",
+      "meaning": "No lie, being completely honest",
+      "usage": "No cap, the lair food is lowkey fire"
+    },
+    {
+      "term": "bet",
+      "meaning": "Okay, sure, agreement",
+      "usage": "Bet, I'll meet you at the library"
+    },
+    {
+      "term": "slay",
+      "meaning": "Doing something really well",
+      "usage": "The basketball team slayed last night"
+    },
+    {
+      "term": "periodt",
+      "meaning": "End of discussion, emphasizing a point",
+      "usage": "Gersten gets lit during games, periodt"
+    },
+    {
+      "term": "lowkey",
+      "meaning": "Secretly, kind of, somewhat",
+      "usage": "The library is lowkey packed right now"
+    },
+    {
+      "term": "ngl",
+      "meaning": "Not gonna lie",
+      "usage": "Ngl, finals week is stressful af"
+    },
+    {
+      "term": "tbh",
+      "meaning": "To be honest",
+      "usage": "Tbh, I have no idea where that building is"
+    },
+    {
+      "term": "literally",
+      "meaning": "Actually, really (often used for emphasis)",
+      "usage": "The bluff views are literally everything"
+    },
+    {
+      "term": "vibes",
+      "meaning": "Atmosphere, feeling, energy",
+      "usage": "The lair has good food vibes today"
+    },
+    {
+      "term": "mood",
+      "meaning": "Relatable feeling or situation",
+      "usage": "That's a mood - I'm also procrastinating"
+    },
+    {
+      "term": "same",
+      "meaning": "I feel the same way",
+      "usage": "Same, I'm also struggling with this class"
+    },
+    {
+      "term": "facts",
+      "meaning": "True, I agree",
+      "usage": "Facts, the weather here is perfect"
+    },
+    {
+      "term": "deadass",
+      "meaning": "Seriously, for real",
+      "usage": "Deadass, that was the best game ever"
     }
   ]
 }
