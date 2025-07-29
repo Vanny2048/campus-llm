@@ -181,50 +181,80 @@ def create_interface():
     """Create and configure the Gradio interface"""
     app = CampusLLMApp()
     
-    # Custom CSS for LMU branding
+    # Custom CSS for modern, ChatGPT-like look & LMU branding
     css = """
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(180deg, #fff 0%, #f7f9fc 40%, #eef3ff 100%);
+        color: #222;
+    }
     .gradio-container {
         max-width: 1200px !important;
-        margin: auto !important;
+        margin: 0 auto !important;
     }
+    /* Header */
     .header {
         text-align: center;
-        background: linear-gradient(90deg, #8B0000, #FFD700);
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
+        background: linear-gradient(90deg, #8B0000, #CE2029);
+        color: #fff;
+        padding: 30px 20px;
+        border-radius: 16px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .points-display {
-        background: #f0f8ff;
+    .header h1 {
+        font-size: 2.4rem;
+        margin-bottom: 6px;
+    }
+    /* Chatbot styling */
+    .chatbot .message.user {
+        background:#DCF8C6;
+        border-radius: 12px 12px 0 12px;
+        padding: 10px 14px;
+        margin:4px 0;
+    }
+    .chatbot .message.bot {
+        background:#fff;
+        border-radius: 12px 12px 12px 0;
+        padding: 10px 14px;
+        margin:4px 0;
+        border:1px solid #e6e6e6;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .points-display{
+        background: #ffffff;
         border: 2px solid #8B0000;
-        border-radius: 10px;
-        padding: 15px;
+        border-radius: 12px;
+        padding: 20px;
         text-align: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
     .leaderboard {
         width: 100%;
         border-collapse: collapse;
         margin-top: 10px;
-    }
-    .leaderboard th, .leaderboard td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        border-radius: 8px;
+        overflow:hidden;
     }
     .leaderboard th {
-        background: #8B0000;
-        color: white;
+        background:#8B0000;
+        color:#fff;
+        padding:10px;
+        text-align:center;
     }
-    .leaderboard tr:nth-child(even) {
-        background: #f9f9f9;
+    .leaderboard td {
+        padding:8px;
+        text-align:center;
+        border-bottom:1px solid #eee;
     }
     .dashboard-card {
-        background: #ffffff;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        background:#fff;
+        border:1px solid #e5e7eb;
+        border-radius:12px;
+        padding:20px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.04);
     }
     """
     
@@ -265,7 +295,8 @@ def create_interface():
                         chatbot = gr.Chatbot(
                             label="Chat with LMU Assistant",
                             height=400,
-                            show_label=True
+                            show_label=True,
+                            elem_classes=["chatbot"]
                         )
 
                         with gr.Row():
