@@ -180,3 +180,211 @@
 2025-07-29 06:25:59,030 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
 2025-07-29 06:25:59,045 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
 2025-07-29 06:25:59,143 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-29 16:33:54,594 - src.utils - INFO - Database initialized successfully
+2025-07-29 16:33:58,457 - src.utils - INFO - Loading embedding model: all-MiniLM-L6-v2
+2025-07-29 16:33:58,458 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-29 16:33:58,458 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-07-29 16:33:59,075 - src.utils - INFO - Embedding model loaded successfully
+2025-07-29 16:33:59,076 - src.utils - INFO - Loaded 78 knowledge chunks
+2025-07-29 16:33:59,274 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-29 16:33:59,290 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-29 16:33:59,399 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-29 16:44:39,861 - src.utils - INFO - Database initialized successfully
+2025-07-29 16:44:43,089 - src.utils - INFO - Loading embedding model: all-MiniLM-L6-v2
+2025-07-29 16:44:43,089 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-29 16:44:43,089 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-07-29 16:44:43,745 - src.utils - INFO - Embedding model loaded successfully
+2025-07-29 16:44:43,745 - src.utils - INFO - Loaded 78 knowledge chunks
+2025-07-29 16:44:43,799 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,803 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,808 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,811 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,815 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,818 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,822 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,826 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,828 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,831 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,835 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,839 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,841 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,844 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,847 - src.utils - INFO - Added 1 points to 12345 for question_asked
+2025-07-29 16:44:43,853 - src.utils - INFO - Added 2 points to 12345 for milestone
+2025-07-29 16:44:43,853 - src.utils - INFO - User 12345 reached milestone: 20 points
+2025-07-29 16:44:43,854 - src.utils - INFO - Added 5 points to 12345 for event_attended
+2025-07-29 16:44:43,858 - src.utils - INFO - Added 5 points to 12345 for event_attended
+2025-07-29 16:44:43,863 - src.utils - INFO - Added 5 points to 12345 for event_attended
+2025-07-29 16:44:43,867 - src.utils - INFO - Added 5 points to 12345 for event_attended
+2025-07-29 16:44:43,872 - src.utils - INFO - Added 5 points to 12345 for event_attended
+2025-07-29 16:44:43,875 - src.utils - INFO - Added 5 points to 12345 for event_attended
+2025-07-29 16:44:43,881 - src.utils - INFO - Added 5 points to 12345 for milestone
+2025-07-29 16:44:43,882 - src.utils - INFO - User 12345 reached milestone: 50 points
+2025-07-29 16:44:43,882 - src.utils - INFO - Added 5 points to 12345 for event_attended
+2025-07-29 16:44:43,884 - src.utils - INFO - Added 5 points to 12345 for event_attended
+2025-07-29 16:44:43,887 - src.utils - INFO - Added 3 points to 12345 for feedback_submitted
+2025-07-29 16:44:43,890 - src.utils - INFO - Added 3 points to 12345 for feedback_submitted
+2025-07-29 16:44:43,893 - src.utils - INFO - Added 3 points to 12345 for feedback_submitted
+2025-07-29 16:44:43,904 - src.utils - INFO - Added 20 points to 12345 for milestone
+2025-07-29 16:44:43,904 - src.utils - INFO - User 12345 reached milestone: 200 points
+2025-07-29 16:44:43,904 - src.utils - INFO - Added 10 points to 12345 for milestone
+2025-07-29 16:44:43,904 - src.utils - INFO - User 12345 reached milestone: 100 points
+2025-07-29 16:44:43,904 - src.utils - INFO - Added 181 points to 12345 for bonus
+2025-07-29 16:44:43,910 - src.utils - INFO - Added 1 points to 67890 for question_asked
+2025-07-29 16:44:43,914 - src.utils - INFO - Added 1 points to 67890 for question_asked
+2025-07-29 16:44:43,916 - src.utils - INFO - Added 1 points to 67890 for question_asked
+2025-07-29 16:44:43,921 - src.utils - INFO - Added 1 points to 67890 for question_asked
+2025-07-29 16:44:43,924 - src.utils - INFO - Added 1 points to 67890 for question_asked
+2025-07-29 16:44:43,927 - src.utils - INFO - Added 1 points to 67890 for question_asked
+2025-07-29 16:44:43,931 - src.utils - INFO - Added 1 points to 67890 for question_asked
+2025-07-29 16:44:43,936 - src.utils - INFO - Added 1 points to 67890 for question_asked
+2025-07-29 16:44:43,940 - src.utils - INFO - Added 1 points to 67890 for question_asked
+2025-07-29 16:44:43,943 - src.utils - INFO - Added 1 points to 67890 for question_asked
+2025-07-29 16:44:43,949 - src.utils - INFO - Added 1 points to 67890 for question_asked
+2025-07-29 16:44:43,954 - src.utils - INFO - Added 1 points to 67890 for question_asked
+2025-07-29 16:44:43,960 - src.utils - INFO - Added 5 points to 67890 for event_attended
+2025-07-29 16:44:43,967 - src.utils - INFO - Added 2 points to 67890 for milestone
+2025-07-29 16:44:43,967 - src.utils - INFO - User 67890 reached milestone: 20 points
+2025-07-29 16:44:43,967 - src.utils - INFO - Added 5 points to 67890 for event_attended
+2025-07-29 16:44:43,972 - src.utils - INFO - Added 5 points to 67890 for event_attended
+2025-07-29 16:44:43,978 - src.utils - INFO - Added 5 points to 67890 for event_attended
+2025-07-29 16:44:43,980 - src.utils - INFO - Added 5 points to 67890 for event_attended
+2025-07-29 16:44:43,982 - src.utils - INFO - Added 5 points to 67890 for event_attended
+2025-07-29 16:44:43,984 - src.utils - INFO - Added 3 points to 67890 for feedback_submitted
+2025-07-29 16:44:43,989 - src.utils - INFO - Added 5 points to 67890 for milestone
+2025-07-29 16:44:43,989 - src.utils - INFO - User 67890 reached milestone: 50 points
+2025-07-29 16:44:43,989 - src.utils - INFO - Added 3 points to 67890 for feedback_submitted
+2025-07-29 16:44:43,999 - src.utils - INFO - Added 20 points to 67890 for milestone
+2025-07-29 16:44:43,999 - src.utils - INFO - User 67890 reached milestone: 200 points
+2025-07-29 16:44:43,999 - src.utils - INFO - Added 10 points to 67890 for milestone
+2025-07-29 16:44:43,999 - src.utils - INFO - User 67890 reached milestone: 100 points
+2025-07-29 16:44:43,999 - src.utils - INFO - Added 141 points to 67890 for bonus
+2025-07-29 16:44:44,001 - src.utils - INFO - Added 1 points to 11111 for question_asked
+2025-07-29 16:44:44,003 - src.utils - INFO - Added 1 points to 11111 for question_asked
+2025-07-29 16:44:44,008 - src.utils - INFO - Added 1 points to 11111 for question_asked
+2025-07-29 16:44:44,012 - src.utils - INFO - Added 1 points to 11111 for question_asked
+2025-07-29 16:44:44,015 - src.utils - INFO - Added 1 points to 11111 for question_asked
+2025-07-29 16:44:44,017 - src.utils - INFO - Added 1 points to 11111 for question_asked
+2025-07-29 16:44:44,019 - src.utils - INFO - Added 1 points to 11111 for question_asked
+2025-07-29 16:44:44,024 - src.utils - INFO - Added 1 points to 11111 for question_asked
+2025-07-29 16:44:44,032 - src.utils - INFO - Added 1 points to 11111 for question_asked
+2025-07-29 16:44:44,039 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-29 16:44:44,040 - src.utils - INFO - Added 1 points to 11111 for question_asked
+2025-07-29 16:44:44,043 - src.utils - INFO - Added 5 points to 11111 for event_attended
+2025-07-29 16:44:44,049 - src.utils - INFO - Added 2 points to 11111 for milestone
+2025-07-29 16:44:44,049 - src.utils - INFO - User 11111 reached milestone: 20 points
+2025-07-29 16:44:44,049 - src.utils - INFO - Added 5 points to 11111 for event_attended
+2025-07-29 16:44:44,051 - src.utils - INFO - Added 5 points to 11111 for event_attended
+2025-07-29 16:44:44,053 - src.utils - INFO - Added 5 points to 11111 for event_attended
+2025-07-29 16:44:44,055 - src.utils - INFO - Added 5 points to 11111 for event_attended
+2025-07-29 16:44:44,057 - src.utils - INFO - Added 3 points to 11111 for feedback_submitted
+2025-07-29 16:44:44,062 - src.utils - INFO - Added 10 points to 11111 for milestone
+2025-07-29 16:44:44,062 - src.utils - INFO - User 11111 reached milestone: 100 points
+2025-07-29 16:44:44,062 - src.utils - INFO - Added 5 points to 11111 for milestone
+2025-07-29 16:44:44,062 - src.utils - INFO - User 11111 reached milestone: 50 points
+2025-07-29 16:44:44,062 - src.utils - INFO - Added 118 points to 11111 for bonus
+2025-07-29 16:44:44,066 - src.utils - INFO - Added 1 points to 22222 for question_asked
+2025-07-29 16:44:44,074 - src.utils - INFO - Added 1 points to 22222 for question_asked
+2025-07-29 16:44:44,079 - src.utils - INFO - Added 1 points to 22222 for question_asked
+2025-07-29 16:44:44,086 - src.utils - INFO - Added 1 points to 22222 for question_asked
+2025-07-29 16:44:44,091 - src.utils - INFO - Added 1 points to 22222 for question_asked
+2025-07-29 16:44:44,098 - src.utils - INFO - Added 1 points to 22222 for question_asked
+2025-07-29 16:44:44,103 - src.utils - INFO - Added 1 points to 22222 for question_asked
+2025-07-29 16:44:44,112 - src.utils - INFO - Added 1 points to 22222 for question_asked
+2025-07-29 16:44:44,117 - src.utils - INFO - Added 5 points to 22222 for event_attended
+2025-07-29 16:44:44,122 - src.utils - INFO - Added 5 points to 22222 for event_attended
+2025-07-29 16:44:44,135 - src.utils - INFO - Added 2 points to 22222 for milestone
+2025-07-29 16:44:44,135 - src.utils - INFO - User 22222 reached milestone: 20 points
+2025-07-29 16:44:44,135 - src.utils - INFO - Added 5 points to 22222 for event_attended
+2025-07-29 16:44:44,143 - src.utils - INFO - Added 5 points to 22222 for event_attended
+2025-07-29 16:44:44,147 - src.utils - INFO - Added 3 points to 22222 for feedback_submitted
+2025-07-29 16:44:44,152 - src.utils - INFO - Added 3 points to 22222 for feedback_submitted
+2025-07-29 16:44:44,163 - src.utils - INFO - Added 10 points to 22222 for milestone
+2025-07-29 16:44:44,163 - src.utils - INFO - User 22222 reached milestone: 100 points
+2025-07-29 16:44:44,163 - src.utils - INFO - Added 5 points to 22222 for milestone
+2025-07-29 16:44:44,163 - src.utils - INFO - User 22222 reached milestone: 50 points
+2025-07-29 16:44:44,163 - src.utils - INFO - Added 100 points to 22222 for bonus
+2025-07-29 16:44:44,164 - src.utils - INFO - Added 1 points to 33333 for question_asked
+2025-07-29 16:44:44,167 - src.utils - INFO - Added 1 points to 33333 for question_asked
+2025-07-29 16:44:44,173 - src.utils - INFO - Added 1 points to 33333 for question_asked
+2025-07-29 16:44:44,178 - src.utils - INFO - Added 1 points to 33333 for question_asked
+2025-07-29 16:44:44,182 - src.utils - INFO - Added 1 points to 33333 for question_asked
+2025-07-29 16:44:44,186 - src.utils - INFO - Added 1 points to 33333 for question_asked
+2025-07-29 16:44:44,192 - src.utils - INFO - Added 5 points to 33333 for event_attended
+2025-07-29 16:44:44,195 - src.utils - INFO - Added 5 points to 33333 for event_attended
+2025-07-29 16:44:44,201 - src.utils - INFO - Added 2 points to 33333 for milestone
+2025-07-29 16:44:44,201 - src.utils - INFO - User 33333 reached milestone: 20 points
+2025-07-29 16:44:44,201 - src.utils - INFO - Added 5 points to 33333 for event_attended
+2025-07-29 16:44:44,203 - src.utils - INFO - Added 3 points to 33333 for feedback_submitted
+2025-07-29 16:44:44,223 - src.utils - INFO - Added 10 points to 33333 for milestone
+2025-07-29 16:44:44,223 - src.utils - INFO - User 33333 reached milestone: 100 points
+2025-07-29 16:44:44,223 - src.utils - INFO - Added 5 points to 33333 for milestone
+2025-07-29 16:44:44,223 - src.utils - INFO - User 33333 reached milestone: 50 points
+2025-07-29 16:44:44,223 - src.utils - INFO - Added 74 points to 33333 for bonus
+2025-07-29 16:44:44,227 - src.utils - INFO - Added 1 points to 44444 for question_asked
+2025-07-29 16:44:44,235 - src.utils - INFO - Added 1 points to 44444 for question_asked
+2025-07-29 16:44:44,241 - src.utils - INFO - Added 1 points to 44444 for question_asked
+2025-07-29 16:44:44,247 - src.utils - INFO - Added 1 points to 44444 for question_asked
+2025-07-29 16:44:44,251 - src.utils - INFO - Added 1 points to 44444 for question_asked
+2025-07-29 16:44:44,254 - src.utils - INFO - Added 5 points to 44444 for event_attended
+2025-07-29 16:44:44,258 - src.utils - INFO - Added 5 points to 44444 for event_attended
+2025-07-29 16:44:44,265 - src.utils - INFO - Added 3 points to 44444 for feedback_submitted
+2025-07-29 16:44:44,279 - src.utils - INFO - Added 5 points to 44444 for milestone
+2025-07-29 16:44:44,279 - src.utils - INFO - User 44444 reached milestone: 50 points
+2025-07-29 16:44:44,279 - src.utils - INFO - Added 2 points to 44444 for milestone
+2025-07-29 16:44:44,279 - src.utils - INFO - User 44444 reached milestone: 20 points
+2025-07-29 16:44:44,279 - src.utils - INFO - Added 69 points to 44444 for bonus
+2025-07-29 16:44:44,282 - src.utils - INFO - Added 1 points to 55555 for question_asked
+2025-07-29 16:44:44,284 - src.utils - INFO - Added 1 points to 55555 for question_asked
+2025-07-29 16:44:44,287 - src.utils - INFO - Added 1 points to 55555 for question_asked
+2025-07-29 16:44:44,291 - src.utils - INFO - Added 1 points to 55555 for question_asked
+2025-07-29 16:44:44,295 - src.utils - INFO - Added 5 points to 55555 for event_attended
+2025-07-29 16:44:44,304 - src.utils - INFO - Added 5 points to 55555 for event_attended
+2025-07-29 16:44:44,318 - src.utils - INFO - Added 5 points to 55555 for milestone
+2025-07-29 16:44:44,318 - src.utils - INFO - User 55555 reached milestone: 50 points
+2025-07-29 16:44:44,319 - src.utils - INFO - Added 2 points to 55555 for milestone
+2025-07-29 16:44:44,319 - src.utils - INFO - User 55555 reached milestone: 20 points
+2025-07-29 16:44:44,319 - src.utils - INFO - Added 62 points to 55555 for bonus
+2025-07-29 16:44:44,324 - src.utils - INFO - Added 1 points to 66666 for question_asked
+2025-07-29 16:44:44,329 - src.utils - INFO - Added 1 points to 66666 for question_asked
+2025-07-29 16:44:44,335 - src.utils - INFO - Added 1 points to 66666 for question_asked
+2025-07-29 16:44:44,340 - src.utils - INFO - Added 5 points to 66666 for event_attended
+2025-07-29 16:44:44,344 - src.utils - INFO - Added 3 points to 66666 for feedback_submitted
+2025-07-29 16:44:44,359 - src.utils - INFO - Added 5 points to 66666 for milestone
+2025-07-29 16:44:44,359 - src.utils - INFO - User 66666 reached milestone: 50 points
+2025-07-29 16:44:44,359 - src.utils - INFO - Added 2 points to 66666 for milestone
+2025-07-29 16:44:44,359 - src.utils - INFO - User 66666 reached milestone: 20 points
+2025-07-29 16:44:44,360 - src.utils - INFO - Added 54 points to 66666 for bonus
+2025-07-29 16:44:44,362 - src.utils - INFO - Added 1 points to 77777 for question_asked
+2025-07-29 16:44:44,366 - src.utils - INFO - Added 1 points to 77777 for question_asked
+2025-07-29 16:44:44,372 - src.utils - INFO - Added 5 points to 77777 for event_attended
+2025-07-29 16:44:44,394 - src.utils - INFO - Added 5 points to 77777 for milestone
+2025-07-29 16:44:44,394 - src.utils - INFO - User 77777 reached milestone: 50 points
+2025-07-29 16:44:44,394 - src.utils - INFO - Added 2 points to 77777 for milestone
+2025-07-29 16:44:44,394 - src.utils - INFO - User 77777 reached milestone: 20 points
+2025-07-29 16:44:44,394 - src.utils - INFO - Added 47 points to 77777 for bonus
+2025-07-29 16:44:44,399 - src.utils - INFO - Added 1 points to 88888 for question_asked
+2025-07-29 16:44:44,406 - src.utils - INFO - Added 5 points to 88888 for event_attended
+2025-07-29 16:44:44,418 - src.utils - INFO - Added 2 points to 88888 for milestone
+2025-07-29 16:44:44,418 - src.utils - INFO - User 88888 reached milestone: 20 points
+2025-07-29 16:44:44,418 - src.utils - INFO - Added 37 points to 88888 for bonus
+2025-07-29 16:44:44,580 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-29 16:44:44,598 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-29 16:46:24,031 - src.utils - INFO - Database initialized successfully
+2025-07-29 16:46:28,247 - src.utils - INFO - Added 10 points to 12345 for test
+2025-07-29 16:46:28,252 - src.utils - INFO - Added 15 points to 67890 for test
+2025-07-29 16:46:28,254 - src.utils - INFO - Added 20 points to 11111 for test
+2025-07-29 16:46:28,254 - src.utils - INFO - Loading embedding model: all-MiniLM-L6-v2
+2025-07-29 16:46:28,255 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-29 16:46:28,255 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-07-29 16:46:28,985 - src.utils - INFO - Embedding model loaded successfully
+2025-07-29 16:46:28,986 - src.utils - INFO - Loaded 78 knowledge chunks
+2025-07-29 16:47:06,871 - src.utils - INFO - Database initialized successfully
+2025-07-29 16:47:09,793 - src.utils - INFO - Loading embedding model: all-MiniLM-L6-v2
+2025-07-29 16:47:09,794 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-29 16:47:09,794 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-07-29 16:47:10,373 - src.utils - INFO - Embedding model loaded successfully
+2025-07-29 16:47:10,374 - src.utils - INFO - Loaded 78 knowledge chunks
+2025-07-29 16:47:10,558 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-29 16:47:10,573 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-29 16:47:10,682 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
