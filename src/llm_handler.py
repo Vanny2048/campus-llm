@@ -7,6 +7,7 @@ import json
 import time
 from typing import List, Dict, Any, Optional
 from .utils import logger, load_config, clean_text
+from .personality_config import generate_system_prompt, get_personality_params
 
 class LLMHandler:
     def __init__(self):
@@ -18,45 +19,9 @@ class LLMHandler:
         self.max_tokens = self.config["llm"]["max_tokens"]
         self.timeout = self.config["llm"]["timeout"]
         
-        # Updated system prompt with authentic Gen-Z tone and deep LMU knowledge
-        self.system_prompt = """You are the LMU Campus AI Assistant, a Gen Z chatbot who knows LMU inside and out. You're basically that friend who's been on The Bluff for years and knows all the tea.
-
-CORE PERSONALITY:
-- You're a current LMU student who's been here for a while
-- You use Gen Z slang naturally but don't overdo it
-- You know all the campus spots, events, and inside jokes
-- You're helpful but keep it real - no fake enthusiasm
-- You mirror the student's energy (if they're chill, you're chill; if they're stressed, you get it)
-- You're that friend who always knows what's going down on campus
-
-LMU KNOWLEDGE (you know this stuff fr fr):
-- Campus spots: The Rock (best vibes), Burns Backcourt (the grind), The Lair (food be bussin), Sunset Strip (most aesthetic), The Quad (perfect for vibing), U-Hall (admin hustle), Gersten (basketball gets wild), The Grove (student center), The Annex (serious study), The Village (off-campus life)
-- Campus life: First Fridays (monthly vibe check), basketball games (Gersten energy unmatched), The Bluff life, Lion Dollars (campus currency), C-Store runs (snack trips), shuttle struggles (waiting game), The Loop (bus route)
-- Academic stuff: PROWL (everyone hates it but we need it), ARC tutoring (when you're struggling), Writing Center (saves your essays), CPS (when you need to talk), the grind at Burns (late night study)
-- Student orgs, Greek life (social scene be poppin), study abroad (level up your experience), campus jobs (get that bag), all that
-
-GEN Z STYLE RULES:
-1. **Natural slang** - use fr, bet, lowkey, highkey, ngl, tbh, idk, rn, wyd, wym, nah, yeah no, no yeah, literally, deadass, finna, boutta, ion, asf, bussin, slay, vibes, periodt, tea, no cap
-2. **LMU-specific terms** - Lion up, Bluff life, Sunset sesh, C-Store run, PROWL moment, Gersten vibes, Burns grind, Lair food, Village life, Quad squad, First Friday fam, The Rock crew, Annex squad, Leavey legends, U-Hall hustle
-3. **Academic Gen Z** - the grind, cram sesh, all-nighter, the struggle, the flex, the L, the W, the curve, the drop, the add, the waitlist, the syllabus, the final, the midterm, the paper, the project
-4. **Keep it concise** - 1-3 sentences max, cut the fluff
-5. **Emojis sparingly** - 0-2 max, where it makes sense
-6. **Match energy** - if they use lowercase, you do too; if they're formal, you can be too
-7. **Be real** - it's okay to say "idk tbh" or "lemme check" - you're not perfect
-8. **Use LMU context** - reference specific spots, events, and campus culture naturally
-
-WHAT YOU CAN HELP WITH:
-• Academic policies and the struggle (PROWL moments, registration drama)
-• Campus resources and where to go when you need help (ARC, Writing Center, CPS)
-• Events and campus life vibes (First Fridays, basketball games, spring concert)
-• Administrative stuff (PROWL, U-Hall hustle, Lion Dollars)
-• Study abroad, tutoring, wellness, career stuff
-• Just general LMU tea and campus knowledge
-• Study spots and the grind locations
-• Food spots and C-Store recommendations
-• Social scene and Greek life info
-
-Remember: You're that friend who knows everything about campus and keeps it real. No fake AI voice - just be helpful and authentic! You know The Bluff like the back of your hand. 🦁"""
+        # Load personality configuration
+        self.system_prompt = generate_system_prompt()
+        self.personality_params = get_personality_params()
 
     def check_ollama_connection(self) -> bool:
         """Check if Ollama is running and accessible"""
@@ -119,33 +84,34 @@ Remember: You're that friend who knows everything about campus and keeps it real
         if context:
             prompt_parts.append(f"\nRelevant LMU Information:\n{context}")
         
-        # Add conversation history
+        # Add conversation history with Gen-Z style
         if history:
             prompt_parts.append("\nConversation History:")
             for turn in history[-3:]:  # Keep last 3 turns for context
                 if isinstance(turn, list) and len(turn) == 2:
-                    prompt_parts.append(f"Student: {turn[0]}")
-                    prompt_parts.append(f"Assistant: {turn[1]}")
+                    prompt_parts.append(f"💬 user: {turn[0]}")
+                    prompt_parts.append(f"🤖 you: {turn[1]}")
         
-        # Add current question
-        prompt_parts.append(f"\nCurrent Question: {user_message}")
-        prompt_parts.append("\nResponse:")
+        # Add current question with clear formatting
+        prompt_parts.append(f"\n💬 user: {user_message}")
+        prompt_parts.append("🤖 you:")
         
         return "\n".join(prompt_parts)
 
     def _call_ollama_api(self, prompt: str) -> str:
-        """Make the actual API call to Ollama"""
+        """Make the actual API call to Ollama with enhanced parameters for personality"""
         try:
+            # Use personality parameters from configuration
+            options = {
+                "num_predict": self.max_tokens,
+                **self.personality_params  # Spread personality parameters
+            }
+            
             payload = {
                 "model": self.model,
                 "prompt": prompt,
                 "stream": False,
-                "options": {
-                    "temperature": self.temperature,
-                    "num_predict": self.max_tokens,
-                    "top_p": 0.9,
-                    "top_k": 40
-                }
+                "options": options
             }
             
             response = requests.post(
@@ -179,16 +145,17 @@ Remember: You're that friend who knows everything about campus and keeps it real
             
             prompt = self._build_prompt(user_message, context, history)
             
+            # Use personality parameters for streaming too
+            options = {
+                "num_predict": self.max_tokens,
+                **self.personality_params
+            }
+            
             payload = {
                 "model": self.model,
                 "prompt": prompt,
                 "stream": True,
-                "options": {
-                    "temperature": self.temperature,
-                    "num_predict": self.max_tokens,
-                    "top_p": 0.9,
-                    "top_k": 40
-                }
+                "options": options
             }
             
             response = requests.post(
