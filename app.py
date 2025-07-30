@@ -96,16 +96,16 @@ st.markdown("""
         --accent-orange: #ff6b35;
         --accent-gold: #f7931e;
         --text-dark: #2d3748;
-        --text-light: #718096;
+        --text-light: #a0aec0;
         --text-white: #ffffff;
-        --bg-light: #f7fafc;
-        --glass-bg: rgba(255, 255, 255, 0.25);
-        --glass-border: rgba(255, 255, 255, 0.18);
-        --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.37);
-        --shadow-hover: 0 15px 45px rgba(31, 38, 135, 0.5);
+        --bg-light: #000000;
+        --glass-bg: rgba(0, 0, 0, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.5);
+        --shadow-hover: 0 15px 45px rgba(0, 0, 0, 0.7);
         --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-        --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-bg: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
     }
     
     /* Global Styles */
@@ -115,6 +115,7 @@ st.markdown("""
         background-attachment: fixed;
         min-height: 100vh;
         position: relative;
+        color: var(--text-white) !important;
     }
     
     .main::before {
@@ -124,8 +125,8 @@ st.markdown("""
         left: 0;
         width: 100%;
         height: 100%;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-        opacity: 0.3;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.2;
         z-index: -1;
     }
     
@@ -142,7 +143,7 @@ st.markdown("""
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         position: relative;
         overflow: hidden;
-        color: var(--text-white);
+        color: var(--text-white) !important;
     }
     
     .glass-container::before {
@@ -210,7 +211,7 @@ st.markdown("""
     
     /* Chat Interface */
     .chat-container {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.8);
         backdrop-filter: blur(20px);
         border-radius: 28px;
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -219,7 +220,7 @@ st.markdown("""
         min-height: 500px;
         position: relative;
         overflow: hidden;
-        color: var(--text-white);
+        color: var(--text-white) !important;
     }
     
     .chat-message {
@@ -260,7 +261,7 @@ st.markdown("""
     
     .bot-bubble {
         background: rgba(255, 255, 255, 0.95);
-        color: var(--text-dark);
+        color: #000000 !important;
         border-bottom-left-radius: 8px;
         border: 1px solid rgba(255, 255, 255, 0.3);
         font-weight: 500;
@@ -380,7 +381,7 @@ st.markdown("""
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         position: relative;
         overflow: hidden;
-        color: var(--text-white);
+        color: var(--text-white) !important;
     }
     
     .feature-card::before {
@@ -557,7 +558,7 @@ st.markdown("""
         border: 1px solid var(--glass-border);
         position: relative;
         overflow: hidden;
-        color: var(--text-white);
+        color: var(--text-white) !important;
     }
     
     .leaderboard-item::before {
@@ -696,6 +697,140 @@ st.markdown("""
     
     /* Fix for Streamlit columns */
     .stColumn {
+        color: var(--text-white) !important;
+    }
+    
+    /* Comprehensive Streamlit element fixes */
+    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6 {
+        color: var(--text-white) !important;
+    }
+    
+    .stMarkdown p, .stMarkdown div, .stMarkdown span {
+        color: var(--text-white) !important;
+    }
+    
+    .stSelectbox, .stMultiselect, .stDateInput, .stTimeInput {
+        color: var(--text-white) !important;
+    }
+    
+    .stSelectbox > div > div > div {
+        color: var(--text-white) !important;
+    }
+    
+    .stSelectbox label, .stMultiselect label, .stDateInput label, .stTimeInput label {
+        color: var(--text-white) !important;
+    }
+    
+    .stMetric {
+        color: var(--text-white) !important;
+    }
+    
+    .stMetric label {
+        color: var(--text-white) !important;
+    }
+    
+    .stMetric div[data-testid="metric-container"] {
+        color: var(--text-white) !important;
+    }
+    
+    .stDataFrame {
+        color: var(--text-white) !important;
+    }
+    
+    .stDataFrame th, .stDataFrame td {
+        color: var(--text-white) !important;
+    }
+    
+    .stAlert {
+        color: var(--text-white) !important;
+    }
+    
+    .stAlert div {
+        color: var(--text-white) !important;
+    }
+    
+    .stSuccess, .stError, .stWarning, .stInfo {
+        color: var(--text-white) !important;
+    }
+    
+    .stSuccess div, .stError div, .stWarning div, .stInfo div {
+        color: var(--text-white) !important;
+    }
+    
+    /* Fix for all text elements */
+    * {
+        color: var(--text-white) !important;
+    }
+    
+    /* Ensure page background is black */
+    .stApp {
+        background: #000000 !important;
+    }
+    
+    .main .block-container {
+        background: #000000 !important;
+    }
+    
+    /* Ensure sidebar is also styled */
+    .css-1d391kg {
+        background: rgba(0, 0, 0, 0.8) !important;
+        backdrop-filter: blur(20px) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    /* Fix for any remaining white backgrounds */
+    .stApp > header {
+        background: #000000 !important;
+    }
+    
+    .stApp > footer {
+        background: #000000 !important;
+    }
+    
+    /* Override for specific elements that need different colors */
+    .bot-bubble {
+        color: #000000 !important;
+    }
+    
+    .stTextInput > div > div > input {
+        color: #000000 !important;
+    }
+    
+    .stTextInput > div > div > input::placeholder {
+        color: #666666 !important;
+    }
+    
+    /* Ensure buttons remain visible */
+    .stButton > button {
+        color: white !important;
+    }
+    
+    /* Form styling */
+    .stForm {
+        color: var(--text-white) !important;
+    }
+    
+    .stFormSubmitButton > button {
+        color: white !important;
+        background: var(--gradient-accent) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        padding: 0.8rem 2rem !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .stFormSubmitButton > button:hover {
+        transform: translateY(-4px) scale(1.05) !important;
+        box-shadow: 0 15px 40px rgba(255, 107, 53, 0.5) !important;
+    }
+    
+    /* Ensure all form elements are visible */
+    .stForm > div {
         color: var(--text-white) !important;
     }
     
@@ -2263,22 +2398,22 @@ def show_ai_assistant():
     # Input section
     st.markdown('<div class="glass-container" style="margin-top: 1rem;">', unsafe_allow_html=True)
     
-    # Question input with enhanced styling
-    question = st.text_input(
-        "",
-        placeholder="type your question here... (e.g., where's the best place to cry on campus?)",
-        value=getattr(st.session_state, 'current_question', ''),
-        key="ai_question_input",
-        label_visibility="collapsed"
-    )
-    
-    col1, col2, col3 = st.columns([2, 1, 1])
-    with col1:
-        ask_button = st.button("💬 Send", type="primary", use_container_width=True)
-    with col2:
-        clear_button = st.button("🗑️ Clear", use_container_width=True)
-    with col3:
-        random_button = st.button("🎲 Random", use_container_width=True, help="Ask a random question")
+    # Use form for better input handling
+    with st.form(key="chat_form", clear_on_submit=True):
+        question = st.text_input(
+            "",
+            placeholder="type your question here... (e.g., where's the best place to cry on campus?)",
+            key="ai_question_input",
+            label_visibility="collapsed"
+        )
+        
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            ask_button = st.form_submit_button("💬 Send", type="primary", use_container_width=True)
+        with col2:
+            clear_button = st.form_submit_button("🗑️ Clear", use_container_width=True)
+        with col3:
+            random_button = st.form_submit_button("🎲 Random", use_container_width=True, help="Ask a random question")
     
     # Handle random question
     if random_button:
@@ -2297,14 +2432,7 @@ def show_ai_assistant():
     # Handle sending message
     if ask_button and question:
         try:
-            # Show typing indicator
-            st.session_state.show_typing = True
-            st.rerun()
-            
-            # Simulate realistic response time
-            time.sleep(random.uniform(1.5, 3.0))
-            
-            # Generate response
+            # Generate response immediately
             response = simulate_ai_response(question)
             
             # Add to conversation history
@@ -2320,16 +2448,28 @@ def show_ai_assistant():
                 st.session_state.user_points += points_earned
                 st.success(f"🏆 +{points_earned} points for staying engaged!")
             
-            # Hide typing indicator and clear input
-            st.session_state.show_typing = False
-            if hasattr(st.session_state, 'current_question'):
-                delattr(st.session_state, 'current_question')
-            
             st.rerun()
             
         except Exception as e:
             st.error(f"Oops! Something went wrong: {str(e)}")
-            st.session_state.show_typing = False
+            st.rerun()
+    
+    # Debug info (remove this in production)
+    with st.expander("🔧 Debug Info"):
+        st.write("Question:", question)
+        st.write("Ask button clicked:", ask_button)
+        st.write("Conversation history length:", len(st.session_state.conversation_history))
+        st.write("Session state keys:", list(st.session_state.keys()))
+        
+        # Test button
+        if st.button("🧪 Test Chatbot"):
+            test_response = simulate_ai_response("Hello, this is a test!")
+            st.session_state.conversation_history.append({
+                "question": "Hello, this is a test!",
+                "answer": test_response,
+                "timestamp": datetime.now().isoformat()
+            })
+            st.success("Test message added!")
             st.rerun()
     
     st.markdown("</div>", unsafe_allow_html=True)
