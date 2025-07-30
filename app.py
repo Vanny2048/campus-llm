@@ -85,50 +85,297 @@ st.set_page_config(
 # Custom CSS for enhanced mobile-responsive design
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
     
+    /* Root Variables */
+    :root {
+        --primary-blue: #1e3c72;
+        --secondary-blue: #2a5298;
+        --accent-orange: #ff6b35;
+        --accent-gold: #f7931e;
+        --text-dark: #2d3748;
+        --text-light: #718096;
+        --bg-light: #f7fafc;
+        --glass-bg: rgba(255, 255, 255, 0.25);
+        --glass-border: rgba(255, 255, 255, 0.18);
+        --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.37);
+        --shadow-hover: 0 15px 45px rgba(31, 38, 135, 0.5);
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    /* Global Styles */
     .main {
         font-family: 'Inter', sans-serif;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: var(--gradient-bg);
+        background-attachment: fixed;
+        min-height: 100vh;
+        position: relative;
+    }
+    
+    .main::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+        z-index: -1;
+    }
+    
+    /* Glassmorphism Container */
+    .glass-container {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: 24px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--shadow-soft);
+        padding: 2rem;
+        margin: 1rem 0;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .glass-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.8s;
+    }
+    
+    .glass-container:hover::before {
+        left: 100%;
+    }
+    
+    .glass-container:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: var(--shadow-hover);
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
     /* Header Styles */
     .main-header {
         font-family: 'Poppins', sans-serif;
-        font-size: clamp(2rem, 5vw, 4rem);
-        font-weight: 800;
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #ff6b35 100%);
+        font-size: clamp(3rem, 8vw, 6rem);
+        font-weight: 900;
+        background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 50%, #ffffff 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        background-clip: text;
         text-align: center;
-        margin-bottom: 1rem;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        animation: pulse 2s infinite;
+        margin: 2rem 0;
+        text-shadow: 0 0 30px rgba(255,255,255,0.5);
+        animation: headerGlow 3s ease-in-out infinite alternate;
+        position: relative;
     }
     
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
+    .main-header::after {
+        content: '🦁';
+        position: absolute;
+        right: -80px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 4rem;
+        animation: roar 2s ease-in-out infinite;
     }
     
-    /* Card Styles */
-    .feature-card {
-        background: white;
-        border-radius: 20px;
+    @keyframes headerGlow {
+        0% { 
+            text-shadow: 0 0 30px rgba(255,255,255,0.5);
+            transform: scale(1);
+        }
+        100% { 
+            text-shadow: 0 0 50px rgba(255,255,255,0.8), 0 0 80px rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+    }
+    
+    @keyframes roar {
+        0%, 100% { transform: translateY(-50%) scale(1); }
+        50% { transform: translateY(-50%) scale(1.2) rotate(5deg); }
+    }
+    
+    /* Chat Interface */
+    .chat-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-radius: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
         padding: 2rem;
-        margin: 1rem 0;
-        border: 1px solid #e9ecef;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
+        margin: 2rem 0;
+        min-height: 500px;
         position: relative;
         overflow: hidden;
     }
     
-    .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    .chat-message {
+        margin: 1rem 0;
+        animation: messageSlide 0.5s ease-out;
+    }
+    
+    .user-message {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 1rem;
+    }
+    
+    .bot-message {
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: 1rem;
+    }
+    
+    .message-bubble {
+        max-width: 70%;
+        padding: 1.2rem 1.5rem;
+        border-radius: 24px;
+        font-size: 1rem;
+        line-height: 1.5;
+        position: relative;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        animation: bubblePop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    .user-bubble {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: white;
+        border-bottom-right-radius: 8px;
+        margin-left: auto;
+    }
+    
+    .bot-bubble {
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--text-dark);
+        border-bottom-left-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .message-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        margin: 0 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .user-avatar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .bot-avatar {
+        background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+        color: #2d3748;
+        animation: bounce 2s ease-in-out infinite;
+    }
+    
+    @keyframes messageSlide {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes bubblePop {
+        0% {
+            opacity: 0;
+            transform: scale(0.3);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-6px);
+        }
+        60% {
+            transform: translateY(-3px);
+        }
+    }
+    
+    /* Typing Indicator */
+    .typing-indicator {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 24px;
+        border-bottom-left-radius: 8px;
+        max-width: 80px;
+        margin: 1rem 0;
+        animation: messageSlide 0.3s ease-out;
+    }
+    
+    .typing-dots {
+        display: flex;
+        gap: 4px;
+    }
+    
+    .typing-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--text-light);
+        animation: typingDot 1.4s ease-in-out infinite both;
+    }
+    
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    .typing-dot:nth-child(3) { animation-delay: 0; }
+    
+    @keyframes typingDot {
+        0%, 80%, 100% {
+            transform: scale(0);
+            opacity: 0.5;
+        }
+        40% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    
+    /* Enhanced Cards */
+    .feature-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        border-radius: 24px;
+        padding: 2.5rem;
+        margin: 1.5rem 0;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--shadow-soft);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
     }
     
     .feature-card::before {
@@ -138,139 +385,291 @@ st.markdown("""
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, #ff6b35, #f7931e, #2a5298);
+        background: var(--gradient-accent);
+        border-radius: 24px 24px 0 0;
     }
     
-    /* Points and Badges */
+    .feature-card:hover {
+        transform: translateY(-12px) rotateX(5deg);
+        box-shadow: 0 25px 60px rgba(31, 38, 135, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    
+    /* Points Display */
     .points-display {
-        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        background: var(--gradient-accent);
         color: white;
-        padding: 1.5rem;
-        border-radius: 20px;
+        padding: 2rem;
+        border-radius: 28px;
         text-align: center;
-        font-weight: 700;
-        font-size: 1.5rem;
-        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
-        margin: 1rem 0;
-        animation: glow 2s ease-in-out infinite alternate;
+        font-weight: 800;
+        font-size: 1.8rem;
+        box-shadow: 0 12px 40px rgba(255, 107, 53, 0.4);
+        margin: 1.5rem 0;
+        position: relative;
+        overflow: hidden;
+        animation: pointsGlow 2s ease-in-out infinite alternate;
     }
     
-    @keyframes glow {
-        from { box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3); }
-        to { box-shadow: 0 8px 35px rgba(255, 107, 53, 0.6); }
+    .points-display::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: rotate 3s linear infinite;
     }
     
+    @keyframes pointsGlow {
+        from { 
+            box-shadow: 0 12px 40px rgba(255, 107, 53, 0.4);
+            transform: scale(1);
+        }
+        to { 
+            box-shadow: 0 20px 60px rgba(255, 107, 53, 0.7);
+            transform: scale(1.05);
+        }
+    }
+    
+    @keyframes rotate {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* Badges */
     .badge {
         display: inline-block;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: var(--gradient-primary);
         color: white;
-        padding: 0.5rem 1rem;
+        padding: 0.8rem 1.5rem;
         border-radius: 50px;
-        font-size: 0.9rem;
+        font-size: 1rem;
         font-weight: 600;
-        margin: 0.25rem;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    }
-    
-    /* Event Cards */
-    .event-card {
-        background: white;
-        border-radius: 15px;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        border-left: 5px solid #ff6b35;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin: 0.5rem;
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         transition: all 0.3s ease;
-    }
-    
-    .event-card:hover {
-        transform: translateX(5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
-    
-    /* Prize Cards */
-    .prize-card {
-        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-        border-radius: 20px;
-        padding: 2rem;
-        margin: 1rem 0;
-        border: 2px solid #ff6b35;
         position: relative;
         overflow: hidden;
     }
     
-    .prize-card::after {
-        content: '🏆';
+    .badge::before {
+        content: '';
         position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 2rem;
-        opacity: 0.7;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.6s;
+    }
+    
+    .badge:hover {
+        transform: translateY(-4px) scale(1.1);
+        box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6);
+    }
+    
+    .badge:hover::before {
+        left: 100%;
+    }
+    
+    /* Input Styles */
+    .stTextInput > div > div > input {
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: 20px !important;
+        padding: 1rem 1.5rem !important;
+        font-size: 1.1rem !important;
+        transition: all 0.3s ease !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border: 2px solid var(--accent-orange) !important;
+        box-shadow: 0 0 20px rgba(255, 107, 53, 0.3) !important;
+        transform: scale(1.02) !important;
+    }
+    
+    /* Button Styles */
+    .stButton > button {
+        background: var(--gradient-accent) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 20px !important;
+        padding: 0.8rem 2rem !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .stButton > button::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent) !important;
+        transition: left 0.6s !important;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-4px) scale(1.05) !important;
+        box-shadow: 0 15px 40px rgba(255, 107, 53, 0.5) !important;
+    }
+    
+    .stButton > button:hover::before {
+        left: 100% !important;
+    }
+    
+    /* Sidebar Enhancements */
+    .css-1d391kg {
+        background: rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(20px) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
     }
     
     /* Leaderboard */
     .leaderboard-item {
-        background: white;
-        border-radius: 15px;
-        padding: 1rem;
-        margin: 0.5rem 0;
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        border-radius: 20px;
+        padding: 1.5rem;
+        margin: 1rem 0;
         display: flex;
         align-items: center;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        box-shadow: var(--shadow-soft);
         transition: all 0.3s ease;
+        border: 1px solid var(--glass-border);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .leaderboard-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.8s;
     }
     
     .leaderboard-item:hover {
-        transform: scale(1.02);
+        transform: translateX(8px) scale(1.02);
+        box-shadow: var(--shadow-hover);
     }
     
-    .rank-1 { border-left: 5px solid #FFD700; }
-    .rank-2 { border-left: 5px solid #C0C0C0; }
-    .rank-3 { border-left: 5px solid #CD7F32; }
+    .leaderboard-item:hover::before {
+        left: 100%;
+    }
+    
+    .rank-1 { 
+        border-left: 6px solid #FFD700;
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, var(--glass-bg) 100%);
+    }
+    .rank-2 { 
+        border-left: 6px solid #C0C0C0;
+        background: linear-gradient(135deg, rgba(192, 192, 192, 0.1) 0%, var(--glass-bg) 100%);
+    }
+    .rank-3 { 
+        border-left: 6px solid #CD7F32;
+        background: linear-gradient(135deg, rgba(205, 127, 50, 0.1) 0%, var(--glass-bg) 100%);
+    }
     
     /* Mobile Responsive */
     @media (max-width: 768px) {
+        .main-header {
+            font-size: clamp(2rem, 8vw, 4rem);
+        }
+        
+        .main-header::after {
+            right: -40px;
+            font-size: 2.5rem;
+        }
+        
+        .glass-container,
         .feature-card {
-            padding: 1rem;
-            margin: 0.5rem 0;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 20px;
         }
         
         .points-display {
+            font-size: 1.4rem;
+            padding: 1.5rem;
+        }
+        
+        .message-bubble {
+            max-width: 85%;
+            padding: 1rem 1.2rem;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
             font-size: 1.2rem;
-            padding: 1rem;
+            margin: 0 8px;
         }
     }
     
-    /* Calendar Custom Styles */
-    .calendar-container {
-        background: white;
-        border-radius: 20px;
-        padding: 1rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    /* Suggestion Pills */
+    .suggestion-pill {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 25px;
+        padding: 0.8rem 1.5rem;
+        margin: 0.5rem;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: inline-block;
     }
     
-    /* QR Code Styles */
-    .qr-container {
-        text-align: center;
-        background: white;
-        padding: 2rem;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    .suggestion-pill:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     }
     
-    /* Progress Bar */
-    .progress-container {
-        background: #f0f2f6;
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
         border-radius: 10px;
-        padding: 0.5rem;
-        margin: 1rem 0;
     }
     
-    .progress-bar {
-        background: linear-gradient(90deg, #ff6b35, #f7931e);
+    ::-webkit-scrollbar-thumb {
+        background: var(--gradient-accent);
+        border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #f7931e 0%, #ff6b35 100%);
+    }
+    
+    /* Loading Animation */
+    .loading-spinner {
+        display: inline-block;
+        width: 20px;
         height: 20px;
-        border-radius: 10px;
-        transition: width 0.5s ease;
+        border: 3px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -485,49 +884,162 @@ def create_calendar_events(events):
     return calendar_events
 
 def simulate_ai_response(question: str) -> str:
-    """Simulate AI response for demo purposes"""
-    responses = {
-        "where": [
-            "The Math Tutoring Center is in the Academic Resource Center (ARC) on the 2nd floor of Burns Rec Center! They have drop-in hours Monday-Friday 2-8pm, no appointment needed. It's literally a lifesaver during midterms ngl 📚",
-            "You can find study rooms in the William H. Hannon Library - just book them online through the library website! The quiet floors are 3-6, and floor 2 has group study areas if you need to work with friends 🤓"
-        ],
-        "how": [
-            "To register for classes, log into PROWL (student portal) during your registration time. Check your holds first though - financial or academic holds will block you from registering! Your time slot is based on credit hours completed 📝",
-            "For study abroad applications, visit the LMU International Programs office in University Hall. They have info sessions every month and the application deadline is usually March 1st for fall programs ✈️"
-        ],
-        "what": [
-            "This weekend we've got the basketball game vs Pepperdine on Friday at 7pm (Gersten Pavilion), Greek Row tailgate starting at 4pm, and the Service Learning Fair on Tuesday at Alumni Mall! All events give you spirit points 🦁",
-            "GPA requirements vary by program - most need 3.0+ for study abroad, 2.5+ to stay in good standing, and 3.5+ for honors programs. Check with your advisor for specific major requirements!"
-        ],
-        "when": [
-            "The dining halls are open: The Lair (7am-2am), The Roski (11am-8pm weekdays), and Iggy's (5pm-midnight). Lion Dollars work at all locations plus the C-Store! 🍕",
-            "Finals week is May 6-10, and spring break is March 11-15. Registration for fall opens in April - dates depend on your class standing!"
-        ]
-    }
-    
+    """Authentic Gen Z LMU student chatbot responses"""
     question_lower = question.lower()
-    for key in responses:
-        if key in question_lower:
-            return random.choice(responses[key])
     
-    return "That's a great question! I'm still learning about LMU, but you can find more info on the LMU website or ask at the Student Information Desk in the Student Union. The staff there knows everything! 🦁"
+    # Specific sample responses from user's examples
+    if "campus llm" in question_lower or "what even is" in question_lower:
+        return "it's like if chatgpt went to lmu, joined like 3 clubs, and started giving fire recs. i'm here to make campus less confusing and more fun. u feel me?"
+    
+    if "happening" in question_lower and ("week" in question_lower or "campus" in question_lower):
+        return "hold up… *checks imaginary calendar* okay so:\n– thurs: free tacos at first gen lounge\n– fri: tailgate before the game (show up, get clout)\n– sat: vibes-only open mic at founders, bring ur feelings\ni gotchu."
+    
+    if "eat" in question_lower and ("what" in question_lower or "should" in question_lower):
+        return "u hungry-hungry or just bored?\n– real hunger = hit up iggy's, get that grilled chicken bowl no cap\n– broke & bored = snag snacks from the C-store & manifest a meal\n– tryna flirt = get lunch at la monica & hope a cutie sits nearby 💅"
+    
+    if "email" in question_lower and ("prof" in question_lower or "assignment" in question_lower):
+        return "say less.\n\n```\nhi [prof name],\ni hope you're doing well. i wanted to be transparent—i missed the deadline for [assignment] due to [life being lifey / mental health / rough week]. is there any way i could still submit or make it up?\ni totally understand if not. thank you for your time.\nbest,\n[you]\n```"
+    
+    if "failing" in question_lower or ("feel like" in question_lower and "everything" in question_lower):
+        return "same sometimes. but you're not. fr, breathe. talk to your advisors, email your profs, maybe cry a little, then bounce back. you're still in the game."
+    
+    # Location-based responses
+    if any(word in question_lower for word in ["where", "find", "location"]):
+        location_responses = [
+            "the rock is literally the main character of campus - best vibes for studying outside when it's not too hot",
+            "burns backcourt is where you go to actually get work done. that grind hits different on the 2nd floor ngl",
+            "the lair has fire food but it gets chaotic during lunch rush. pro tip: go at like 2pm for no lines",
+            "hannon library quiet floors (3-6) are sacred spaces. don't be that person talking on floor 4 💀",
+            "founders is cute for coffee dates or crying over your midterm grade. both valid tbh",
+            "the grove is where everyone hangs but good luck finding a seat during peak hours"
+        ]
+        return random.choice(location_responses)
+    
+    # Academic help
+    if any(word in question_lower for word in ["study", "help", "tutor", "academic"]):
+        academic_responses = [
+            "arc tutoring on burns 2nd floor is clutch for math/science. just walk in, no appointment needed fr",
+            "writing center saves lives during essay szn. book online but they fill up fast so don't sleep on it",
+            "office hours are literally free tutoring but half y'all don't go... that's on you bestie",
+            "study groups hit different when you find the right people. try making friends in class first",
+            "prowl has all your academic info but the interface is giving 2015... we make it work tho"
+        ]
+        return random.choice(academic_responses)
+    
+    # Events and activities
+    if any(word in question_lower for word in ["event", "activity", "fun", "party", "social"]):
+        event_responses = [
+            "first fridays are mandatory for the vibes. good music, free food, and everyone shows up",
+            "basketball games at gersten are unmatched energy. even if you don't watch sports, the atmosphere is chef's kiss",
+            "greek life is big here but not like overwhelming. join if you want, don't if you don't. both are valid",
+            "involvement fair is chaos but in a good way. so many clubs to join and free merch everywhere",
+            "spring concert lineup usually slaps. last year was fire and this year better not disappoint"
+        ]
+        return random.choice(event_responses)
+    
+    # Food and dining
+    if any(word in question_lower for word in ["food", "eat", "hungry", "dining", "meal"]):
+        food_responses = [
+            "iggy's grilled chicken bowl is the move when you want something healthy-ish and filling",
+            "la monica lowkey has the best coffee on campus but don't tell everyone i said that",
+            "c-store runs at 2am hit different. overpriced but convenient when you're cramming",
+            "the lair pizza is mid but sometimes mid is exactly what you need at 1pm on a tuesday",
+            "roski dining gets busy but their stir fry station goes hard when you're tired of everything else"
+        ]
+        return random.choice(food_responses)
+    
+    # How-to questions
+    if any(word in question_lower for word in ["how", "register", "apply", "sign up"]):
+        how_responses = [
+            "prowl is your best friend and worst enemy. everything you need is there but finding it is the real challenge",
+            "email your advisor before doing anything major. they've seen it all and can save you from mistakes",
+            "check the academic calendar religiously. deadlines sneak up on you faster than you think",
+            "most applications are online but some offices still do paper because we're apparently stuck in 2010",
+            "when in doubt, ask someone who's been here longer. upperclassmen usually know the shortcuts"
+        ]
+        return random.choice(how_responses)
+    
+    # Stress and mental health
+    if any(word in question_lower for word in ["stress", "anxiety", "overwhelmed", "help", "counseling"]):
+        wellness_responses = [
+            "cps (counseling services) is free and actually helpful. they get it fr and won't judge you",
+            "everyone's stressed here but we all pretend we're fine. it's giving toxic productivity culture",
+            "take breaks bestie. burnout is real and the grind ain't worth your mental health",
+            "talk to someone - friends, family, counselors, whoever. keeping it all inside hits different (in a bad way)",
+            "campus wellness events are lowkey helpful. free therapy dogs during finals week? yes please"
+        ]
+        return random.choice(wellness_responses)
+    
+    # Transportation and logistics  
+    if any(word in question_lower for word in ["metro", "parking", "transport", "bus", "car"]):
+        transport_responses = [
+            "metro expo line goes straight to santa monica but it takes forever. bring headphones and patience",
+            "parking permits are expensive but street parking around campus is a nightmare during the day",
+            "campus shuttle is free but runs on its own timeline. don't rely on it if you're already late",
+            "uber/lyft surge pricing near campus is criminal but sometimes you gotta do what you gotta do",
+            "walking to westwood is doable but it's uphill both ways somehow??? make it make sense"
+        ]
+        return random.choice(transport_responses)
+    
+    # Greek life
+    if any(word in question_lower for word in ["greek", "sorority", "fraternity", "rush"]):
+        greek_responses = [
+            "rush is a whole experience. if you're thinking about it, just try it out - worst case you meet people",
+            "greek life here isn't like the movies but it's still a big part of social life for some people",
+            "philanthropy events are actually fun and you don't have to be greek to participate",
+            "mixer season gets chaotic but the vibes are usually good if you're into that scene",
+            "don't let anyone pressure you either way. do what feels right for you and your wallet"
+        ]
+        return random.choice(greek_responses)
+    
+    # Default responses with personality
+    default_responses = [
+        "that's a vibe question but i don't have the tea on that one. try asking someone in student services maybe?",
+        "ngl i'm still learning about that. check the lmu website or slide into someone's dms who might know",
+        "hmm idk about that specific thing but the people at the info desk in the student union usually have answers",
+        "that's outside my expertise bestie. maybe try google or ask on the lmu reddit? those people know everything",
+        "lowkey don't know that one off the top of my head. prowl might have info or ask around campus",
+        "not sure about that one chief. you could probably find someone who knows tho - lmu students are helpful like that"
+    ]
+    
+    return random.choice(default_responses)
 
 # Main App Function
 def main():
-    # Header
-    st.markdown('<h1 class="main-header">🦁 LMU Campus Spirit Hub</h1>', unsafe_allow_html=True)
-    st.markdown('<p style="text-align: center; font-size: 1.2rem; color: #666; margin-bottom: 2rem;">Your ultimate platform for campus engagement, spirit points, and Lion pride!</p>', unsafe_allow_html=True)
+    # Enhanced Header with glass container
+    st.markdown("""
+    <div class="glass-container" style="text-align: center; margin: 2rem 0;">
+        <h1 class="main-header">LMU Campus Spirit Hub</h1>
+        <p style="font-size: 1.3rem; color: rgba(255,255,255,0.9); margin-bottom: 1rem; font-weight: 500;">
+            Your ultimate platform for campus engagement, spirit points, and Lion pride!
+        </p>
+        <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; flex-wrap: wrap;">
+            <div style="background: rgba(255,255,255,0.2); padding: 1rem 2rem; border-radius: 20px; backdrop-filter: blur(10px);">
+                <span style="font-size: 1.1rem; font-weight: 600; color: white;">🎯 Earn Points</span>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); padding: 1rem 2rem; border-radius: 20px; backdrop-filter: blur(10px);">
+                <span style="font-size: 1.1rem; font-weight: 600; color: white;">🏆 Win Prizes</span>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); padding: 1rem 2rem; border-radius: 20px; backdrop-filter: blur(10px);">
+                <span style="font-size: 1.1rem; font-weight: 600; color: white;">🤖 Get Help</span>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Load data
     events, prizes, leaderboard, badges_info = load_mock_data()
     
     # Sidebar for user authentication and navigation
     with st.sidebar:
-        st.markdown("### 🔐 User Login")
+        st.markdown("""
+        <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 20px; margin-bottom: 2rem; backdrop-filter: blur(10px);">
+            <h3 style="color: white; margin: 0 0 1rem 0; text-align: center;">🔐 User Login</h3>
+        """, unsafe_allow_html=True)
         
         if st.session_state.user_id is None:
             user_input = st.text_input("Enter your Student ID or Email:", placeholder="e.g., jdoe@lion.lmu.edu")
-            if st.button("🚀 Join the Spirit Squad", type="primary"):
+            if st.button("🚀 Join the Spirit Squad", type="primary", use_container_width=True):
                 if user_input:
                     st.session_state.user_id = user_input
                     st.session_state.user_points = random.randint(150, 800)
@@ -537,24 +1049,43 @@ def main():
         else:
             st.success(f"Welcome back, {st.session_state.user_id.split('@')[0].title()}! 🦁")
             
-            # User stats display
+            # Enhanced user stats display
             st.markdown(f"""
-            <div class="points-display">
-                💰 You have {st.session_state.user_points} points to spend!
+            <div class="points-display" style="margin: 1rem 0;">
+                💰 {st.session_state.user_points} Spirit Points
             </div>
             """, unsafe_allow_html=True)
             
-            st.markdown("**Your Badges:**")
+            st.markdown('<h4 style="color: white; margin: 1.5rem 0 0.5rem 0;">Your Badges:</h4>', unsafe_allow_html=True)
             badge_display = " ".join(st.session_state.user_badges)
-            st.markdown(f'<div style="font-size: 1.5rem; text-align: center;">{badge_display}</div>', unsafe_allow_html=True)
-            
-            if st.button("🚪 Logout"):
+            st.markdown(f'<div style="font-size: 1.3rem; text-align: center; margin-bottom: 1rem;">{badge_display}</div>', unsafe_allow_html=True)
+        
+            # Logout button
+            if st.button("🚪 Logout", use_container_width=True):
                 st.session_state.user_id = None
                 st.session_state.user_points = 0
                 st.session_state.user_badges = []
+                st.session_state.conversation_history = []
+                st.success("See you later, Lion! 🦁")
+                time.sleep(1)
                 st.rerun()
+        
+        st.markdown("</div>", unsafe_allow_html=True)
+        
+        # Quick stats in sidebar
+        st.markdown("""
+        <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 15px; margin-top: 1rem; backdrop-filter: blur(10px);">
+            <h4 style="color: white; margin: 0 0 1rem 0; text-align: center;">🎯 Quick Stats</h4>
+            <div style="text-align: center; color: rgba(255,255,255,0.9);">
+                <p style="margin: 0.5rem 0;">🔥 Most Active: Basketball Fans</p>
+                <p style="margin: 0.5rem 0;">⭐ Top Prize: MacBook Pro</p>
+                <p style="margin: 0.5rem 0;">🎉 Next Event: First Friday</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     
-    # Main navigation
+    # Enhanced Main navigation
+    st.markdown('<div class="glass-container" style="margin: 1rem 0;">', unsafe_allow_html=True)
     selected = option_menu(
         menu_title=None,
         options=["🏠 Home", "📅 Events Calendar", "🏆 Leaderboard", "🎁 Prize Shop", "📸 Content Gallery", "👤 My Profile", "🤖 AI Assistant", "💬 Feedback"],
@@ -563,12 +1094,28 @@ def main():
         default_index=0,
         orientation="horizontal",
         styles={
-            "container": {"padding": "0!important", "background-color": "transparent"},
+            "container": {"padding": "1rem!important", "background-color": "transparent", "border-radius": "20px"},
             "icon": {"color": "#ff6b35", "font-size": "20px"},
-            "nav-link": {"font-size": "16px", "text-align": "center", "margin": "0px", "--hover-color": "#f0f2f6"},
-            "nav-link-selected": {"background-color": "#ff6b35", "color": "white"},
+            "nav-link": {
+                "font-size": "14px", 
+                "text-align": "center", 
+                "margin": "0px", 
+                "padding": "0.8rem 1rem",
+                "border-radius": "15px",
+                "background-color": "rgba(255,255,255,0.1)",
+                "backdrop-filter": "blur(10px)",
+                "transition": "all 0.3s ease",
+                "--hover-color": "rgba(255,255,255,0.2)"
+            },
+            "nav-link-selected": {
+                "background": "linear-gradient(135deg, #ff6b35 0%, #f7931e 100%)", 
+                "color": "white",
+                "transform": "scale(1.05)",
+                "box-shadow": "0 4px 15px rgba(255, 107, 53, 0.4)"
+            },
         }
     )
+    st.markdown("</div>", unsafe_allow_html=True)
     
     # Page content based on selection
     if selected == "🏠 Home":
@@ -1570,84 +2117,168 @@ def show_ai_assistant():
     st.markdown("## 🤖 LMU AI Assistant")
     st.markdown("Ask me anything about LMU! I know about campus life, academics, events, and more. 🦁")
     
-    # Quick suggestion buttons
+    # Enhanced Chat Interface with realistic design
+    st.markdown('<div class="glass-container">', unsafe_allow_html=True)
     st.markdown("### 💡 Quick Questions")
-    suggestion_cols = st.columns(3)
+    st.markdown('<p style="color: rgba(255,255,255,0.8); margin-bottom: 1.5rem;">Try these popular questions or ask your own!</p>', unsafe_allow_html=True)
     
+    # Suggestion pills
     suggestions = [
-        "Where can I find a math tutor?",
-        "What events are happening this week?",
-        "How do I join Greek life?",
-        "Where is the counseling center?",
-        "What's the GPA requirement for study abroad?",
-        "How do I get to campus by Metro?"
+        "what even is campus llm?",
+        "what's happening on campus this week?", 
+        "what should i eat rn?",
+        "how do i email my prof when i fumbled an assignment?",
+        "i feel like i'm failing everything",
+        "where can i study?",
+        "what events are coming up?",
+        "how do i join greek life?"
     ]
     
+    # Display suggestions as pills
+    cols = st.columns(4)
     for i, suggestion in enumerate(suggestions):
-        with suggestion_cols[i % 3]:
-            if st.button(f"💬 {suggestion}", key=f"suggestion_{i}"):
+        with cols[i % 4]:
+            if st.button(suggestion, key=f"pill_{i}", help="Click to ask this question"):
                 st.session_state.current_question = suggestion
+                st.rerun()
     
-    # Chat interface
-    st.markdown("### 💬 Chat with LMU AI")
+    st.markdown("</div>", unsafe_allow_html=True)
     
-    # Display conversation history
+    # Main chat container
+    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+    
+    # Initialize typing state
+    if 'show_typing' not in st.session_state:
+        st.session_state.show_typing = False
+    
+    # Display conversation history with realistic chat bubbles
     if st.session_state.conversation_history:
-        st.markdown("#### 📝 Recent Conversation")
-        for i, exchange in enumerate(st.session_state.conversation_history[-5:]):  # Show last 5
+        st.markdown('<div style="max-height: 400px; overflow-y: auto; padding: 1rem 0; margin-bottom: 2rem;">', unsafe_allow_html=True)
+        
+        for exchange in st.session_state.conversation_history[-10:]:  # Show last 10 messages
+            # User message
             st.markdown(f"""
-            <div class="feature-card">
-                <p style="margin: 0 0 0.5rem 0;"><strong>🙋 You:</strong> {exchange['question']}</p>
-                <p style="margin: 0; color: #2a5298;"><strong>🤖 LMU AI:</strong> {exchange['answer']}</p>
+            <div class="user-message chat-message">
+                <div class="message-bubble user-bubble">
+                    {exchange['question']}
+                </div>
+                <div class="message-avatar user-avatar">
+                    You
+                </div>
             </div>
             """, unsafe_allow_html=True)
+            
+            # Bot message
+            st.markdown(f"""
+            <div class="bot-message chat-message">
+                <div class="message-avatar bot-avatar">
+                    🤖
+                </div>
+                <div class="message-bubble bot-bubble">
+                    {exchange['answer']}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        # Welcome message when no conversation
+        st.markdown("""
+        <div class="bot-message chat-message" style="margin-bottom: 2rem;">
+            <div class="message-avatar bot-avatar">
+                🤖
+            </div>
+            <div class="message-bubble bot-bubble">
+                hey! i'm your campus ai assistant. basically that friend who's been at lmu forever and knows all the tea. ask me anything about campus life, events, food, studying, or just how to survive the bluff! 
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     
-    # Question input
+    # Show typing indicator when bot is "thinking"
+    if st.session_state.show_typing:
+        st.markdown("""
+        <div class="bot-message chat-message">
+            <div class="message-avatar bot-avatar">
+                🤖
+            </div>
+            <div class="typing-indicator">
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("</div>", unsafe_allow_html=True)
+    
+    # Input section
+    st.markdown('<div class="glass-container" style="margin-top: 1rem;">', unsafe_allow_html=True)
+    
+    # Question input with enhanced styling
     question = st.text_input(
-        "Ask your question:",
-        placeholder="e.g., Where can I find study rooms?",
+        "",
+        placeholder="type your question here... (e.g., where's the best place to cry on campus?)",
         value=getattr(st.session_state, 'current_question', ''),
-        key="ai_question_input"
+        key="ai_question_input",
+        label_visibility="collapsed"
     )
     
-    col1, col2 = st.columns([3, 1])
+    col1, col2, col3 = st.columns([2, 1, 1])
     with col1:
-        ask_button = st.button("🚀 Ask LMU AI", type="primary", use_container_width=True)
+        ask_button = st.button("💬 Send", type="primary", use_container_width=True)
     with col2:
-        clear_button = st.button("🗑️ Clear Chat", use_container_width=True)
+        clear_button = st.button("🗑️ Clear", use_container_width=True)
+    with col3:
+        random_button = st.button("🎲 Random", use_container_width=True, help="Ask a random question")
     
-    if clear_button:
-        st.session_state.conversation_history = []
+    # Handle random question
+    if random_button:
+        st.session_state.current_question = random.choice(suggestions)
         st.rerun()
     
+    # Handle clear chat
+    if clear_button:
+        st.session_state.conversation_history = []
+        st.session_state.show_typing = False
+        st.success("Chat cleared! Ready for a fresh convo 🌟")
+        time.sleep(1)
+        st.rerun()
+    
+    # Handle sending message
     if ask_button and question:
-        with st.spinner("🤔 Thinking like a Lion..."):
-            time.sleep(1.5)  # Simulate thinking time
-            response = simulate_ai_response(question)
-            
-            # Add to conversation history
-            st.session_state.conversation_history.append({
-                "question": question,
-                "answer": response,
-                "timestamp": datetime.now().isoformat()
-            })
-            
-            # Award points for asking questions
-            if st.session_state.user_id:
-                st.session_state.user_points += 1
-                st.success("🏆 +1 point for asking a question!")
-            
-            # Display the response
-            st.markdown(f"""
-            <div class="feature-card" style="border-left: 5px solid #ff6b35;">
-                <p style="margin: 0 0 0.5rem 0;"><strong>🙋 You:</strong> {question}</p>
-                <p style="margin: 0; color: #2a5298;"><strong>🤖 LMU AI:</strong> {response}</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Clear the input
-            if hasattr(st.session_state, 'current_question'):
-                delattr(st.session_state, 'current_question')
+        # Show typing indicator
+        st.session_state.show_typing = True
+        st.rerun()
+        
+        # Simulate realistic response time
+        time.sleep(random.uniform(1.5, 3.0))
+        
+        # Generate response
+        response = simulate_ai_response(question)
+        
+        # Add to conversation history
+        st.session_state.conversation_history.append({
+            "question": question,
+            "answer": response,
+            "timestamp": datetime.now().isoformat()
+        })
+        
+        # Award points for asking questions
+        if st.session_state.user_id:
+            points_earned = random.randint(1, 3)
+            st.session_state.user_points += points_earned
+            st.success(f"🏆 +{points_earned} points for staying engaged!")
+        
+        # Hide typing indicator and clear input
+        st.session_state.show_typing = False
+        if hasattr(st.session_state, 'current_question'):
+            delattr(st.session_state, 'current_question')
+        
+        st.rerun()
+    
+    st.markdown("</div>", unsafe_allow_html=True)
     
     # AI Features showcase
     st.markdown("---")
