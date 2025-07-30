@@ -97,6 +97,7 @@ st.markdown("""
         --accent-gold: #f7931e;
         --text-dark: #2d3748;
         --text-light: #718096;
+        --text-white: #ffffff;
         --bg-light: #f7fafc;
         --glass-bg: rgba(255, 255, 255, 0.25);
         --glass-border: rgba(255, 255, 255, 0.18);
@@ -141,6 +142,7 @@ st.markdown("""
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         position: relative;
         overflow: hidden;
+        color: var(--text-white);
     }
     
     .glass-container::before {
@@ -217,6 +219,7 @@ st.markdown("""
         min-height: 500px;
         position: relative;
         overflow: hidden;
+        color: var(--text-white);
     }
     
     .chat-message {
@@ -256,10 +259,11 @@ st.markdown("""
     }
     
     .bot-bubble {
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.95);
         color: var(--text-dark);
         border-bottom-left-radius: 8px;
         border: 1px solid rgba(255, 255, 255, 0.3);
+        font-weight: 500;
     }
     
     .message-avatar {
@@ -328,7 +332,7 @@ st.markdown("""
         display: flex;
         align-items: center;
         padding: 1rem 1.5rem;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.95);
         border-radius: 24px;
         border-bottom-left-radius: 8px;
         max-width: 80px;
@@ -376,6 +380,7 @@ st.markdown("""
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         position: relative;
         overflow: hidden;
+        color: var(--text-white);
     }
     
     .feature-card::before {
@@ -475,19 +480,25 @@ st.markdown("""
     
     /* Input Styles */
     .stTextInput > div > div > input {
-        background: rgba(255, 255, 255, 0.9) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
         border: 2px solid rgba(255, 255, 255, 0.3) !important;
         border-radius: 20px !important;
         padding: 1rem 1.5rem !important;
         font-size: 1.1rem !important;
         transition: all 0.3s ease !important;
         backdrop-filter: blur(10px) !important;
+        color: var(--text-dark) !important;
     }
     
     .stTextInput > div > div > input:focus {
         border: 2px solid var(--accent-orange) !important;
         box-shadow: 0 0 20px rgba(255, 107, 53, 0.3) !important;
         transform: scale(1.02) !important;
+    }
+    
+    .stTextInput > div > div > input::placeholder {
+        color: var(--text-light) !important;
+        opacity: 0.7 !important;
     }
     
     /* Button Styles */
@@ -546,6 +557,7 @@ st.markdown("""
         border: 1px solid var(--glass-border);
         position: relative;
         overflow: hidden;
+        color: var(--text-white);
     }
     
     .leaderboard-item::before {
@@ -670,6 +682,40 @@ st.markdown("""
     
     @keyframes spin {
         to { transform: rotate(360deg); }
+    }
+    
+    /* Fix for Streamlit text elements */
+    .stMarkdown, .stText, .stWrite {
+        color: var(--text-white) !important;
+    }
+    
+    /* Fix for Streamlit containers */
+    .stContainer {
+        color: var(--text-white) !important;
+    }
+    
+    /* Fix for Streamlit columns */
+    .stColumn {
+        color: var(--text-white) !important;
+    }
+    
+    /* Fix for Streamlit metrics */
+    .stMetric {
+        color: var(--text-white) !important;
+    }
+    
+    .stMetric > div > div > div {
+        color: var(--text-white) !important;
+    }
+    
+    /* Fix for Streamlit success/error messages */
+    .stSuccess, .stError, .stWarning, .stInfo {
+        color: var(--text-white) !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 15px !important;
+        padding: 1rem !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -1033,7 +1079,7 @@ def main():
     # Sidebar for user authentication and navigation
     with st.sidebar:
         st.markdown("""
-        <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 20px; margin-bottom: 2rem; backdrop-filter: blur(10px);">
+        <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 20px; margin-bottom: 2rem; backdrop-filter: blur(10px); color: white;">
             <h3 style="color: white; margin: 0 0 1rem 0; text-align: center;">🔐 User Login</h3>
         """, unsafe_allow_html=True)
         
@@ -1074,7 +1120,7 @@ def main():
         
         # Quick stats in sidebar
         st.markdown("""
-        <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 15px; margin-top: 1rem; backdrop-filter: blur(10px);">
+        <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 15px; margin-top: 1rem; backdrop-filter: blur(10px); color: white;">
             <h4 style="color: white; margin: 0 0 1rem 0; text-align: center;">🎯 Quick Stats</h4>
             <div style="text-align: center; color: rgba(255,255,255,0.9);">
                 <p style="margin: 0.5rem 0;">🔥 Most Active: Basketball Fans</p>
@@ -1105,7 +1151,8 @@ def main():
                 "background-color": "rgba(255,255,255,0.1)",
                 "backdrop-filter": "blur(10px)",
                 "transition": "all 0.3s ease",
-                "--hover-color": "rgba(255,255,255,0.2)"
+                "--hover-color": "rgba(255,255,255,0.2)",
+                "color": "white"
             },
             "nav-link-selected": {
                 "background": "linear-gradient(135deg, #ff6b35 0%, #f7931e 100%)", 
@@ -2242,41 +2289,48 @@ def show_ai_assistant():
     if clear_button:
         st.session_state.conversation_history = []
         st.session_state.show_typing = False
+        if hasattr(st.session_state, 'current_question'):
+            delattr(st.session_state, 'current_question')
         st.success("Chat cleared! Ready for a fresh convo 🌟")
-        time.sleep(1)
         st.rerun()
     
     # Handle sending message
     if ask_button and question:
-        # Show typing indicator
-        st.session_state.show_typing = True
-        st.rerun()
-        
-        # Simulate realistic response time
-        time.sleep(random.uniform(1.5, 3.0))
-        
-        # Generate response
-        response = simulate_ai_response(question)
-        
-        # Add to conversation history
-        st.session_state.conversation_history.append({
-            "question": question,
-            "answer": response,
-            "timestamp": datetime.now().isoformat()
-        })
-        
-        # Award points for asking questions
-        if st.session_state.user_id:
-            points_earned = random.randint(1, 3)
-            st.session_state.user_points += points_earned
-            st.success(f"🏆 +{points_earned} points for staying engaged!")
-        
-        # Hide typing indicator and clear input
-        st.session_state.show_typing = False
-        if hasattr(st.session_state, 'current_question'):
-            delattr(st.session_state, 'current_question')
-        
-        st.rerun()
+        try:
+            # Show typing indicator
+            st.session_state.show_typing = True
+            st.rerun()
+            
+            # Simulate realistic response time
+            time.sleep(random.uniform(1.5, 3.0))
+            
+            # Generate response
+            response = simulate_ai_response(question)
+            
+            # Add to conversation history
+            st.session_state.conversation_history.append({
+                "question": question,
+                "answer": response,
+                "timestamp": datetime.now().isoformat()
+            })
+            
+            # Award points for asking questions
+            if st.session_state.user_id:
+                points_earned = random.randint(1, 3)
+                st.session_state.user_points += points_earned
+                st.success(f"🏆 +{points_earned} points for staying engaged!")
+            
+            # Hide typing indicator and clear input
+            st.session_state.show_typing = False
+            if hasattr(st.session_state, 'current_question'):
+                delattr(st.session_state, 'current_question')
+            
+            st.rerun()
+            
+        except Exception as e:
+            st.error(f"Oops! Something went wrong: {str(e)}")
+            st.session_state.show_typing = False
+            st.rerun()
     
     st.markdown("</div>", unsafe_allow_html=True)
     
