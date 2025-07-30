@@ -1,0 +1,9 @@
+2025-07-29 22:09:55,637 - src.utils - INFO - Database initialized successfully
+2025-07-29 22:10:23,020 - src.utils - INFO - Database initialized successfully
+2025-07-29 22:11:43,303 - src.utils - INFO - Database initialized successfully
+2025-07-29 22:11:46,536 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-29 22:11:46,551 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-29 22:11:46,665 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-29 22:11:46,825 - httpx - INFO - HTTP Request: GET https://api.gradio.app/v3/tunnel-request "HTTP/1.1 200 OK"
+2025-07-29 22:11:46,868 - httpx - INFO - HTTP Request: GET https://cdn-media.huggingface.co/frpc-gradio-0.3/frpc_linux_amd64 "HTTP/1.1 200 OK"
+2025-07-29 22:11:55,968 - src.utils - INFO - Database initialized successfully
