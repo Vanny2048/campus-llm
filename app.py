@@ -1,2010 +1,1831 @@
 #!/usr/bin/env python3
 """
-LMU Campus LLM - Ultimate School Spirit Platform
-A student-centered AI assistant and gamified spirit engine for Loyola Marymount University
+LMU Campus LLM - Ultimate Interactive Platform
+A comprehensive Streamlit application with interactive calendar, live engagement, 
+leaderboards, prize showcase, and AI assistance for Loyola Marymount University
 
-Author: Vanessa Akaraiwe
+Author: Enhanced by AI Assistant
+Features: Calendar, QR Check-ins, Leaderboards, Prizes, Content Gallery, User Profiles
 """
 
-import gradio as gr
+import streamlit as st
+import pandas as pd
+import numpy as np
 import json
-import os
 import qrcode
 import io
 import base64
-from datetime import datetime, timedelta
-from src.llm_handler import LLMHandler
-from src.points_system import PointsSystem
-from src.rag_system import RAGSystem
-from src.utils import load_config, log_interaction
+from datetime import datetime, timedelta, date
+from typing import Dict, List, Optional
+import plotly.express as px
+import plotly.graph_objects as go
+from PIL import Image
+import hashlib
+import random
+import time
+import requests
+from pathlib import Path
 
-class CampusLLMApp:
-    def __init__(self):
-        """Initialize the Campus LLM application"""
-        self.config = load_config()
-        self.llm_handler = LLMHandler()
-        self.points_system = PointsSystem()
-        self.rag_system = RAGSystem()
-        
-        # Session state
-        self.current_user = None
-        self.conversation_history = []
-        
-        # Game Day & Spirit System
-        self.game_events = self._load_game_events()
-        self.tailgates = self._load_tailgates()
-        self.watch_parties = self._load_watch_parties()
-        self.spirit_challenges = self._load_spirit_challenges()
-        self.premium_prizes = self._load_premium_prizes()
-        
-    def _load_game_events(self):
-        """Load upcoming game events"""
-        return [
-            {
-                "id": "bb_001",
-                "sport": "Basketball",
-                "opponent": "Pepperdine",
-                "date": "2024-02-15",
-                "time": "19:00",
-                "venue": "Gersten Pavilion",
-                "type": "home",
-                "spirit_points": 50,
-                "tailgate_id": "tg_001"
-            },
-            {
-                "id": "bb_002", 
-                "sport": "Basketball",
-                "opponent": "Gonzaga",
-                "date": "2024-02-22",
-                "time": "20:00",
-                "venue": "McCarthy Athletic Center",
-                "type": "away",
-                "spirit_points": 30,
-                "watch_party_id": "wp_001"
-            },
-            {
-                "id": "fb_001",
-                "sport": "Football", 
-                "opponent": "San Diego",
-                "date": "2024-03-02",
-                "time": "14:00",
-                "venue": "Sullivan Field",
-                "type": "home",
-                "spirit_points": 75,
-                "tailgate_id": "tg_002"
-            }
-        ]
+# Advanced Streamlit components
+try:
+    from streamlit_calendar import calendar
+    from streamlit_option_menu import option_menu
+    from streamlit_aggrid import AgGrid, GridOptionsBuilder
+    from streamlit_lottie import st_lottie
+except ImportError:
+    st.warning("Some advanced features require additional packages. Install with: pip install streamlit-calendar streamlit-option-menu streamlit-aggrid streamlit-lottie")
+
+# Page configuration
+st.set_page_config(
+    page_title="LMU Campus Spirit Hub",
+    page_icon="🦁",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Custom CSS for enhanced mobile-responsive design
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
     
-    def _load_tailgates(self):
-        """Load tailgate events"""
-        return [
-            {
-                "id": "tg_001",
-                "name": "Lions Den Tailgate",
-                "host": "Alpha Phi Omega",
-                "date": "2024-02-15",
-                "time": "16:00-18:30",
-                "location": "Gersten Pavilion Parking Lot",
-                "theme": "Red Sea Night",
-                "features": ["BBQ", "Live Music", "Face Painting", "Spirit Contests"],
-                "spirit_points": 25,
-                "max_capacity": 200,
-                "rsvp_count": 45,
-                "qr_code": "TG001_QR"
-            },
-            {
-                "id": "tg_002",
-                "name": "Greek Row Tailgate",
-                "host": "Interfraternity Council",
-                "date": "2024-03-02", 
-                "time": "12:00-14:00",
-                "location": "Greek Row",
-                "theme": "Blue & White Bash",
-                "features": ["Food Trucks", "DJ", "Cornhole Tournament", "Photo Booth"],
-                "spirit_points": 30,
-                "max_capacity": 300,
-                "rsvp_count": 78,
-                "qr_code": "TG002_QR"
-            }
-        ]
-    
-    def _load_watch_parties(self):
-        """Load watch party events"""
-        return [
-            {
-                "id": "wp_001",
-                "name": "Away Game Watch Party",
-                "host": "LMU Athletics",
-                "partner": "The Lion's Den Bar",
-                "date": "2024-02-22",
-                "time": "19:30-22:00", 
-                "location": "The Lion's Den (Off-campus)",
-                "features": ["Big Screen", "Happy Hour", "Spirit Contests", "Free Appetizers"],
-                "spirit_points": 20,
-                "max_capacity": 100,
-                "rsvp_count": 23,
-                "qr_code": "WP001_QR"
-            }
-        ]
-    
-    def _load_spirit_challenges(self):
-        """Load active spirit challenges"""
-        return [
-            {
-                "id": "sc_001",
-                "title": "Best Face Paint",
-                "description": "Show off your LMU spirit with the most creative face paint!",
-                "points": 50,
-                "deadline": "2024-02-15 18:00",
-                "type": "photo_submission",
-                "active": True
-            },
-            {
-                "id": "sc_002", 
-                "title": "Chant Master",
-                "description": "Record the most spirited group chant at the tailgate",
-                "points": 75,
-                "deadline": "2024-02-15 18:30",
-                "type": "video_submission",
-                "active": True
-            },
-            {
-                "id": "sc_003",
-                "title": "Spirit Squad",
-                "description": "Bring 5+ friends to the tailgate for bonus points",
-                "points": 100,
-                "deadline": "2024-02-15 18:00",
-                "type": "group_checkin",
-                "active": True
-            }
-        ]
-    
-    def _load_premium_prizes(self):
-        """Load premium experience prizes"""
-        return [
-            {
-                "id": "pp_001",
-                "title": "Day as LMU President",
-                "description": "Shadow the president, attend meetings, take over LMU socials",
-                "points_required": 1000,
-                "available": 1,
-                "claimed": 0,
-                "category": "premium_experience",
-                "image": "👔"
-            },
-            {
-                "id": "pp_002",
-                "title": "Voice of the Lions",
-                "description": "Announce starting lineups and control music for a game",
-                "points_required": 750,
-                "available": 2,
-                "claimed": 0,
-                "category": "game_experience",
-                "image": "🎤"
-            },
-            {
-                "id": "pp_003",
-                "title": "Tailgate Marshal",
-                "description": "Lead the pregame parade with custom banner and cape",
-                "points_required": 500,
-                "available": 3,
-                "claimed": 0,
-                "category": "spirit_leadership",
-                "image": "🎖️"
-            },
-            {
-                "id": "pp_004",
-                "title": "Coach for a Day",
-                "description": "Join team practice and be on the sidelines",
-                "points_required": 800,
-                "available": 1,
-                "claimed": 0,
-                "category": "athletics_experience",
-                "image": "🏀"
-            },
-            {
-                "id": "pp_005",
-                "title": "Jumbotron Shout-out",
-                "description": "Personalized halftime message on the big screen",
-                "points_required": 300,
-                "available": 5,
-                "claimed": 0,
-                "category": "recognition",
-                "image": "📺"
-            },
-            {
-                "id": "pp_006",
-                "title": "Spirit Trophy",
-                "description": "Traveling trophy for your org/house for a month",
-                "points_required": 600,
-                "available": 1,
-                "claimed": 0,
-                "category": "prestige",
-                "image": "🏆"
-            }
-        ]
-
-    def process_message(self, message, history, user_id=None):
-        """Process user message and return response"""
-        try:
-            # Add points for asking a question
-            if user_id:
-                self.points_system.add_points(user_id, 1, "question_asked")
-            
-            # Get context from RAG system
-            context = self.rag_system.get_relevant_context(message)
-            
-            # Generate response using LLM
-            response = self.llm_handler.generate_response(message, context, history)
-            
-            # Log the interaction
-            log_interaction(message, response, user_id)
-            
-            # Update conversation history
-            self.conversation_history.append({
-                "user": message,
-                "assistant": response,
-                "timestamp": datetime.now().isoformat()
-            })
-            
-            return response
-            
-        except Exception as e:
-            error_msg = f"Sorry, I encountered an error: {str(e)}"
-            print(f"Error in process_message: {e}")
-            return error_msg
-    
-    def get_user_points(self, user_id):
-        """Get current points for a user"""
-        if not user_id:
-            return """
-            <div class="points-display">
-                <h3>🏆 Your Spirit Points</h3>
-                <p>Enter your student ID above ☝️ to track your spirit journey!</p>
-                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
-                <p style="font-weight: 600; margin-bottom: 8px;">💡 Earn Spirit Points by:</p>
-                <ul style="text-align: left; margin: 0; padding-left: 20px;">
-                    <li>Asking questions (1 pt)</li>
-                    <li>Attending tailgates (25-30 pts)</li>
-                    <li>Going to games (50-75 pts)</li>
-                    <li>Watch parties (20 pts)</li>
-                    <li>Spirit challenges (50-100 pts)</li>
-                    <li>Bringing friends (bonus pts)</li>
-                </ul>
-            </div>
-            """
-        
-        try:
-            stats = self.points_system.get_user_stats(user_id)
-            rank_info = self.points_system.get_user_rank(user_id)
-            
-            # Parse the stats string to extract points
-            points = 0
-            if "Total Points:" in stats:
-                points_str = stats.split("Total Points:")[1].split()[0]
-                points = int(points_str)
-            
-            return f"""
-            <div class="points-display">
-                <h3>🏆 Your Spirit Points</h3>
-                <p style="font-size: 2rem; font-weight: 700; margin: 10px 0; color: #FFD700;">{points} pts</p>
-                <p style="font-size: 0.9rem; opacity: 0.8;">Rank #{rank_info.get('rank', 'N/A')} of {rank_info.get('total_users', 0)} students</p>
-                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
-                <p style="font-weight: 600; margin-bottom: 8px;">💡 Earn Spirit Points by:</p>
-                <ul style="text-align: left; margin: 0; padding-left: 20px;">
-                    <li>Asking questions (1 pt)</li>
-                    <li>Attending tailgates (25-30 pts)</li>
-                    <li>Going to games (50-75 pts)</li>
-                    <li>Watch parties (20 pts)</li>
-                    <li>Spirit challenges (50-100 pts)</li>
-                    <li>Bringing friends (bonus pts)</li>
-                </ul>
-            </div>
-            """
-        except Exception as e:
-            return f"Error loading points: {str(e)}"
-
-    def get_game_day_dashboard(self):
-        """Get the main game day dashboard"""
-        next_game = None
-        upcoming_events = []
-        
-        # Find next game
-        today = datetime.now().date()
-        for game in self.game_events:
-            game_date = datetime.strptime(game['date'], '%Y-%m-%d').date()
-            if game_date >= today:
-                if not next_game or game_date < datetime.strptime(next_game['date'], '%Y-%m-%d').date():
-                    next_game = game
-                upcoming_events.append(game)
-        
-        # Get related tailgates and watch parties
-        related_tailgates = []
-        related_watch_parties = []
-        
-        if next_game:
-            if next_game.get('tailgate_id'):
-                related_tailgates = [t for t in self.tailgates if t['id'] == next_game['tailgate_id']]
-            if next_game.get('watch_party_id'):
-                related_watch_parties = [w for w in self.watch_parties if w['id'] == next_game['watch_party_id']]
-        
-        # Countdown to next game
-        countdown_html = ""
-        if next_game:
-            game_datetime = datetime.strptime(f"{next_game['date']} {next_game['time']}", '%Y-%m-%d %H:%M')
-            now = datetime.now()
-            time_diff = game_datetime - now
-            
-            if time_diff.total_seconds() > 0:
-                days = time_diff.days
-                hours = time_diff.seconds // 3600
-                minutes = (time_diff.seconds % 3600) // 60
-                
-                countdown_html = f"""
-                <div class="countdown-container">
-                    <h2>🦁 Next Game: {next_game['sport']} vs {next_game['opponent']}</h2>
-                    <div class="countdown-timer">
-                        <div class="countdown-unit">
-                            <span class="countdown-number">{days}</span>
-                            <span class="countdown-label">Days</span>
-                        </div>
-                        <div class="countdown-unit">
-                            <span class="countdown-number">{hours}</span>
-                            <span class="countdown-label">Hours</span>
-                        </div>
-                        <div class="countdown-unit">
-                            <span class="countdown-number">{minutes}</span>
-                            <span class="countdown-label">Minutes</span>
-                        </div>
-                    </div>
-                    <p class="game-details">
-                        📅 {next_game['date']} at {next_game['time']}<br>
-                        🏟️ {next_game['venue']}<br>
-                        🏆 {next_game['spirit_points']} Spirit Points Available!
-                    </p>
-                </div>
-                """
-        
-        # Active challenges
-        active_challenges = [c for c in self.spirit_challenges if c['active']]
-        challenges_html = ""
-        if active_challenges:
-            challenges_html = """
-            <div class="challenges-section">
-                <h3>🔥 Active Spirit Challenges</h3>
-                <div class="challenges-grid">
-            """
-            for challenge in active_challenges:
-                challenges_html += f"""
-                    <div class="challenge-card">
-                        <h4>{challenge['title']}</h4>
-                        <p>{challenge['description']}</p>
-                        <div class="challenge-meta">
-                            <span class="points">🏆 {challenge['points']} pts</span>
-                            <span class="deadline">⏰ {challenge['deadline']}</span>
-                        </div>
-                        <button class="challenge-btn">Participate</button>
-                    </div>
-                """
-            challenges_html += "</div></div>"
-        
-        return f"""
-        <div class="game-day-dashboard">
-            {countdown_html}
-            
-            <div class="quick-actions">
-                <h3>⚡ Quick Actions</h3>
-                <div class="action-buttons">
-                    <button class="action-btn primary">🎫 RSVP to Tailgate</button>
-                    <button class="action-btn secondary">📱 Generate QR Code</button>
-                    <button class="action-btn secondary">📸 Submit Challenge</button>
-                    <button class="action-btn secondary">🏆 View Leaderboard</button>
-                </div>
-            </div>
-            
-            {challenges_html}
-            
-            <div class="upcoming-events">
-                <h3>📅 Upcoming Spirit Events</h3>
-                <div class="events-grid">
-        """
-        
-        # Add upcoming events
-        for event in upcoming_events[:3]:  # Show next 3 events
-            event_html = f"""
-                    <div class="event-card">
-                        <div class="event-header">
-                            <h4>{event['sport']} vs {event['opponent']}</h4>
-                            <span class="event-type {event['type']}">{event['type'].title()}</span>
-                        </div>
-                        <p>📅 {event['date']} at {event['time']}</p>
-                        <p>🏟️ {event['venue']}</p>
-                        <p>🏆 {event['spirit_points']} pts</p>
-                        <button class="event-btn">Learn More</button>
-                    </div>
-            """
-            dashboard_html += event_html
-        
-        dashboard_html += """
-                </div>
-            </div>
-        </div>
-        """
-        
-        return dashboard_html
-
-    def get_tailgates_html(self):
-        """Get tailgates section HTML"""
-        html = """
-        <div class="tailgates-section">
-            <h2>🎉 Official LMU Tailgates</h2>
-            <p class="section-description">Join the ultimate pre-game experience! RSVP, earn points, and show your Lion pride.</p>
-            
-            <div class="tailgates-grid">
-        """
-        
-        for tailgate in self.tailgates:
-            # Calculate days until tailgate
-            tailgate_date = datetime.strptime(tailgate['date'], '%Y-%m-%d').date()
-            days_until = (tailgate_date - datetime.now().date()).days
-            
-            status_class = "upcoming" if days_until > 0 else "today" if days_until == 0 else "past"
-            
-            html += f"""
-                <div class="tailgate-card {status_class}">
-                    <div class="tailgate-header">
-                        <h3>{tailgate['name']}</h3>
-                        <span class="host-badge">Hosted by {tailgate['host']}</span>
-                    </div>
-                    
-                    <div class="tailgate-details">
-                        <p><strong>📅 Date:</strong> {tailgate['date']}</p>
-                        <p><strong>⏰ Time:</strong> {tailgate['time']}</p>
-                        <p><strong>📍 Location:</strong> {tailgate['location']}</p>
-                        <p><strong>🎭 Theme:</strong> {tailgate['theme']}</p>
-                    </div>
-                    
-                    <div class="tailgate-features">
-                        <h4>🎪 Features:</h4>
-                        <ul>
-            """
-            for feature in tailgate['features']:
-                html += f"<li>{feature}</li>"
-            
-            html += f"""
-                        </ul>
-                    </div>
-                    
-                    <div class="tailgate-stats">
-                        <div class="stat">
-                            <span class="stat-number">🏆 {tailgate['spirit_points']}</span>
-                            <span class="stat-label">Spirit Points</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">👥 {tailgate['rsvp_count']}/{tailgate['max_capacity']}</span>
-                            <span class="stat-label">RSVPs</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">📅 {days_until}</span>
-                            <span class="stat-label">Days Away</span>
-                        </div>
-                    </div>
-                    
-                    <div class="tailgate-actions">
-                        <button class="rsvp-btn">🎫 RSVP Now</button>
-                        <button class="qr-btn">📱 Get QR Code</button>
-                        <button class="share-btn">📤 Share</button>
-                    </div>
-                </div>
-            """
-        
-        html += """
-            </div>
-            
-            <div class="host-info">
-                <h3>🏠 Want to Host a Tailgate?</h3>
-                <p>RSOs, fraternities, sororities, and student groups can apply to host official LMU tailgates!</p>
-                <button class="host-btn">Apply to Host</button>
-            </div>
-        </div>
-        """
-        
-        return html
-
-    def get_watch_parties_html(self):
-        """Get watch parties section HTML"""
-        html = """
-        <div class="watch-parties-section">
-            <h2>📺 Away Game Watch Parties</h2>
-            <p class="section-description">Can't make it to the away game? Join fellow Lions at these official watch parties!</p>
-            
-            <div class="watch-parties-grid">
-        """
-        
-        for party in self.watch_parties:
-            # Calculate days until watch party
-            party_date = datetime.strptime(party['date'], '%Y-%m-%d').date()
-            days_until = (party_date - datetime.now().date()).days
-            
-            html += f"""
-                <div class="watch-party-card">
-                    <div class="party-header">
-                        <h3>{party['name']}</h3>
-                        <span class="partner-badge">Partner: {party['partner']}</span>
-                    </div>
-                    
-                    <div class="party-details">
-                        <p><strong>📅 Date:</strong> {party['date']}</p>
-                        <p><strong>⏰ Time:</strong> {party['time']}</p>
-                        <p><strong>📍 Location:</strong> {party['location']}</p>
-                    </div>
-                    
-                    <div class="party-features">
-                        <h4>🎉 Features:</h4>
-                        <ul>
-            """
-            for feature in party['features']:
-                html += f"<li>{feature}</li>"
-            
-            html += f"""
-                        </ul>
-                    </div>
-                    
-                    <div class="party-stats">
-                        <div class="stat">
-                            <span class="stat-number">🏆 {party['spirit_points']}</span>
-                            <span class="stat-label">Spirit Points</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">👥 {party['rsvp_count']}/{party['max_capacity']}</span>
-                            <span class="stat-label">RSVPs</span>
-                        </div>
-                    </div>
-                    
-                    <div class="party-actions">
-                        <button class="rsvp-btn">🎫 RSVP Now</button>
-                        <button class="directions-btn">🗺️ Get Directions</button>
-                        <button class="share-btn">📤 Share</button>
-                    </div>
-                </div>
-            """
-        
-        html += """
-            </div>
-            
-            <div class="partner-info">
-                <h3>🤝 Partner with Us</h3>
-                <p>Local businesses can host official LMU watch parties and earn exposure to our student community!</p>
-                <button class="partner-btn">Become a Partner</button>
-            </div>
-        </div>
-        """
-        
-        return html
-
-    def get_premium_prizes_html(self):
-        """Get premium prizes section HTML"""
-        html = """
-        <div class="premium-prizes-section">
-            <h2>🏆 Premium Spirit Experiences</h2>
-            <p class="section-description">Unlock legendary experiences that money can't buy! These exclusive rewards are earned through pure Lion spirit.</p>
-            
-            <div class="prizes-grid">
-        """
-        
-        for prize in self.premium_prizes:
-            availability = prize['available'] - prize['claimed']
-            availability_class = "available" if availability > 0 else "claimed"
-            
-            html += f"""
-                <div class="prize-card {availability_class}">
-                    <div class="prize-icon">
-                        {prize['image']}
-                    </div>
-                    
-                    <div class="prize-content">
-                        <h3>{prize['title']}</h3>
-                        <p class="prize-description">{prize['description']}</p>
-                        
-                        <div class="prize-meta">
-                            <div class="points-required">
-                                <span class="points-number">🏆 {prize['points_required']}</span>
-                                <span class="points-label">Spirit Points</span>
-                            </div>
-                            <div class="availability">
-                                <span class="availability-number">{availability}</span>
-                                <span class="availability-label">Available</span>
-                            </div>
-                        </div>
-                        
-                        <div class="prize-category">
-                            <span class="category-badge">{prize['category'].replace('_', ' ').title()}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="prize-actions">
-                        <button class="redeem-btn" {'disabled' if availability <= 0 else ''}>
-                            {'Redeemed' if availability <= 0 else 'Redeem Now'}
-                        </button>
-                        <button class="details-btn">Learn More</button>
-                    </div>
-                </div>
-            """
-        
-        html += """
-            </div>
-            
-            <div class="prize-info">
-                <h3>💡 How to Earn Premium Prizes</h3>
-                <div class="earning-tips">
-                    <div class="tip">
-                        <h4>🎯 Attend Everything</h4>
-                        <p>Go to games, tailgates, and watch parties consistently</p>
-                    </div>
-                    <div class="tip">
-                        <h4>🔥 Complete Challenges</h4>
-                        <p>Participate in spirit challenges and creative contests</p>
-                    </div>
-                    <div class="tip">
-                        <h4>👥 Bring Friends</h4>
-                        <p>Earn bonus points for bringing new people to events</p>
-                    </div>
-                    <div class="tip">
-                        <h4>📸 Share Content</h4>
-                        <p>Post about your LMU spirit on social media</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        """
-        
-        return html
-
-    def generate_qr_code(self, event_id, event_type):
-        """Generate QR code for event check-in"""
-        try:
-            # Create QR code data
-            qr_data = f"LMU_SPIRIT_{event_type.upper()}_{event_id}_{datetime.now().strftime('%Y%m%d')}"
-            
-            # Generate QR code
-            qr = qrcode.QRCode(version=1, box_size=10, border=5)
-            qr.add_data(qr_data)
-            qr.make(fit=True)
-            
-            # Create image
-            img = qr.make_image(fill_color="black", back_color="white")
-            
-            # Convert to base64
-            buffer = io.BytesIO()
-            img.save(buffer, format='PNG')
-            img_str = base64.b64encode(buffer.getvalue()).decode()
-            
-            return f"data:image/png;base64,{img_str}"
-            
-        except Exception as e:
-            print(f"Error generating QR code: {e}")
-            return None
-
-    def check_in_user(self, user_id, event_id, event_type, qr_code_data):
-        """Process user check-in for an event"""
-        try:
-            # Validate QR code
-            expected_data = f"LMU_SPIRIT_{event_type.upper()}_{event_id}_{datetime.now().strftime('%Y%m%d')}"
-            
-            if qr_code_data != expected_data:
-                return {"success": False, "message": "Invalid QR code or expired"}
-            
-            # Determine points based on event type
-            points = 0
-            if event_type == "tailgate":
-                points = 25
-            elif event_type == "game":
-                points = 50
-            elif event_type == "watch_party":
-                points = 20
-            elif event_type == "challenge":
-                points = 50
-            
-            # Add points
-            self.points_system.add_points(user_id, points, f"{event_type}_checkin")
-            
-            return {
-                "success": True, 
-                "message": f"Check-in successful! +{points} Spirit Points",
-                "points_earned": points
-            }
-            
-        except Exception as e:
-            return {"success": False, "message": f"Check-in error: {str(e)}"}
-
-    def submit_spirit_challenge(self, user_id, challenge_id, submission_type, submission_data):
-        """Submit a spirit challenge entry"""
-        try:
-            # Find the challenge
-            challenge = next((c for c in self.spirit_challenges if c['id'] == challenge_id), None)
-            
-            if not challenge or not challenge['active']:
-                return {"success": False, "message": "Challenge not found or inactive"}
-            
-            # Validate submission type
-            if submission_type != challenge['type']:
-                return {"success": False, "message": "Invalid submission type for this challenge"}
-            
-            # Award points
-            self.points_system.add_points(user_id, challenge['points'], f"challenge_{challenge_id}")
-            
-            return {
-                "success": True,
-                "message": f"Challenge submitted! +{challenge['points']} Spirit Points",
-                "points_earned": challenge['points']
-            }
-            
-        except Exception as e:
-            return {"success": False, "message": f"Submission error: {str(e)}"}
-
-    def rsvp_to_event(self, user_id, event_id, event_type):
-        """RSVP to an event"""
-        try:
-            # Find the event
-            if event_type == "tailgate":
-                event = next((t for t in self.tailgates if t['id'] == event_id), None)
-            elif event_type == "watch_party":
-                event = next((w for w in self.watch_parties if w['id'] == event_id), None)
-            else:
-                return {"success": False, "message": "Invalid event type"}
-            
-            if not event:
-                return {"success": False, "message": "Event not found"}
-            
-            # Check capacity
-            if event['rsvp_count'] >= event['max_capacity']:
-                return {"success": False, "message": "Event is at full capacity"}
-            
-            # Update RSVP count (in real app, this would be stored in database)
-            event['rsvp_count'] += 1
-            
-            # Add points for RSVP
-            self.points_system.add_points(user_id, 5, f"{event_type}_rsvp")
-            
-            return {
-                "success": True,
-                "message": f"RSVP successful! +5 Spirit Points",
-                "event_name": event['name']
-            }
-            
-        except Exception as e:
-            return {"success": False, "message": f"RSVP error: {str(e)}"}
-
-    def redeem_prize(self, user_id, prize_id):
-        """Redeem a premium prize"""
-        try:
-            # Find the prize
-            prize = next((p for p in self.premium_prizes if p['id'] == prize_id), None)
-            
-            if not prize:
-                return {"success": False, "message": "Prize not found"}
-            
-            # Check availability
-            if prize['claimed'] >= prize['available']:
-                return {"success": False, "message": "Prize is no longer available"}
-            
-            # Get user points
-            stats = self.points_system.get_user_stats(user_id)
-            user_points = 0
-            if "Total Points:" in stats:
-                points_str = stats.split("Total Points:")[1].split()[0]
-                user_points = int(points_str)
-            
-            # Check if user has enough points
-            if user_points < prize['points_required']:
-                return {"success": False, "message": f"Need {prize['points_required'] - user_points} more Spirit Points"}
-            
-            # Deduct points and claim prize
-            self.points_system.add_points(user_id, -prize['points_required'], f"prize_redemption_{prize_id}")
-            prize['claimed'] += 1
-            
-            return {
-                "success": True,
-                "message": f"Prize redeemed! You now have: {prize['title']}",
-                "prize_title": prize['title']
-            }
-            
-        except Exception as e:
-            return {"success": False, "message": f"Redemption error: {str(e)}"}
-
-def create_interface():
-    """Create and configure the Gradio interface"""
-    app = CampusLLMApp()
-    
-    # Modern CSS inspired by Claude AI and ChatGPT
-    css = """
-    /* Modern Chat Interface */
-    .gradio-container {
-        max-width: 1400px !important;
-        margin: auto !important;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
-        min-height: 100vh !important;
-        padding: 20px !important;
+    .main {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     }
     
-    /* Header with modern gradient */
-    .header {
+    /* Header Styles */
+    .main-header {
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(2rem, 5vw, 4rem);
+        font-weight: 800;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #ff6b35 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         text-align: center;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 30px 20px;
-        border-radius: 16px;
-        margin-bottom: 24px;
-        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-        pointer-events: none;
-    }
-    
-    .header h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin: 0 0 8px 0;
+        margin-bottom: 1rem;
         text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        animation: pulse 2s infinite;
     }
     
-    .header p {
-        font-size: 1.1rem;
-        opacity: 0.9;
-        margin: 0;
-        font-weight: 400;
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
     }
     
-    /* Modern Points Display */
-    .points-display {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-radius: 20px;
-        padding: 24px;
-        text-align: center;
-        box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
-        border: none;
-        position: relative;
-        overflow: hidden;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .points-display::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-        transform: rotate(45deg);
-        animation: shine 3s infinite;
-    }
-    
-    @keyframes shine {
-        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-    }
-    
-    .points-display h3 {
-        margin: 0 0 12px 0;
-        font-size: 1.3rem;
-        font-weight: 600;
-    }
-    
-    .points-display p {
-        margin: 8px 0;
-        font-size: 1rem;
-        opacity: 0.9;
-    }
-    
-    /* Modern Chat Interface */
-    .chat-container {
-        background: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        border: 1px solid #e1e5e9;
-        overflow: hidden;
-    }
-    
-    .chatbot {
-        border: none !important;
-        border-radius: 16px !important;
-        background: #fafbfc !important;
-    }
-    
-    .chatbot .message {
-        border-radius: 12px !important;
-        margin: 8px 12px !important;
-        padding: 12px 16px !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-    }
-    
-    .chatbot .user-message {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-        color: white !important;
-        margin-left: 20% !important;
-    }
-    
-    .chatbot .bot-message {
-        background: white !important;
-        color: #2d3748 !important;
-        margin-right: 20% !important;
-        border: 1px solid #e2e8f0 !important;
-    }
-    
-    /* Modern Input */
-    .input-container {
+    /* Card Styles */
+    .feature-card {
         background: white;
-        border-top: 1px solid #e1e5e9;
-        padding: 16px;
-    }
-    
-    .input-box {
-        border: 2px solid #e2e8f0 !important;
-        border-radius: 12px !important;
-        padding: 12px 16px !important;
-        font-size: 1rem !important;
-        transition: all 0.2s ease !important;
-    }
-    
-    .input-box:focus {
-        border-color: #667eea !important;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
-    }
-    
-    .submit-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-        border: none !important;
-        border-radius: 12px !important;
-        padding: 12px 24px !important;
-        color: white !important;
-        font-weight: 600 !important;
-        transition: all 0.2s ease !important;
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
-    }
-    
-    .submit-btn:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
-    }
-    
-    /* Modern Tabs */
-    .tabs {
-        background: white !important;
-        border-radius: 16px !important;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
-        border: 1px solid #e1e5e9 !important;
-        overflow: hidden !important;
-    }
-    
-    .tab-nav {
-        background: #f8fafc !important;
-        border-bottom: 1px solid #e1e5e9 !important;
-    }
-    
-    .tab-nav button {
-        background: transparent !important;
-        border: none !important;
-        padding: 16px 24px !important;
-        font-weight: 600 !important;
-        color: #64748b !important;
-        transition: all 0.2s ease !important;
-        border-radius: 0 !important;
-    }
-    
-    .tab-nav button.selected {
-        background: white !important;
-        color: #667eea !important;
-        border-bottom: 3px solid #667eea !important;
-    }
-    
-    .tab-nav button:hover {
-        background: #f1f5f9 !important;
-        color: #475569 !important;
-    }
-    
-    /* Modern Cards */
-    .dashboard-card {
-        background: rgba(255, 255, 255, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 20px;
-        padding: 28px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        padding: 2rem;
+        margin: 1rem 0;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
         position: relative;
         overflow: hidden;
     }
     
-    .dashboard-card::before {
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .feature-card::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(90deg, #ff6b35, #f7931e, #2a5298);
     }
     
-    .dashboard-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 16px 48px rgba(0,0,0,0.15);
-        border-color: rgba(102, 126, 234, 0.3);
+    /* Points and Badges */
+    .points-display {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 20px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 1.5rem;
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+        margin: 1rem 0;
+        animation: glow 2s ease-in-out infinite alternate;
     }
     
-    /* Modern Tables */
-    .leaderboard {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        margin-top: 20px;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        background: white;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+    @keyframes glow {
+        from { box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3); }
+        to { box-shadow: 0 8px 35px rgba(255, 107, 53, 0.6); }
     }
     
-    .leaderboard th {
+    .badge {
+        display: inline-block;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        padding: 20px 16px;
-        font-weight: 700;
-        text-align: center;
-        border: none;
-        font-size: 1.1rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin: 0.25rem;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     }
     
-    .leaderboard td {
-        padding: 16px;
-        text-align: center;
-        border: none;
-        border-bottom: 1px solid rgba(0,0,0,0.05);
+    /* Event Cards */
+    .event-card {
         background: white;
-        font-weight: 500;
-        transition: all 0.2s ease;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        border-left: 5px solid #ff6b35;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
     }
     
-    .leaderboard tr:nth-child(even) td {
-        background: rgba(248, 250, 252, 0.8);
+    .event-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     }
     
-    .leaderboard tr:hover td {
-        background: rgba(102, 126, 234, 0.05);
+    /* Prize Cards */
+    .prize-card {
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        margin: 1rem 0;
+        border: 2px solid #ff6b35;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .prize-card::after {
+        content: '🏆';
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 2rem;
+        opacity: 0.7;
+    }
+    
+    /* Leaderboard */
+    .leaderboard-item {
+        background: white;
+        border-radius: 15px;
+        padding: 1rem;
+        margin: 0.5rem 0;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .leaderboard-item:hover {
         transform: scale(1.02);
     }
     
-    .leaderboard tr:first-child td {
-        background: linear-gradient(135deg, #ffd700, #ffed4e);
-        color: #333;
-        font-weight: 700;
-    }
+    .rank-1 { border-left: 5px solid #FFD700; }
+    .rank-2 { border-left: 5px solid #C0C0C0; }
+    .rank-3 { border-left: 5px solid #CD7F32; }
     
-    .leaderboard tr:nth-child(2) td {
-        background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
-        color: white;
-        font-weight: 600;
-    }
-    
-    .leaderboard tr:nth-child(3) td {
-        background: linear-gradient(135deg, #cd7f32, #b8860b);
-        color: white;
-        font-weight: 600;
-    }
-    
-    /* Modern Buttons */
-    .refresh-btn {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-        border: none !important;
-        border-radius: 12px !important;
-        padding: 12px 20px !important;
-        color: white !important;
-        font-weight: 600 !important;
-        transition: all 0.2s ease !important;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
-    }
-    
-    .refresh-btn:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4) !important;
-    }
-    
-    /* Modern Form Elements */
-    .feedback-form {
-        background: white;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        border: 1px solid #e1e5e9;
-    }
-    
-    .feedback-input {
-        border: 2px solid #e2e8f0 !important;
-        border-radius: 12px !important;
-        padding: 12px 16px !important;
-        font-size: 1rem !important;
-        transition: all 0.2s ease !important;
-    }
-    
-    .feedback-input:focus {
-        border-color: #667eea !important;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
-    }
-    
-    /* Responsive Design */
+    /* Mobile Responsive */
     @media (max-width: 768px) {
-        .header h1 {
-            font-size: 2rem;
+        .feature-card {
+            padding: 1rem;
+            margin: 0.5rem 0;
         }
         
-        .gradio-container {
-            padding: 16px !important;
-        }
-        
-        .dashboard-card {
-            padding: 16px;
+        .points-display {
+            font-size: 1.2rem;
+            padding: 1rem;
         }
     }
     
-    /* Loading Animation */
-    .loading {
-        display: inline-block;
-        width: 20px;
+    /* Calendar Custom Styles */
+    .calendar-container {
+        background: white;
+        border-radius: 20px;
+        padding: 1rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    /* QR Code Styles */
+    .qr-container {
+        text-align: center;
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    /* Progress Bar */
+    .progress-container {
+        background: #f0f2f6;
+        border-radius: 10px;
+        padding: 0.5rem;
+        margin: 1rem 0;
+    }
+    
+    .progress-bar {
+        background: linear-gradient(90deg, #ff6b35, #f7931e);
         height: 20px;
-        border: 3px solid #f3f3f3;
-        border-top: 3px solid #667eea;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
+        border-radius: 10px;
+        transition: width 0.5s ease;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Initialize session state
+if 'user_id' not in st.session_state:
+    st.session_state.user_id = None
+if 'user_points' not in st.session_state:
+    st.session_state.user_points = 0
+if 'user_badges' not in st.session_state:
+    st.session_state.user_badges = []
+if 'attended_events' not in st.session_state:
+    st.session_state.attended_events = []
+if 'conversation_history' not in st.session_state:
+    st.session_state.conversation_history = []
+
+# Load mock data and configurations
+@st.cache_data
+def load_mock_data():
+    """Load mock data for events, prizes, leaderboard, etc."""
+    
+    events = [
+        {
+            "id": "game_001",
+            "title": "Lions vs Pepperdine Basketball",
+            "date": "2024-02-15",
+            "time": "19:00",
+            "type": "Game Day",
+            "location": "Gersten Pavilion",
+            "points": 75,
+            "description": "Red Sea Night! Wear red and white to support the Lions!",
+            "rsvp_count": 324,
+            "max_capacity": 4000,
+            "qr_checkin": True
+        },
+        {
+            "id": "tailgate_001",
+            "title": "Greek Row Tailgate",
+            "date": "2024-02-15",
+            "time": "16:00",
+            "type": "Tailgate",
+            "location": "Greek Row",
+            "points": 25,
+            "description": "BBQ, music, and spirit competitions before the big game!",
+            "rsvp_count": 89,
+            "max_capacity": 200,
+            "qr_checkin": True
+        },
+        {
+            "id": "watch_001",
+            "title": "Lions Den Watch Party",
+            "date": "2024-02-22",
+            "time": "20:00",
+            "type": "Watch Party",
+            "location": "Student Union",
+            "points": 20,
+            "description": "Watch the away game together with snacks and prizes!",
+            "rsvp_count": 56,
+            "max_capacity": 150,
+            "qr_checkin": False
+        },
+        {
+            "id": "rso_001",
+            "title": "Service Learning Fair",
+            "date": "2024-02-20",
+            "time": "12:00",
+            "type": "RSO Event",
+            "location": "Alumni Mall",
+            "points": 15,
+            "description": "Discover volunteer opportunities and service organizations",
+            "rsvp_count": 112,
+            "max_capacity": 300,
+            "qr_checkin": False
+        }
+    ]
+    
+    prizes = [
+        {
+            "id": "prize_001",
+            "name": "Day as LMU President",
+            "description": "Shadow President Snyder, attend meetings, take over LMU socials for a day",
+            "points_required": 1000,
+            "category": "Ultimate Experience",
+            "available": 1,
+            "claimed": 0,
+            "image": "🏛️"
+        },
+        {
+            "id": "prize_002",
+            "name": "Voice of the Lions",
+            "description": "Co-host a game broadcast, announce starting lineups on ESPN+",
+            "points_required": 750,
+            "category": "Media Experience",
+            "available": 2,
+            "claimed": 0,
+            "image": "🎙️"
+        },
+        {
+            "id": "prize_003",
+            "name": "VIP Game Day Experience",
+            "description": "Courtside seats, halftime meet & greet with players, exclusive merchandise",
+            "points_required": 500,
+            "category": "Game Day",
+            "available": 5,
+            "claimed": 1,
+            "image": "🏀"
+        },
+        {
+            "id": "prize_004",
+            "name": "Tailgate Marshal",
+            "description": "Lead the pregame parade with custom banner, megaphone, and spirit squad",
+            "points_required": 300,
+            "category": "Leadership",
+            "available": 3,
+            "claimed": 0,
+            "image": "📯"
+        },
+        {
+            "id": "prize_005",
+            "name": "Jumbotron Feature",
+            "description": "Personalized Jumbotron message during halftime + photo package",
+            "points_required": 200,
+            "category": "Recognition",
+            "available": 10,
+            "claimed": 3,
+            "image": "📺"
+        }
+    ]
+    
+    leaderboard = [
+        {"rank": 1, "name": "Alex Chen", "points": 1250, "badges": ["🏆", "🔥", "⭐"], "streak": 12, "type": "Individual"},
+        {"rank": 2, "name": "Jordan Smith", "points": 1180, "badges": ["🥈", "🎯", "⚡"], "streak": 8, "type": "Individual"},
+        {"rank": 3, "name": "Taylor Johnson", "points": 1050, "badges": ["🥉", "💪", "🎪"], "streak": 15, "type": "Individual"},
+        {"rank": 4, "name": "Riley Martinez", "points": 980, "badges": ["🌟", "🎨"], "streak": 6, "type": "Individual"},
+        {"rank": 5, "name": "Casey Wilson", "points": 875, "badges": ["🎵", "🏃"], "streak": 4, "type": "Individual"},
+        {"rank": 1, "name": "Alpha Phi Omega", "points": 3450, "badges": ["👑", "🏛️", "🤝"], "streak": 20, "type": "RSO"},
+        {"rank": 2, "name": "Delta Sigma Pi", "points": 2890, "badges": ["🥈", "💼", "📈"], "streak": 14, "type": "RSO"},
+        {"rank": 3, "name": "Kappa Alpha Theta", "points": 2650, "badges": ["🥉", "💝", "🌸"], "streak": 11, "type": "RSO"}
+    ]
+    
+    badges_info = {
+        "🏆": "Champion - Top 3 in leaderboard",
+        "🔥": "Streak Master - 10+ event streak",
+        "⭐": "Rising Star - 5+ events this month",
+        "🎯": "Event Specialist - Attended all types",
+        "⚡": "Quick Check-in - Fastest QR scans",
+        "💪": "Spirit Champion - Max spirit participation",
+        "🎪": "Social Butterfly - Most RSVP'd events",
+        "🌟": "Newcomer Star - Outstanding new member",
+        "🎨": "Creative Contributor - Best photo submissions",
+        "🎵": "Chant Champion - Best spirit chants",
+        "🏃": "Marathon Attendee - 20+ events",
+        "👑": "RSO Legend - Highest group points",
+        "🏛️": "Community Leader - Service champion",
+        "🤝": "Team Player - Best collaboration",
+        "💼": "Professional Spirit - Business events",
+        "📈": "Growth Leader - Biggest improvement",
+        "💝": "Service Heart - Most volunteer hours",
+        "🌸": "Spirit Squad - Best team spirit"
     }
     
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+    return events, prizes, leaderboard, badges_info
+
+def generate_qr_code(event_id: str, user_id: str = None):
+    """Generate QR code for event check-in"""
+    check_in_data = {
+        "event_id": event_id,
+        "user_id": user_id or "guest",
+        "timestamp": datetime.now().isoformat(),
+        "type": "checkin"
     }
-    """
     
-    with gr.Blocks(css=css, title="LMU Campus LLM") as interface:
-        # Modern Header
-        gr.HTML("""
-        <div class="header">
-            <h1>🦁 LMU Campus AI</h1>
-            <p>Your Gen Z friend who knows everything about The Bluff</p>
+    qr_data = json.dumps(check_in_data)
+    qr = qrcode.QRCode(version=1, box_size=10, border=5)
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+    
+    img = qr.make_image(fill_color="black", back_color="white")
+    buf = io.BytesIO()
+    img.save(buf, format='PNG')
+    buf.seek(0)
+    
+    return buf
+
+def create_calendar_events(events):
+    """Convert events to calendar format"""
+    calendar_events = []
+    for event in events:
+        calendar_events.append({
+            "title": event["title"],
+            "start": f"{event['date']}T{event['time']}",
+            "backgroundColor": {
+                "Game Day": "#ff6b35",
+                "Tailgate": "#2a5298", 
+                "Watch Party": "#f7931e",
+                "RSO Event": "#667eea"
+            }.get(event["type"], "#cccccc"),
+            "borderColor": {
+                "Game Day": "#ff6b35",
+                "Tailgate": "#2a5298",
+                "Watch Party": "#f7931e", 
+                "RSO Event": "#667eea"
+            }.get(event["type"], "#cccccc"),
+            "extendedProps": {
+                "id": event["id"],
+                "type": event["type"],
+                "location": event["location"],
+                "points": event["points"],
+                "description": event["description"]
+            }
+        })
+    return calendar_events
+
+def simulate_ai_response(question: str) -> str:
+    """Simulate AI response for demo purposes"""
+    responses = {
+        "where": [
+            "The Math Tutoring Center is in the Academic Resource Center (ARC) on the 2nd floor of Burns Rec Center! They have drop-in hours Monday-Friday 2-8pm, no appointment needed. It's literally a lifesaver during midterms ngl 📚",
+            "You can find study rooms in the William H. Hannon Library - just book them online through the library website! The quiet floors are 3-6, and floor 2 has group study areas if you need to work with friends 🤓"
+        ],
+        "how": [
+            "To register for classes, log into PROWL (student portal) during your registration time. Check your holds first though - financial or academic holds will block you from registering! Your time slot is based on credit hours completed 📝",
+            "For study abroad applications, visit the LMU International Programs office in University Hall. They have info sessions every month and the application deadline is usually March 1st for fall programs ✈️"
+        ],
+        "what": [
+            "This weekend we've got the basketball game vs Pepperdine on Friday at 7pm (Gersten Pavilion), Greek Row tailgate starting at 4pm, and the Service Learning Fair on Tuesday at Alumni Mall! All events give you spirit points 🦁",
+            "GPA requirements vary by program - most need 3.0+ for study abroad, 2.5+ to stay in good standing, and 3.5+ for honors programs. Check with your advisor for specific major requirements!"
+        ],
+        "when": [
+            "The dining halls are open: The Lair (7am-2am), The Roski (11am-8pm weekdays), and Iggy's (5pm-midnight). Lion Dollars work at all locations plus the C-Store! 🍕",
+            "Finals week is May 6-10, and spring break is March 11-15. Registration for fall opens in April - dates depend on your class standing!"
+        ]
+    }
+    
+    question_lower = question.lower()
+    for key in responses:
+        if key in question_lower:
+            return random.choice(responses[key])
+    
+    return "That's a great question! I'm still learning about LMU, but you can find more info on the LMU website or ask at the Student Information Desk in the Student Union. The staff there knows everything! 🦁"
+
+# Main App Function
+def main():
+    # Header
+    st.markdown('<h1 class="main-header">🦁 LMU Campus Spirit Hub</h1>', unsafe_allow_html=True)
+    st.markdown('<p style="text-align: center; font-size: 1.2rem; color: #666; margin-bottom: 2rem;">Your ultimate platform for campus engagement, spirit points, and Lion pride!</p>', unsafe_allow_html=True)
+    
+    # Load data
+    events, prizes, leaderboard, badges_info = load_mock_data()
+    
+    # Sidebar for user authentication and navigation
+    with st.sidebar:
+        st.markdown("### 🔐 User Login")
+        
+        if st.session_state.user_id is None:
+            user_input = st.text_input("Enter your Student ID or Email:", placeholder="e.g., jdoe@lion.lmu.edu")
+            if st.button("🚀 Join the Spirit Squad", type="primary"):
+                if user_input:
+                    st.session_state.user_id = user_input
+                    st.session_state.user_points = random.randint(150, 800)
+                    st.session_state.user_badges = random.sample(list(badges_info.keys()), random.randint(2, 5))
+                    st.success(f"Welcome to the Lion pride, {user_input.split('@')[0].title()}! 🦁")
+                    st.rerun()
+        else:
+            st.success(f"Welcome back, {st.session_state.user_id.split('@')[0].title()}! 🦁")
+            
+            # User stats display
+            st.markdown(f"""
+            <div class="points-display">
+                💰 You have {st.session_state.user_points} points to spend!
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("**Your Badges:**")
+            badge_display = " ".join(st.session_state.user_badges)
+            st.markdown(f'<div style="font-size: 1.5rem; text-align: center;">{badge_display}</div>', unsafe_allow_html=True)
+            
+            if st.button("🚪 Logout"):
+                st.session_state.user_id = None
+                st.session_state.user_points = 0
+                st.session_state.user_badges = []
+                st.rerun()
+    
+    # Main navigation
+    selected = option_menu(
+        menu_title=None,
+        options=["🏠 Home", "📅 Events Calendar", "🏆 Leaderboard", "🎁 Prize Shop", "📸 Content Gallery", "👤 My Profile", "🤖 AI Assistant", "💬 Feedback"],
+        icons=["house", "calendar-event", "trophy", "gift", "images", "person-circle", "robot", "chat-dots"],
+        menu_icon="cast",
+        default_index=0,
+        orientation="horizontal",
+        styles={
+            "container": {"padding": "0!important", "background-color": "transparent"},
+            "icon": {"color": "#ff6b35", "font-size": "20px"},
+            "nav-link": {"font-size": "16px", "text-align": "center", "margin": "0px", "--hover-color": "#f0f2f6"},
+            "nav-link-selected": {"background-color": "#ff6b35", "color": "white"},
+        }
+    )
+    
+    # Page content based on selection
+    if selected == "🏠 Home":
+        show_home_page(events, leaderboard)
+    elif selected == "📅 Events Calendar":
+        show_calendar_page(events)
+    elif selected == "🏆 Leaderboard":
+        show_leaderboard_page(leaderboard, badges_info)
+    elif selected == "🎁 Prize Shop":
+        show_prize_shop(prizes)
+    elif selected == "📸 Content Gallery":
+        show_content_gallery()
+    elif selected == "👤 My Profile":
+        show_user_profile(events, badges_info)
+    elif selected == "🤖 AI Assistant":
+        show_ai_assistant()
+    elif selected == "💬 Feedback":
+        show_feedback_page()
+
+def show_home_page(events, leaderboard):
+    """Display the home page with quick stats and upcoming events"""
+    
+    # Quick stats row
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.markdown("""
+        <div class="feature-card" style="text-align: center;">
+            <h3 style="color: #ff6b35; margin: 0;">📅</h3>
+            <h4 style="margin: 0.5rem 0;">Upcoming Events</h4>
+            <h2 style="color: #2a5298; margin: 0;">{}</h2>
         </div>
-        """)
-
-        # ---- Global student id + points row ----
-        with gr.Row():
-            student_id = gr.Textbox(
-                label="Student ID (Optional)",
-                placeholder="Enter your ID to track points",
-                type="text",
-                scale=1
-            )
-            points_display = gr.HTML(
-                value=app.get_user_points(""),
-                label="Points"
-            )
-
-
-        with gr.Tabs():
-            # -------------------- Home / Dashboard Tab --------------------
-            with gr.Tab("Home/Dashboard"):
-                with gr.Row():
-                    with gr.Column(scale=2):
-                        # Modern chat interface
-                        chatbot = gr.Chatbot(
-                            label="Chat with LMU Assistant",
-                            height=500,
-                            show_label=False,
-                            elem_classes=["chatbot"],
-                            type="messages"
-                        )
-
-                        with gr.Row():
-                            user_input = gr.Textbox(
-                                placeholder="Ask me anything about LMU! (e.g., 'where can i find tutoring?')",
-                                container=False,
-                                scale=4,
-                                elem_classes=["input-box"]
-                            )
-                            submit_btn = gr.Button("Send", variant="primary", scale=1, elem_classes=["submit-btn"])
-
-                        # Gen Z example questions
-                        gr.Examples(
-                            examples=[
-                                "where can i find a math tutor?",
-                                "what's the vibe at the rock?",
-                                "events this week?",
-                                "how do i add/drop a class?",
-                                "where's the counseling center?",
-                                "library hours?",
-                                "what's the best study spot?",
-                                "help me write an email to my professor"
-                            ],
-                            inputs=user_input,
-                            label="💡 Try these questions:"
-                        )
-
-                    with gr.Column(scale=1):
-                        # Modern dashboard feed
-                        feed_refresh_btn = gr.Button("🔄 Refresh", variant="secondary", elem_classes=["refresh-btn"])
-                        feed_display = gr.HTML(value=app.get_dynamic_feed_html())
-
-            # -------------------- Events Tab --------------------
-            with gr.Tab("Events"):
-                with gr.Row():
-                    with gr.Column(scale=2):
-                        gr.HTML("""
-                        <div class="dashboard-card">
-                            <h3>📅 Events & RSVP</h3>
-                            <p>Find events, RSVP, and get points for attending!</p>
-                        </div>
-                        """)
-                        
-                        # Event Categories
-                        with gr.Row():
-                            event_categories = gr.HTML("""
-                            <div class="dashboard-card">
-                                <h4>🎯 Event Categories</h4>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;">
-                                    <button style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600;">🏈 Sports</button>
-                                    <button style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600;">🎉 Social</button>
-                                    <button style="background: linear-gradient(135deg, #4ecdc4, #44a08d); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600;">📚 Academic</button>
-                                    <button style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600;">🎨 Cultural</button>
-                                </div>
-                            </div>
-                            """)
-                        
-                        # This Week's Events
-                        events_btn = gr.Button("🔄 Refresh Events", variant="secondary", elem_classes=["refresh-btn"])
-                        events_display = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>📅 This Week's Events</h4>
-                            <div style="margin: 10px 0;">
-                                <div style="border: 1px solid #e1e5e9; border-radius: 8px; padding: 15px; margin: 10px 0;">
-                                    <h5>🏈 LMU vs Pepperdine Basketball</h5>
-                                    <p>📍 Gersten Pavilion | ⏰ Today, 7:00 PM</p>
-                                    <p>🎉 Tailgate starts at 5:00 PM</p>
-                                    <button style="background: #667eea; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600;">RSVP (127 attending)</button>
-                                </div>
-                                <div style="border: 1px solid #e1e5e9; border-radius: 8px; padding: 15px; margin: 10px 0;">
-                                    <h5>🎨 First Friday Art Walk</h5>
-                                    <p>📍 The Grove | ⏰ Friday, 6:00 PM</p>
-                                    <p>🎭 Student art showcase and live music</p>
-                                    <button style="background: #667eea; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600;">RSVP (89 attending)</button>
-                                </div>
-                                <div style="border: 1px solid #e1e5e9; border-radius: 8px; padding: 15px; margin: 10px 0;">
-                                    <h5>📚 Study Abroad Info Session</h5>
-                                    <p>📍 University Hall | ⏰ Wednesday, 3:00 PM</p>
-                                    <p>✈️ Learn about international programs</p>
-                                    <button style="background: #667eea; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600;">RSVP (45 attending)</button>
-                                </div>
-                            </div>
-                        </div>
-                        """)
-                    
-                    with gr.Column(scale=1):
-                        # Quick RSVP
-                        quick_rsvp = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>⚡ Quick RSVP</h4>
-                            <p>Fast check-in for events you're already at!</p>
-                            <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 20px; border-radius: 12px; margin: 10px 0;">
-                                <h5>📱 Event Check-In</h5>
-                                <p>Enter event code to check in</p>
-                                <input type="text" placeholder="Enter event code" style="width: 100%; padding: 8px; border: none; border-radius: 6px; margin: 10px 0;">
-                                <button style="background: white; color: #10b981; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; width: 100%;">Check In</button>
-                            </div>
-                        </div>
-                        """)
-                        
-                        # Calendar Integration
-                        calendar_integration = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>📅 Calendar Sync</h4>
-                            <p>Automatically add events to your calendar</p>
-                            <div style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 20px; border-radius: 12px; margin: 10px 0;">
-                                <h5>📱 Sync to Phone</h5>
-                                <p>Get reminders and never miss an event</p>
-                                <button style="background: white; color: #f59e0b; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; width: 100%;">Connect Calendar</button>
-                            </div>
-                        </div>
-                        """)
-
-            # -------------------- Game Day Tab --------------------
-            with gr.Tab("Game Day"):
-                with gr.Row():
-                    with gr.Column(scale=2):
-                        gr.HTML("""
-                        <div class="dashboard-card">
-                            <h3>🏈 Game Day Hub</h3>
-                            <p>Check in, earn points, and join the hype!</p>
-                        </div>
-                        """)
-                        
-                        # QR Code Check-in
-                        with gr.Row():
-                            qr_code_display = gr.HTML("""
-                            <div class="dashboard-card">
-                                <h4>📱 QR Check-In</h4>
-                                <p>Scan this QR code at events to earn points!</p>
-                                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; margin: 10px 0;">
-                                    <div style="font-size: 48px;">📱</div>
-                                    <p>QR Code Scanner</p>
-                                    <p style="font-size: 0.9rem; color: #666;">Coming soon - real QR codes for events!</p>
-                                </div>
-                            </div>
-                            """)
-                        
-                        # Live Challenges
-                        with gr.Row():
-                            challenges_display = gr.HTML("""
-                            <div class="dashboard-card">
-                                <h4>🔥 Live Challenges</h4>
-                                <div style="margin: 10px 0;">
-                                    <div style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                                        <h5>📸 Snap Your Fit!</h5>
-                                        <p>Post your game day outfit for 5 points</p>
-                                        <button style="background: white; color: #ff6b6b; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600;">Join Challenge</button>
-                                    </div>
-                                    <div style="background: linear-gradient(135deg, #4ecdc4, #44a08d); color: white; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                                        <h5>🎥 Chant of the Game</h5>
-                                        <p>Record your best LMU chant for 10 points</p>
-                                        <button style="background: white; color: #4ecdc4; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600;">Join Challenge</button>
-                                    </div>
-                                </div>
-                            </div>
-                            """)
-                    
-                    with gr.Column(scale=1):
-                        # Current Tailgate
-                        current_tailgate = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>🎉 Current Tailgate</h4>
-                            <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 12px; margin: 10px 0;">
-                                <h5>🏈 LMU vs Pepperdine</h5>
-                                <p>📍 Gersten Pavilion</p>
-                                <p>⏰ Today, 7:00 PM</p>
-                                <p>👥 127 people checked in</p>
-                                <button style="background: white; color: #667eea; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; margin-top: 10px;">Check In Now</button>
-                            </div>
-                        </div>
-                        """)
-                        
-                        # Social Media Gallery
-                        social_gallery = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>📸 Live Feed</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0;">
-                                <div style="background: #f0f0f0; height: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px;">📱</div>
-                                <div style="background: #f0f0f0; height: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px;">📱</div>
-                                <div style="background: #f0f0f0; height: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px;">📱</div>
-                                <div style="background: #f0f0f0; height: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px;">📱</div>
-                            </div>
-                            <p style="text-align: center; color: #666; font-size: 0.9rem;">Live social media posts from the game!</p>
-                        </div>
-                        """)
-
-            # -------------------- Leaderboard Tab --------------------
-            with gr.Tab("Leaderboard"):
-                with gr.Row():
-                    with gr.Column(scale=2):
-                        gr.HTML("""
-                        <div class="dashboard-card">
-                            <h3>🏆 Spirit Leaderboard</h3>
-                            <p>See who's bringing the most hype to The Bluff!</p>
-                        </div>
-                        """)
-                        
-                        # Leaderboard Filters
-                        with gr.Row():
-                            leaderboard_filters = gr.HTML("""
-                            <div class="dashboard-card">
-                                <h4>🎯 Leaderboard Filters</h4>
-                                <div style="display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap;">
-                                    <button style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600;">🏆 Top Overall</button>
-                                    <button style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600;">👑 Top Ambassadors</button>
-                                    <button style="background: linear-gradient(135deg, #4ecdc4, #44a08d); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600;">🏛️ Most Hype Org</button>
-                                    <button style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600;">🆕 First-timers</button>
-                                </div>
-                            </div>
-                            """)
-                        
-                        # Main Leaderboard
-                        leaderboard_refresh_btn = gr.Button("🔄 Refresh Leaderboard", variant="secondary", elem_classes=["refresh-btn"])
-                        leaderboard_display = gr.HTML(value=app.get_leaderboard_html(15))
-                    
-                    with gr.Column(scale=1):
-                        # This Week's MVP
-                        weekly_mvp = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>🌟 This Week's Spirit MVP</h4>
-                            <div style="background: linear-gradient(135deg, #ffd700, #ffed4e); color: #333; padding: 20px; border-radius: 12px; margin: 10px 0; text-align: center;">
-                                <div style="font-size: 48px; margin-bottom: 10px;">👑</div>
-                                <h5>Sarah Johnson</h5>
-                                <p>🏛️ Alpha Delta Pi</p>
-                                <p>📊 245 points this week</p>
-                                <p style="font-size: 0.9rem; color: #666;">Attended 8 events, hosted 2 tailgates</p>
-                            </div>
-                        </div>
-                        """)
-                        
-                        # RSO of the Month
-                        rso_month = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>🏛️ RSO of the Month</h4>
-                            <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 12px; margin: 10px 0; text-align: center;">
-                                <div style="font-size: 48px; margin-bottom: 10px;">🏛️</div>
-                                <h5>LMU Spirit Squad</h5>
-                                <p>📊 1,247 total points</p>
-                                <p style="font-size: 0.9rem; opacity: 0.8;">Hosted 15 events this month</p>
-                            </div>
-                        </div>
-                        """)
-                        
-                        # Badge Showcase
-                        badge_showcase = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>🏅 Badge Showcase</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0;">
-                                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
-                                    <div style="font-size: 24px;">🥉</div>
-                                    <p style="font-size: 0.8rem; margin: 5px 0;">Bronze Lion</p>
-                                </div>
-                                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
-                                    <div style="font-size: 24px;">🥈</div>
-                                    <p style="font-size: 0.8rem; margin: 5px 0;">Silver Lion</p>
-                                </div>
-                                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
-                                    <div style="font-size: 24px;">🥇</div>
-                                    <p style="font-size: 0.8rem; margin: 5px 0;">Gold Lion</p>
-                                </div>
-                                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
-                                    <div style="font-size: 24px;">👑</div>
-                                    <p style="font-size: 0.8rem; margin: 5px 0;">Legendary</p>
-                                </div>
-                            </div>
-                        </div>
-                        """)
-
-            # -------------------- Prizes Tab --------------------
-            with gr.Tab("Prizes"):
-                with gr.Row():
-                    with gr.Column(scale=2):
-                        gr.HTML("""
-                        <div class="dashboard-card">
-                            <h3>🎁 Rewards Shop</h3>
-                            <p>Redeem your points for exclusive LMU experiences and merch!</p>
-                        </div>
-                        """)
-                        
-                        # Prize Categories
-                        with gr.Row():
-                            prize_categories = gr.HTML("""
-                            <div class="dashboard-card">
-                                <h4>🎯 Prize Categories</h4>
-                                <div style="display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap;">
-                                    <button style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600;">🏆 Most Creative</button>
-                                    <button style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600;">🔥 Limited Time</button>
-                                    <button style="background: linear-gradient(135deg, #4ecdc4, #44a08d); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600;">💰 Best Value</button>
-                                    <button style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600;">⭐ Popular</button>
-                                </div>
-                            </div>
-                            """)
-                        
-                        # Main Prizes Display
-                        prizes_display = gr.HTML(value=app.get_prizes_html())
-                    
-                    with gr.Column(scale=1):
-                        # Secret Wildcard Prize
-                        wildcard_prize = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>🎲 Secret Wildcard Prize</h4>
-                            <div style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 20px; border-radius: 12px; margin: 10px 0; text-align: center;">
-                                <div style="font-size: 48px; margin-bottom: 10px;">🎲</div>
-                                <h5>Coach for a Day</h5>
-                                <p>🏈 Shadow the basketball coach</p>
-                                <p style="font-size: 0.9rem; opacity: 0.8;">Only 1 available!</p>
-                                <button style="background: white; color: #8b5cf6; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; margin-top: 10px;">Redeem (500 pts)</button>
-                            </div>
-                        </div>
-                        """)
-                        
-                        # Your Points Summary
-                        points_summary = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>💰 Your Points</h4>
-                            <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 20px; border-radius: 12px; margin: 10px 0; text-align: center;">
-                                <div style="font-size: 48px; margin-bottom: 10px;">💰</div>
-                                <h5>Current Balance</h5>
-                                <p style="font-size: 2rem; font-weight: 700; margin: 10px 0;">127 pts</p>
-                                <p style="font-size: 0.9rem; opacity: 0.8;">Keep grinding to unlock more rewards!</p>
-                            </div>
-                        </div>
-                        """)
-                        
-                        # Redeem History
-                        redeem_history = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>📋 Redeem History</h4>
-                            <div style="margin: 10px 0;">
-                                <div style="border: 1px solid #e1e5e9; border-radius: 8px; padding: 10px; margin: 5px 0;">
-                                    <p style="font-weight: 600; margin: 0;">🥤 Free Boba</p>
-                                    <p style="font-size: 0.8rem; color: #666; margin: 0;">Redeemed 2 days ago</p>
-                                </div>
-                                <div style="border: 1px solid #e1e5e9; border-radius: 8px; padding: 10px; margin: 5px 0;">
-                                    <p style="font-weight: 600; margin: 0;">🥉 Bronze Lion Badge</p>
-                                    <p style="font-size: 0.8rem; color: #666; margin: 0;">Redeemed 1 week ago</p>
-                                </div>
-                            </div>
-                        </div>
-                        """)
-
-            # -------------------- My Profile Tab --------------------
-            with gr.Tab("My Profile"):
-                with gr.Row():
-                    with gr.Column(scale=2):
-                        gr.HTML("""
-                        <div class="dashboard-card">
-                            <h3>👤 Your Profile</h3>
-                            <p>Track your progress, badges, and achievements!</p>
-                        </div>
-                        """)
-                        
-                        # Profile Stats
-                        profile_points = gr.HTML(value=app.get_user_points(""))
-                        refresh_profile_btn = gr.Button("🔄 Refresh Stats", elem_classes=["refresh-btn"])
-                        
-                        # Badges and Achievements
-                        with gr.Row():
-                            badges_display = gr.HTML("""
-                            <div class="dashboard-card">
-                                <h4>🏅 Your Badges</h4>
-                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0;">
-                                    <div style="background: linear-gradient(135deg, #cd7f32, #b8860b); color: white; padding: 15px; border-radius: 8px; text-align: center;">
-                                        <div style="font-size: 24px;">🥉</div>
-                                        <p style="font-size: 0.8rem; margin: 5px 0;">Bronze Lion</p>
-                                    </div>
-                                    <div style="background: linear-gradient(135deg, #c0c0c0, #a8a8a8); color: white; padding: 15px; border-radius: 8px; text-align: center;">
-                                        <div style="font-size: 24px;">🥈</div>
-                                        <p style="font-size: 0.8rem; margin: 5px 0;">Silver Lion</p>
-                                    </div>
-                                    <div style="background: linear-gradient(135deg, #ffd700, #ffed4e); color: #333; padding: 15px; border-radius: 8px; text-align: center;">
-                                        <div style="font-size: 24px;">🥇</div>
-                                        <p style="font-size: 0.8rem; margin: 5px 0;">Gold Lion</p>
-                                    </div>
-                                </div>
-                            </div>
-                            """)
-                        
-                        # Event History
-                        event_history = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>📅 Recent Events Attended</h4>
-                            <div style="margin: 10px 0;">
-                                <div style="border: 1px solid #e1e5e9; border-radius: 8px; padding: 10px; margin: 5px 0;">
-                                    <p style="font-weight: 600; margin: 0;">🏈 LMU vs Pepperdine Basketball</p>
-                                    <p style="font-size: 0.8rem; color: #666; margin: 0;">Yesterday • +10 points</p>
-                                </div>
-                                <div style="border: 1px solid #e1e5e9; border-radius: 8px; padding: 10px; margin: 5px 0;">
-                                    <p style="font-weight: 600; margin: 0;">🎨 First Friday Art Walk</p>
-                                    <p style="font-size: 0.8rem; color: #666; margin: 0;">Last week • +5 points</p>
-                                </div>
-                                <div style="border: 1px solid #e1e5e9; border-radius: 8px; padding: 10px; margin: 5px 0;">
-                                    <p style="font-weight: 600; margin: 0;">📚 Study Abroad Info Session</p>
-                                    <p style="font-size: 0.8rem; color: #666; margin: 0;">2 weeks ago • +5 points</p>
-                                </div>
-                            </div>
-                        </div>
-                        """)
-                    
-                    with gr.Column(scale=1):
-                        # Social Sharing
-                        social_sharing = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>📱 Share Your Achievements</h4>
-                            <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 12px; margin: 10px 0; text-align: center;">
-                                <h5>🎉 Brag About It!</h5>
-                                <p>Share your LMU spirit on social media</p>
-                                <div style="display: flex; gap: 10px; margin-top: 15px; justify-content: center;">
-                                    <button style="background: #1da1f2; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 0.8rem;">🐦 Twitter</button>
-                                    <button style="background: #4267b2; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 0.8rem;">📘 Facebook</button>
-                                    <button style="background: #e4405f; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 0.8rem;">📷 Instagram</button>
-                                </div>
-                            </div>
-                        </div>
-                        """)
-                        
-                        # Streak Counter
-                        streak_counter = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>🔥 Current Streak</h4>
-                            <div style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; padding: 20px; border-radius: 12px; margin: 10px 0; text-align: center;">
-                                <div style="font-size: 48px; margin-bottom: 10px;">🔥</div>
-                                <h5>7 Days</h5>
-                                <p style="font-size: 0.9rem; opacity: 0.8;">Keep the streak alive!</p>
-                            </div>
-                        </div>
-                        """)
-                        
-                        # Feedback Section
-                        with gr.Accordion("📝 Give Feedback", open=False):
-                            feedback_text = gr.Textbox(
-                                label="Your feedback",
-                                placeholder="How can we improve the LMU Campus AI?",
-                                lines=3,
-                                elem_classes=["feedback-input"]
-                            )
-                            rating = gr.Slider(
-                                minimum=1,
-                                maximum=5,
-                                value=5,
-                                step=1,
-                                label="Rating (1-5 stars)"
-                            )
-                            feedback_btn = gr.Button("Submit Feedback", elem_classes=["submit-btn"])
-                            feedback_status = gr.Textbox(label="Status", interactive=False)
-
-            # -------------------- Submit Event / Host Tab --------------------
-            with gr.Tab("Submit Event/Host"):
-                with gr.Row():
-                    with gr.Column(scale=2):
-                        gr.HTML("""
-                        <div class="dashboard-card">
-                            <h3>📝 Submit Event Proposal</h3>
-                            <p>RSOs, fraternities, and sororities - let's collab on some epic events!</p>
-                        </div>
-                        """)
-                        
-                        # Event Proposal Form
-                        with gr.Row():
-                            host_title = gr.Textbox(
-                                label="Event Title",
-                                placeholder="e.g., LMU vs Pepperdine Tailgate",
-                                elem_classes=["feedback-input"]
-                            )
-                        
-                        with gr.Row():
-                            host_desc = gr.Textbox(
-                                label="Description",
-                                placeholder="Tell us about your event idea...",
-                                lines=3,
-                                elem_classes=["feedback-input"]
-                            )
-                        
-                        with gr.Row():
-                            host_date = gr.Textbox(
-                                label="Proposed Date & Time",
-                                placeholder="e.g., Friday, March 15th at 5:00 PM",
-                                elem_classes=["feedback-input"]
-                            )
-                        
-                        with gr.Row():
-                            host_location = gr.Textbox(
-                                label="Location",
-                                placeholder="e.g., The Grove, Gersten Pavilion",
-                                elem_classes=["feedback-input"]
-                            )
-                        
-                        with gr.Row():
-                            host_org = gr.Textbox(
-                                label="Your Organization",
-                                placeholder="e.g., Alpha Delta Pi, LMU Spirit Squad",
-                                elem_classes=["feedback-input"]
-                            )
-                        
-                        host_submit = gr.Button("🚀 Submit Proposal", elem_classes=["submit-btn"])
-                        host_status = gr.Textbox(label="Status", interactive=False)
-                    
-                    with gr.Column(scale=1):
-                        # Quick Tips
-                        quick_tips = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>💡 Pro Tips</h4>
-                            <div style="margin: 10px 0;">
-                                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                                    <h5>🎯 What Works Best</h5>
-                                    <ul style="margin: 5px 0; padding-left: 20px; font-size: 0.9rem;">
-                                        <li>Game day tailgates</li>
-                                        <li>Study groups & tutoring</li>
-                                        <li>Cultural celebrations</li>
-                                        <li>Wellness activities</li>
-                                        <li>Career workshops</li>
-                                    </ul>
-                                </div>
-                                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                                    <h5>⚡ Quick Approval</h5>
-                                    <ul style="margin: 5px 0; padding-left: 20px; font-size: 0.9rem;">
-                                        <li>Clear event description</li>
-                                        <li>Specific date & time</li>
-                                        <li>On-campus location</li>
-                                        <li>Open to all students</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        """)
-                        
-                        # Success Stories
-                        success_stories = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>🏆 Success Stories</h4>
-                            <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 20px; border-radius: 12px; margin: 10px 0;">
-                                <h5>🎉 Recent Approvals</h5>
-                                <div style="margin: 10px 0;">
-                                    <p style="font-size: 0.9rem; margin: 5px 0;">🏈 LMU Spirit Squad Tailgate</p>
-                                    <p style="font-size: 0.8rem; opacity: 0.8;">127 attendees • Approved in 2 hours</p>
-                                </div>
-                                <div style="margin: 10px 0;">
-                                    <p style="font-size: 0.9rem; margin: 5px 0;">📚 Alpha Delta Pi Study Group</p>
-                                    <p style="font-size: 0.8rem; opacity: 0.8;">45 attendees • Approved in 1 day</p>
-                                </div>
-                            </div>
-                        </div>
-                        """)
-
-            # -------------------- Get Involved Tab --------------------
-            with gr.Tab("Get Involved"):
-                with gr.Row():
-                    with gr.Column(scale=2):
-                        gr.HTML("""
-                        <div class="dashboard-card">
-                            <h3>🤝 Get Involved at LMU</h3>
-                            <p>Find your people, start something new, or join existing groups!</p>
-                        </div>
-                        """)
-                        
-                        # RSO Interest Form
-                        with gr.Row():
-                            rso_form = gr.HTML("""
-                            <div class="dashboard-card">
-                                <h4>🏛️ RSO Interest</h4>
-                                <p>Want your organization featured? Let's collab!</p>
-                                <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 12px; margin: 10px 0;">
-                                    <h5>📝 Quick Interest Form</h5>
-                                    <p>Tell us about your org and what you'd like to do!</p>
-                                    <a href="https://forms.gle/example" target="_blank" style="background: white; color: #667eea; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; display: inline-block; margin-top: 10px;">Fill Out Form</a>
-                                </div>
-                            </div>
-                            """)
-                        
-                        # Greek Life Interest
-                        with gr.Row():
-                            greek_interest = gr.HTML("""
-                            <div class="dashboard-card">
-                                <h4>🏛️ Greek Life</h4>
-                                <p>Interested in joining a fraternity or sorority?</p>
-                                <div style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; padding: 20px; border-radius: 12px; margin: 10px 0;">
-                                    <h5>🐺 Rush Information</h5>
-                                    <p>Get info about rush events and Greek life at LMU</p>
-                                    <a href="https://forms.gle/example" target="_blank" style="background: white; color: #ff6b6b; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; display: inline-block; margin-top: 10px;">Learn More</a>
-                                </div>
-                            </div>
-                            """)
-                    
-                    with gr.Column(scale=1):
-                        # Campus Jobs
-                        campus_jobs = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>💼 Campus Jobs</h4>
-                            <div style="background: linear-gradient(135deg, #4ecdc4, #44a08d); color: white; padding: 20px; border-radius: 12px; margin: 10px 0;">
-                                <h5>💰 Get That Bag</h5>
-                                <p>Find on-campus employment opportunities</p>
-                                <a href="https://careers.lmu.edu" target="_blank" style="background: white; color: #4ecdc4; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; display: inline-block; margin-top: 10px;">Browse Jobs</a>
-                            </div>
-                        </div>
-                        """)
-                        
-                        # Study Abroad
-                        study_abroad = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>✈️ Study Abroad</h4>
-                            <div style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white; padding: 20px; border-radius: 12px; margin: 10px 0;">
-                                <h5>🌍 Level Up Your Experience</h5>
-                                <p>Explore international programs and opportunities</p>
-                                <a href="https://studyabroad.lmu.edu" target="_blank" style="background: white; color: #f093fb; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; display: inline-block; margin-top: 10px;">Explore Programs</a>
-                            </div>
-                        </div>
-                        """)
-
-            # -------------------- Community Board Tab --------------------
-            with gr.Tab("Community Board (Beta)"):
-                with gr.Row():
-                    with gr.Column(scale=2):
-                        gr.HTML("""
-                        <div class="dashboard-card">
-                            <h3>🤝 Community Board</h3>
-                            <p>Share memes, find study buddies, and connect with fellow Lions!</p>
-                        </div>
-                        """)
-                        
-                        # Community Posts
-                        community_posts = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>📱 Recent Posts</h4>
-                            <div style="margin: 10px 0;">
-                                <div style="border: 1px solid #e1e5e9; border-radius: 8px; padding: 15px; margin: 10px 0;">
-                                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; margin-right: 10px;">SJ</div>
-                                        <div>
-                                            <p style="font-weight: 600; margin: 0;">Sarah Johnson</p>
-                                            <p style="font-size: 0.8rem; color: #666; margin: 0;">2 hours ago</p>
-                                        </div>
-                                    </div>
-                                    <p style="margin: 0;">Anyone want to form a study group for the math final? The struggle is real fr fr 😅</p>
-                                    <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                        <button style="background: #667eea; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem;">👍 12</button>
-                                        <button style="background: #10b981; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem;">💬 Reply</button>
-                                    </div>
-                                </div>
-                                
-                                <div style="border: 1px solid #e1e5e9; border-radius: 8px; padding: 15px; margin: 10px 0;">
-                                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #ff6b6b, #ee5a24); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; margin-right: 10px;">MJ</div>
-                                        <div>
-                                            <p style="font-weight: 600; margin: 0;">Mike Johnson</p>
-                                            <p style="font-size: 0.8rem; color: #666; margin: 0;">5 hours ago</p>
-                                        </div>
-                                    </div>
-                                    <p style="margin: 0;">The Rock at sunset hits different today 🌅 #BluffLife</p>
-                                    <div style="background: #f8f9fa; height: 120px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 10px 0; color: #666;">📸 Photo</div>
-                                    <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                        <button style="background: #667eea; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem;">👍 28</button>
-                                        <button style="background: #10b981; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem;">💬 Reply</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        """)
-                    
-                    with gr.Column(scale=1):
-                        # Create Post
-                        create_post = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>✍️ Create Post</h4>
-                            <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 12px; margin: 10px 0;">
-                                <h5>📝 Share Something</h5>
-                                <textarea placeholder="What's on your mind?" style="width: 100%; padding: 10px; border: none; border-radius: 6px; margin: 10px 0; resize: vertical; min-height: 80px;"></textarea>
-                                <button style="background: white; color: #667eea; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; width: 100%;">Post</button>
-                            </div>
-                        </div>
-                        """)
-                        
-                        # Watch Party Signups
-                        watch_party = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>📺 Watch Party Signups</h4>
-                            <div style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; padding: 20px; border-radius: 12px; margin: 10px 0;">
-                                <h5>🏈 Away Game Watch Party</h5>
-                                <p>LMU vs Gonzaga • Saturday 8PM</p>
-                                <p style="font-size: 0.9rem; opacity: 0.8;">📍 The Grove • 23 people signed up</p>
-                                <button style="background: white; color: #ff6b6b; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; width: 100%; margin-top: 10px;">Join Watch Party</button>
-                            </div>
-                        </div>
-                        """)
-                        
-                        # Q&A Section
-                        qa_section = gr.HTML("""
-                        <div class="dashboard-card">
-                            <h4>❓ Quick Q&A</h4>
-                            <div style="margin: 10px 0;">
-                                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                                    <h5>🤔 Where's the best study spot?</h5>
-                                    <p style="font-size: 0.9rem; color: #666; margin: 5px 0;">Burns Backcourt fr fr, 24/7 access</p>
-                                </div>
-                                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                                    <h5>🍕 Best food on campus?</h5>
-                                    <p style="font-size: 0.9rem; color: #666; margin: 5px 0;">The Lair pizza be bussin sometimes</p>
-                                </div>
-                            </div>
-                        </div>
-                        """)
-
-        # -------------------- Event handlers --------------------
-        def respond(message, history, user_id):
-            if not message.strip():
-                return history, ""
-
-            # Get response from the app
-            response = app.process_message(message, history, user_id)
-
-            # Update history
-            history.append([message, response])
-            return history, ""
-
-        def update_points(user_id):
-            return app.get_user_points(user_id)
-
-        def update_leaderboard():
-            return app.get_leaderboard_html()
-
-        # Connect event handlers
-        submit_btn.click(
-            respond,
-            inputs=[user_input, chatbot, student_id],
-            outputs=[chatbot, user_input]
-        ).then(
-            update_points,
-            inputs=[student_id],
-            outputs=[points_display, profile_points]
-        )
-
-        user_input.submit(
-            respond,
-            inputs=[user_input, chatbot, student_id],
-            outputs=[chatbot, user_input]
-        ).then(
-            update_points,
-            inputs=[student_id],
-            outputs=[points_display, profile_points]
-        )
-
-        events_btn.click(
-            app.get_events_this_week,
-            outputs=[events_display]
-        )
-
-        leaderboard_refresh_btn.click(
-            update_leaderboard,
-            outputs=[leaderboard_display]
-        )
-
-        feed_refresh_btn.click(
-            app.get_dynamic_feed_html,
-            outputs=[feed_display]
-        )
-
-        refresh_profile_btn.click(
-            update_points,
-            inputs=[student_id],
-            outputs=[profile_points]
-        )
-
-        feedback_btn.click(
-            app.submit_feedback,
-            inputs=[feedback_text, rating, student_id],
-            outputs=[feedback_status]
-        ).then(
-            update_points,
-            inputs=[student_id],
-            outputs=[points_display, profile_points]
-        )
-
-        student_id.change(
-            update_points,
-            inputs=[student_id],
-            outputs=[points_display, profile_points]
-        )
+        """.format(len([e for e in events if datetime.strptime(e['date'], '%Y-%m-%d').date() >= date.today()])), 
+        unsafe_allow_html=True)
     
-    return interface
+    with col2:
+        st.markdown("""
+        <div class="feature-card" style="text-align: center;">
+            <h3 style="color: #ff6b35; margin: 0;">👥</h3>
+            <h4 style="margin: 0.5rem 0;">Active Lions</h4>
+            <h2 style="color: #2a5298; margin: 0;">847</h2>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        total_rsvps = sum(event.get('rsvp_count', 0) for event in events)
+        st.markdown(f"""
+        <div class="feature-card" style="text-align: center;">
+            <h3 style="color: #ff6b35; margin: 0;">🎫</h3>
+            <h4 style="margin: 0.5rem 0;">Total RSVPs</h4>
+            <h2 style="color: #2a5298; margin: 0;">{total_rsvps}</h2>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col4:
+        st.markdown("""
+        <div class="feature-card" style="text-align: center;">
+            <h3 style="color: #ff6b35; margin: 0;">🏆</h3>
+            <h4 style="margin: 0.5rem 0;">Points Awarded</h4>
+            <h2 style="color: #2a5298; margin: 0;">15.2K</h2>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Main content area
+    left_col, right_col = st.columns([2, 1])
+    
+    with left_col:
+        st.markdown("## 🔥 Trending This Week")
+        
+        # Featured event
+        featured_event = events[0]  # Basketball game
+        st.markdown(f"""
+        <div class="feature-card">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <h3 style="color: #ff6b35; margin: 0;">{featured_event['title']}</h3>
+                    <p style="color: #666; margin: 0.5rem 0;"><strong>📍 {featured_event['location']}</strong></p>
+                    <p style="color: #666; margin: 0.5rem 0;">📅 {featured_event['date']} at {featured_event['time']}</p>
+                    <p style="margin: 1rem 0;">{featured_event['description']}</p>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <span class="badge">🏆 {featured_event['points']} Points</span>
+                        <span class="badge">👥 {featured_event['rsvp_count']} Going</span>
+                    </div>
+                </div>
+                <div style="font-size: 4rem;">🏀</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # RSVP and QR Code
+        col_a, col_b = st.columns(2)
+        with col_a:
+            if st.button("🎫 RSVP for Basketball Game", type="primary", use_container_width=True):
+                st.success("🎉 You're registered! See you at the game!")
+                st.balloons()
+        
+        with col_b:
+            if st.button("📱 Generate Check-in QR", use_container_width=True):
+                qr_buf = generate_qr_code(featured_event['id'], st.session_state.user_id)
+                st.image(qr_buf, width=200, caption="Scan at the event for instant points!")
+        
+        # Upcoming events list
+        st.markdown("### 📋 All Upcoming Events")
+        
+        for event in events[1:]:
+            event_date = datetime.strptime(event['date'], '%Y-%m-%d').date()
+            if event_date >= date.today():
+                st.markdown(f"""
+                <div class="event-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="margin: 0; color: #2a5298;">{event['title']}</h4>
+                            <p style="margin: 0.25rem 0; color: #666;">📍 {event['location']} • 📅 {event['date']} • ⏰ {event['time']}</p>
+                            <p style="margin: 0.5rem 0;">{event['description']}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="badge">🏆 {event['points']} pts</div>
+                            <p style="margin: 0.25rem 0; font-size: 0.9rem;">👥 {event['rsvp_count']} going</p>
+                        </div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+    
+    with right_col:
+        st.markdown("## 🏆 Top Lions This Week")
+        
+        # Top 5 leaderboard preview
+        individual_leaders = [person for person in leaderboard if person['type'] == 'Individual'][:5]
+        
+        for i, person in enumerate(individual_leaders):
+            rank_class = f"rank-{person['rank']}" if person['rank'] <= 3 else ""
+            badge_display = " ".join(person['badges'])
+            
+            st.markdown(f"""
+            <div class="leaderboard-item {rank_class}">
+                <div style="display: flex; align-items: center; width: 100%;">
+                    <div style="font-size: 1.5rem; margin-right: 1rem;">#{person['rank']}</div>
+                    <div style="flex-grow: 1;">
+                        <div style="font-weight: 600;">{person['name']}</div>
+                        <div style="font-size: 0.9rem; color: #666;">{person['points']} points • 🔥{person['streak']} streak</div>
+                        <div style="font-size: 1rem;">{badge_display}</div>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        if st.button("🏆 View Full Leaderboard", use_container_width=True):
+            st.switch_page("🏆 Leaderboard")
+        
+        st.markdown("---")
+        
+        # Quick AI Assistant
+        st.markdown("## 🤖 Quick Ask")
+        quick_question = st.text_input("Ask me anything about LMU!", placeholder="Where can I find a math tutor?")
+        
+        if quick_question:
+            with st.spinner("🦁 Thinking..."):
+                time.sleep(1)
+                response = simulate_ai_response(quick_question)
+                st.markdown(f"""
+                <div class="feature-card">
+                    <p style="margin: 0;"><strong>🤖 LMU AI:</strong></p>
+                    <p style="margin: 0.5rem 0 0 0;">{response}</p>
+                </div>
+                """, unsafe_allow_html=True)
+
+def show_calendar_page(events):
+    """Display interactive calendar with events"""
+    st.markdown("## 📅 Interactive Event Calendar")
+    st.markdown("Click on events to see details, RSVP, and get QR codes for check-in!")
+    
+    # Calendar view selector
+    view_option = st.selectbox("📊 Calendar View", ["Month", "Week", "List"], index=0)
+    
+    if view_option == "List":
+        # List view of events
+        st.markdown("### 📋 Event List View")
+        
+        # Filter options
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            event_type_filter = st.selectbox("🎯 Filter by Type", ["All", "Game Day", "Tailgate", "Watch Party", "RSO Event"])
+        with col2:
+            date_filter = st.date_input("📅 From Date", value=date.today())
+        with col3:
+            points_filter = st.slider("🏆 Minimum Points", 0, 100, 0)
+        
+        # Apply filters
+        filtered_events = events
+        if event_type_filter != "All":
+            filtered_events = [e for e in filtered_events if e['type'] == event_type_filter]
+        
+        filtered_events = [e for e in filtered_events if datetime.strptime(e['date'], '%Y-%m-%d').date() >= date_filter]
+        filtered_events = [e for e in filtered_events if e['points'] >= points_filter]
+        
+        # Display filtered events
+        for event in filtered_events:
+            col_a, col_b = st.columns([3, 1])
+            
+            with col_a:
+                st.markdown(f"""
+                <div class="event-card">
+                    <h4 style="margin: 0; color: #ff6b35;">{event['title']}</h4>
+                    <p style="margin: 0.5rem 0; color: #666;">
+                        📍 {event['location']} • 📅 {event['date']} • ⏰ {event['time']}
+                    </p>
+                    <p style="margin: 0.5rem 0;">{event['description']}</p>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <span class="badge">🎯 {event['type']}</span>
+                        <span class="badge">🏆 {event['points']} Points</span>
+                        <span class="badge">👥 {event['rsvp_count']}/{event['max_capacity']}</span>
+                        {f'<span class="badge">📱 QR Check-in</span>' if event.get('qr_checkin') else ''}
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col_b:
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button(f"🎫 RSVP", key=f"rsvp_{event['id']}", use_container_width=True):
+                    st.success(f"✅ RSVP confirmed for {event['title']}!")
+                    # Add to calendar functionality could be implemented here
+                
+                if event.get('qr_checkin') and st.button(f"📱 QR Code", key=f"qr_{event['id']}", use_container_width=True):
+                    with st.expander("📱 Event Check-in QR Code"):
+                        qr_buf = generate_qr_code(event['id'], st.session_state.user_id)
+                        st.image(qr_buf, width=200)
+                        st.markdown("**Instructions:** Show this QR code at the event entrance for instant check-in and points!")
+                
+                # Add to personal calendar
+                if st.button(f"📆 Add to Calendar", key=f"cal_{event['id']}", use_container_width=True):
+                    # Create calendar event data
+                    cal_data = f"""BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//LMU Campus Spirit Hub//EN
+BEGIN:VEVENT
+UID:{event['id']}@lmu.edu
+DTSTAMP:{datetime.now().strftime('%Y%m%dT%H%M%SZ')}
+DTSTART:{event['date'].replace('-', '')}{event['time'].replace(':', '')}00
+SUMMARY:{event['title']}
+DESCRIPTION:{event['description']}
+LOCATION:{event['location']}
+END:VEVENT
+END:VCALENDAR"""
+                    
+                    st.download_button(
+                        label="📥 Download .ics file",
+                        data=cal_data,
+                        file_name=f"{event['title'].replace(' ', '_')}.ics",
+                        mime="text/calendar"
+                    )
+    
+    else:
+        # Try to show calendar component if available
+        try:
+            calendar_events = create_calendar_events(events)
+            
+            st.markdown('<div class="calendar-container">', unsafe_allow_html=True)
+            
+            calendar_options = {
+                "editable": "true",
+                "navLinks": "true",
+                "selectable": "true",
+            }
+            
+            calendar_component = calendar(
+                events=calendar_events,
+                options=calendar_options,
+                custom_css="""
+                .fc-event-past {
+                    opacity: 0.6;
+                }
+                .fc-event {
+                    font-size: 0.85em;
+                    border-radius: 5px;
+                }
+                """
+            )
+            
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+            # Handle calendar interactions
+            if calendar_component.get('eventClick'):
+                event_clicked = calendar_component['eventClick']['event']
+                st.info(f"🎯 Selected: {event_clicked['title']}")
+                
+        except:
+            st.info("📅 Interactive calendar component not available. Showing list view instead.")
+            # Fallback to a simple calendar visualization
+            show_simple_calendar(events)
+
+def show_simple_calendar(events):
+    """Fallback simple calendar display"""
+    import calendar as cal
+    
+    today = datetime.now()
+    
+    # Create a simple monthly view
+    st.markdown(f"### 📅 {today.strftime('%B %Y')}")
+    
+    # Group events by date
+    events_by_date = {}
+    for event in events:
+        event_date = event['date']
+        if event_date not in events_by_date:
+            events_by_date[event_date] = []
+        events_by_date[event_date].append(event)
+    
+    # Show calendar grid (simplified)
+    cal_html = f"<div style='display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: #ddd; margin: 1rem 0;'>"
+    
+    # Days of week header
+    for day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']:
+        cal_html += f"<div style='background: #ff6b35; color: white; padding: 0.5rem; text-align: center; font-weight: bold;'>{day}</div>"
+    
+    # Calendar days
+    month_cal = cal.monthcalendar(today.year, today.month)
+    for week in month_cal:
+        for day in week:
+            if day == 0:
+                cal_html += "<div style='background: #f8f9fa; padding: 0.5rem;'></div>"
+            else:
+                day_str = f"{today.year}-{today.month:02d}-{day:02d}"
+                has_events = day_str in events_by_date
+                bg_color = "#ffe6e6" if has_events else "white"
+                cal_html += f"<div style='background: {bg_color}; padding: 0.5rem; text-align: center; min-height: 60px;'>"
+                cal_html += f"<div style='font-weight: bold;'>{day}</div>"
+                if has_events:
+                    cal_html += f"<div style='font-size: 0.7rem; color: #ff6b35;'>📅 {len(events_by_date[day_str])} events</div>"
+                cal_html += "</div>"
+    
+    cal_html += "</div>"
+    st.markdown(cal_html, unsafe_allow_html=True)
+
+def show_leaderboard_page(leaderboard, badges_info):
+    """Display dynamic leaderboard with real-time updates"""
+    st.markdown("## 🏆 Spirit Leaderboard")
+    st.markdown("Live rankings updated every minute! Compete for the top spot and earn exclusive badges.")
+    
+    # Leaderboard type selector
+    leaderboard_type = st.selectbox("🎯 View Rankings", ["Individual Students", "RSOs & Organizations", "Combined"])
+    
+    # Filter leaderboard based on selection
+    if leaderboard_type == "Individual Students":
+        filtered_leaderboard = [person for person in leaderboard if person['type'] == 'Individual']
+    elif leaderboard_type == "RSOs & Organizations":
+        filtered_leaderboard = [person for person in leaderboard if person['type'] == 'RSO']
+    else:
+        filtered_leaderboard = leaderboard
+    
+    # Display statistics
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        total_participants = len([p for p in leaderboard if p['type'] == 'Individual'])
+        st.metric("👥 Active Students", total_participants, delta=12)
+    
+    with col2:
+        total_orgs = len([p for p in leaderboard if p['type'] == 'RSO'])
+        st.metric("🏛️ Participating RSOs", total_orgs, delta=2)
+    
+    with col3:
+        total_points = sum(person['points'] for person in leaderboard)
+        st.metric("🏆 Total Points Awarded", f"{total_points:,}", delta=245)
+    
+    # Main leaderboard display
+    st.markdown("### 🥇 Current Rankings")
+    
+    for i, person in enumerate(filtered_leaderboard):
+        # Determine medal/rank styling
+        if person['rank'] == 1:
+            rank_style = "background: linear-gradient(135deg, #FFD700, #FFA500); color: #333;"
+            rank_icon = "🥇"
+        elif person['rank'] == 2:
+            rank_style = "background: linear-gradient(135deg, #C0C0C0, #A8A8A8); color: #333;"
+            rank_icon = "🥈"
+        elif person['rank'] == 3:
+            rank_style = "background: linear-gradient(135deg, #CD7F32, #B87333); color: white;"
+            rank_icon = "🥉"
+        else:
+            rank_style = "background: white; border: 2px solid #e9ecef;"
+            rank_icon = f"#{person['rank']}"
+        
+        # Badge display
+        badge_display = " ".join(person['badges'])
+        
+        # Streak indicator
+        streak_color = "#ff6b35" if person['streak'] >= 10 else "#2a5298" if person['streak'] >= 5 else "#666"
+        
+        st.markdown(f"""
+        <div style="{rank_style} border-radius: 15px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <div style="font-size: 2rem; font-weight: bold;">{rank_icon}</div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.3rem;">{person['name']}</h3>
+                        <p style="margin: 0.25rem 0; font-size: 1rem; opacity: 0.8;">
+                            🏆 {person['points']:,} points • 
+                            <span style="color: {streak_color};">🔥 {person['streak']} day streak</span>
+                        </p>
+                        <div style="font-size: 1.2rem; margin-top: 0.5rem;">{badge_display}</div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 0.9rem; opacity: 0.8;">
+                        {person['type']}
+                    </div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Points progress chart
+    st.markdown("### 📊 Points Progression")
+    
+    # Create sample data for points over time
+    dates = pd.date_range(start='2024-01-01', end='2024-02-15', freq='D')
+    points_data = []
+    
+    for person in filtered_leaderboard[:5]:  # Top 5 for chart
+        person_points = []
+        cumulative = 0
+        for date in dates:
+            daily_points = random.randint(0, 25)
+            cumulative += daily_points
+            person_points.append(cumulative)
+        
+        points_data.append({
+            'Name': person['name'],
+            'Dates': dates,
+            'Points': person_points
+        })
+    
+    # Create plotly chart
+    fig = go.Figure()
+    
+    colors = ['#ff6b35', '#2a5298', '#f7931e', '#667eea', '#764ba2']
+    for i, data in enumerate(points_data):
+        fig.add_trace(go.Scatter(
+            x=data['Dates'],
+            y=data['Points'],
+            mode='lines+markers',
+            name=data['Name'],
+            line=dict(color=colors[i % len(colors)], width=3),
+            marker=dict(size=6)
+        ))
+    
+    fig.update_layout(
+        title="📈 Points Progression Over Time",
+        xaxis_title="Date",
+        yaxis_title="Cumulative Points",
+        height=400,
+        hovermode='x unified',
+        legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01)
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Badge explanation
+    with st.expander("🏅 Badge Guide - What Do They Mean?"):
+        cols = st.columns(3)
+        badges_list = list(badges_info.items())
+        
+        for i, col in enumerate(cols):
+            with col:
+                start_idx = i * (len(badges_list) // 3)
+                end_idx = (i + 1) * (len(badges_list) // 3) if i < 2 else len(badges_list)
+                
+                for badge, description in badges_list[start_idx:end_idx]:
+                    st.markdown(f"**{badge}** {description}")
+
+def show_prize_shop(prizes):
+    """Display prize showcase with categories and detailed descriptions"""
+    st.markdown("## 🎁 Prize Shop")
+    st.markdown("Earn points and redeem them for exclusive LMU experiences and rewards!")
+    
+    # User points display
+    if st.session_state.user_id:
+        st.markdown(f"""
+        <div class="points-display">
+            💰 You have {st.session_state.user_points} points to spend!
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Prize categories
+    categories = list(set(prize['category'] for prize in prizes))
+    selected_category = st.selectbox("🎯 Browse by Category", ["All Categories"] + categories)
+    
+    # Filter prizes
+    if selected_category != "All Categories":
+        filtered_prizes = [p for p in prizes if p['category'] == selected_category]
+    else:
+        filtered_prizes = prizes
+    
+    # Sort options
+    sort_option = st.selectbox("📊 Sort by", ["Points (Low to High)", "Points (High to Low)", "Availability", "Category"])
+    
+    if sort_option == "Points (Low to High)":
+        filtered_prizes = sorted(filtered_prizes, key=lambda x: x['points_required'])
+    elif sort_option == "Points (High to Low)":
+        filtered_prizes = sorted(filtered_prizes, key=lambda x: x['points_required'], reverse=True)
+    elif sort_option == "Availability":
+        filtered_prizes = sorted(filtered_prizes, key=lambda x: x['available'] - x['claimed'], reverse=True)
+    elif sort_option == "Category":
+        filtered_prizes = sorted(filtered_prizes, key=lambda x: x['category'])
+    
+    # Display prizes
+    for prize in filtered_prizes:
+        available_count = prize['available'] - prize['claimed']
+        can_afford = st.session_state.user_points >= prize['points_required'] if st.session_state.user_id else False
+        
+        # Prize availability styling
+        if available_count == 0:
+            card_style = "background: #f8f9fa; opacity: 0.6; border: 2px dashed #ccc;"
+            availability_text = "🚫 Sold Out"
+            button_disabled = True
+        elif available_count <= 2:
+            card_style = "background: linear-gradient(135deg, #fff3cd, #ffeaa7); border: 2px solid #ff6b35;"
+            availability_text = f"⚡ Only {available_count} left!"
+            button_disabled = False
+        else:
+            card_style = "background: linear-gradient(135deg, #ffecd2, #fcb69f); border: 2px solid #ff6b35;"
+            availability_text = f"✅ {available_count} available"
+            button_disabled = False
+        
+        # Disable if user can't afford
+        if not can_afford and st.session_state.user_id:
+            card_style += " opacity: 0.7;"
+            button_disabled = True
+        
+        col1, col2 = st.columns([3, 1])
+        
+        with col1:
+            st.markdown(f"""
+            <div style="{card_style} border-radius: 20px; padding: 2rem; margin: 1rem 0; position: relative;">
+                <div style="position: absolute; top: 15px; right: 20px; font-size: 3rem;">{prize['image']}</div>
+                <h3 style="color: #2a5298; margin: 0 0 0.5rem 0;">{prize['name']}</h3>
+                <p style="color: #ff6b35; font-weight: 600; margin: 0 0 1rem 0;">{prize['category']}</p>
+                <p style="margin: 0 0 1rem 0; line-height: 1.5;">{prize['description']}</p>
+                
+                <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1.5rem;">
+                    <span style="background: #2a5298; color: white; padding: 0.5rem 1rem; border-radius: 25px; font-weight: 600;">
+                        💰 {prize['points_required']} points
+                    </span>
+                    <span style="background: {'#28a745' if available_count > 2 else '#ffc107' if available_count > 0 else '#dc3545'}; 
+                                 color: white; padding: 0.5rem 1rem; border-radius: 25px; font-weight: 600;">
+                        {availability_text}
+                    </span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("<br>" * 4, unsafe_allow_html=True)
+            
+            if not st.session_state.user_id:
+                st.info("Login to redeem prizes!")
+            elif button_disabled:
+                if available_count == 0:
+                    st.error("Sold Out")
+                else:
+                    points_needed = prize['points_required'] - st.session_state.user_points
+                    st.warning(f"Need {points_needed} more points")
+            else:
+                if st.button(f"🎁 Redeem Now", key=f"redeem_{prize['id']}", type="primary", use_container_width=True):
+                    # Redeem prize
+                    st.session_state.user_points -= prize['points_required']
+                    prize['claimed'] += 1  # This would be saved to database in real app
+                    
+                    st.success(f"🎉 Congratulations! You've redeemed '{prize['name']}'!")
+                    st.balloons()
+                    
+                    # Show redemption details
+                    st.info(f"📧 Check your LMU email for redemption instructions. Prize ID: {prize['id']}")
+                    
+                    time.sleep(2)
+                    st.rerun()
+    
+    # Prize request section
+    st.markdown("---")
+    st.markdown("### 💡 Suggest a New Prize")
+    
+    with st.expander("🗣️ Have an idea for a new prize?"):
+        new_prize_name = st.text_input("Prize Name", placeholder="e.g., Lunch with President Snyder")
+        new_prize_description = st.text_area("Prize Description", placeholder="Describe what makes this prize special...")
+        suggested_points = st.number_input("Suggested Points Required", min_value=50, max_value=2000, value=300, step=50)
+        
+        if st.button("💌 Submit Suggestion", type="primary"):
+            # In a real app, this would save to database
+            st.success("🙌 Thank you for your suggestion! Our team will review it and consider adding it to the prize shop.")
+
+def show_content_gallery():
+    """Display content gallery with photos, videos, and social posts"""
+    st.markdown("## 📸 Content Gallery")
+    st.markdown("Relive the best moments from LMU events and get hyped for what's coming next!")
+    
+    # Content type tabs
+    content_tabs = st.tabs(["📷 Event Photos", "🎥 Video Highlights", "📱 Social Posts", "🎨 Submit Content"])
+    
+    with content_tabs[0]:  # Event Photos
+        st.markdown("### 📷 Latest Event Photos")
+        
+        # Sample photo data (in real app, this would come from a database)
+        photo_albums = [
+            {
+                "title": "Basketball vs Pepperdine - Red Sea Night",
+                "date": "2024-02-10",
+                "photos": 45,
+                "highlights": ["packed stadium", "amazing atmosphere", "overtime win"]
+            },
+            {
+                "title": "Greek Row Tailgate Extravaganza", 
+                "date": "2024-02-08",
+                "photos": 32,
+                "highlights": ["BBQ feast", "spirit competitions", "group photos"]
+            },
+            {
+                "title": "Service Learning Fair",
+                "date": "2024-02-05", 
+                "photos": 28,
+                "highlights": ["community involvement", "RSO booths", "networking"]
+            }
+        ]
+        
+        for album in photo_albums:
+            st.markdown(f"""
+            <div class="feature-card">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="flex-grow: 1;">
+                        <h4 style="color: #ff6b35; margin: 0;">{album['title']}</h4>
+                        <p style="color: #666; margin: 0.5rem 0;">📅 {album['date']} • 📸 {album['photos']} photos</p>
+                        <div style="margin: 1rem 0;">
+                            {' '.join([f'<span class="badge">{highlight}</span>' for highlight in album['highlights']])}
+                        </div>
+                    </div>
+                    <div style="font-size: 3rem;">📸</div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Simulate photo thumbnails
+            cols = st.columns(4)
+            for i, col in enumerate(cols):
+                with col:
+                    # Create placeholder image
+                    placeholder_img = Image.new('RGB', (200, 150), color=(random.randint(100, 255), random.randint(100, 255), random.randint(100, 255)))
+                    st.image(placeholder_img, caption=f"Photo {i+1}", use_column_width=True)
+    
+    with content_tabs[1]:  # Video Highlights
+        st.markdown("### 🎥 Video Highlights")
+        
+        video_content = [
+            {
+                "title": "Game Winning Shot - Lions vs Pepperdine",
+                "duration": "0:45",
+                "views": "1.2K",
+                "description": "The crowd went wild! Amazing buzzer beater by #23 Johnson!"
+            },
+            {
+                "title": "Best Tailgate Moments Compilation",
+                "duration": "2:30", 
+                "views": "856",
+                "description": "All the fun from our epic pre-game celebration"
+            },
+            {
+                "title": "Student Interviews: Why LMU Spirit Matters",
+                "duration": "3:15",
+                "views": "643",
+                "description": "Students share what Lion pride means to them"
+            }
+        ]
+        
+        for video in video_content:
+            col1, col2 = st.columns([1, 2])
+            
+            with col1:
+                # Video thumbnail placeholder
+                thumbnail = Image.new('RGB', (300, 200), color=(30, 60, 114))
+                st.image(thumbnail, caption=f"▶️ {video['duration']}")
+            
+            with col2:
+                st.markdown(f"""
+                <div style="padding: 1rem;">
+                    <h4 style="color: #2a5298; margin: 0 0 0.5rem 0;">{video['title']}</h4>
+                    <p style="color: #666; margin: 0 0 1rem 0;">👀 {video['views']} views • ⏱️ {video['duration']}</p>
+                    <p style="margin: 0;">{video['description']}</p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+    
+    with content_tabs[2]:  # Social Posts
+        st.markdown("### 📱 Social Media Highlights")
+        
+        social_posts = [
+            {
+                "platform": "Instagram",
+                "username": "@lmu_campus_spirit",
+                "content": "Red Sea Night was UNREAL! 🔴⚪ The energy in Gersten was off the charts! Who else was there? #LionUp #RedSeaNight",
+                "likes": 245,
+                "comments": 32,
+                "timestamp": "2 hours ago"
+            },
+            {
+                "platform": "TikTok", 
+                "username": "@lmu_lions",
+                "content": "POV: You're at the best tailgate on campus 🔥 Greek Row knows how to party! #LMU #Tailgate #CollegeLife",
+                "likes": 892,
+                "comments": 67,
+                "timestamp": "1 day ago"
+            },
+            {
+                "platform": "Twitter/X",
+                "username": "@LMU_Spirit",
+                "content": "Shoutout to everyone who came to the Service Learning Fair! 🙌 Our community impact is incredible. Next up: Basketball game Friday! 🏀",
+                "likes": 156,
+                "comments": 18,
+                "timestamp": "3 days ago"
+            }
+        ]
+        
+        for post in social_posts:
+            platform_color = {"Instagram": "#E4405F", "TikTok": "#000000", "Twitter/X": "#1DA1F2"}[post['platform']]
+            platform_icon = {"Instagram": "📷", "TikTok": "🎵", "Twitter/X": "🐦"}[post['platform']]
+            
+            st.markdown(f"""
+            <div class="feature-card" style="border-left: 5px solid {platform_color};">
+                <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                    <span style="font-size: 1.5rem; margin-right: 0.5rem;">{platform_icon}</span>
+                    <strong style="color: {platform_color};">{post['platform']}</strong>
+                    <span style="margin-left: 0.5rem; color: #666;">@{post['username'].replace('@', '')}</span>
+                    <span style="margin-left: auto; color: #999; font-size: 0.9rem;">{post['timestamp']}</span>
+                </div>
+                <p style="margin: 1rem 0; line-height: 1.5;">{post['content']}</p>
+                <div style="display: flex; gap: 2rem; color: #666; font-size: 0.9rem;">
+                    <span>❤️ {post['likes']} likes</span>
+                    <span>💬 {post['comments']} comments</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    with content_tabs[3]:  # Submit Content
+        st.markdown("### 🎨 Submit Your Content")
+        st.markdown("Share your LMU moments and help build our community gallery!")
+        
+        content_type = st.selectbox("📋 Content Type", ["Photo", "Video", "Social Media Post", "Story/Caption"])
+        
+        if content_type == "Photo":
+            uploaded_file = st.file_uploader("📸 Upload Photo", type=['png', 'jpg', 'jpeg'])
+            photo_caption = st.text_area("Photo Caption", placeholder="Tell us about this moment...")
+            event_tag = st.selectbox("🏷️ Tag Event (if applicable)", ["None", "Basketball Game", "Tailgate", "Watch Party", "RSO Event", "Other"])
+            
+        elif content_type == "Video":
+            st.info("📹 For video submissions, please share your content via email to spirit@lmu.edu or tag us on social media!")
+            video_description = st.text_area("Video Description", placeholder="Describe your video content...")
+            
+        elif content_type == "Social Media Post":
+            platform = st.selectbox("📱 Platform", ["Instagram", "TikTok", "Twitter/X", "Facebook"])
+            post_link = st.text_input("🔗 Post Link", placeholder="Paste the link to your post...")
+            
+        else:  # Story/Caption
+            story_content = st.text_area("📝 Your LMU Story", placeholder="Share your experience, memorable moment, or why you love LMU...", height=150)
+        
+        # Submission form
+        submitter_name = st.text_input("Your Name", placeholder="How should we credit you?")
+        submitter_email = st.text_input("Email (optional)", placeholder="For follow-up questions")
+        
+        if st.button("🚀 Submit Content", type="primary"):
+            st.success("🎉 Thank you for your submission! Our team will review it and potentially feature it in our gallery.")
+            st.balloons()
+
+def show_user_profile(events, badges_info):
+    """Display user profile with progress tracking and stats"""
+    if not st.session_state.user_id:
+        st.warning("🔐 Please log in to view your profile!")
+        return
+    
+    st.markdown(f"## 👤 {st.session_state.user_id.split('@')[0].title()}'s Profile")
+    
+    # Profile stats overview
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.markdown(f"""
+        <div class="feature-card" style="text-align: center;">
+            <h3 style="color: #ff6b35; margin: 0;">🏆</h3>
+            <h2 style="color: #2a5298; margin: 0.5rem 0;">{st.session_state.user_points}</h2>
+            <p style="margin: 0;">Spirit Points</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        events_attended = len(st.session_state.attended_events)
+        st.markdown(f"""
+        <div class="feature-card" style="text-align: center;">
+            <h3 style="color: #ff6b35; margin: 0;">📅</h3>
+            <h2 style="color: #2a5298; margin: 0.5rem 0;">{events_attended}</h2>
+            <p style="margin: 0;">Events Attended</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown(f"""
+        <div class="feature-card" style="text-align: center;">
+            <h3 style="color: #ff6b35; margin: 0;">🏅</h3>
+            <h2 style="color: #2a5298; margin: 0.5rem 0;">{len(st.session_state.user_badges)}</h2>
+            <p style="margin: 0;">Badges Earned</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col4:
+        current_streak = random.randint(3, 15)  # Simulated
+        st.markdown(f"""
+        <div class="feature-card" style="text-align: center;">
+            <h3 style="color: #ff6b35; margin: 0;">🔥</h3>
+            <h2 style="color: #2a5298; margin: 0.5rem 0;">{current_streak}</h2>
+            <p style="margin: 0;">Day Streak</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Main profile content
+    tab1, tab2, tab3, tab4 = st.tabs(["🏆 Achievements", "📊 Progress", "📅 Event History", "⚙️ Settings"])
+    
+    with tab1:  # Achievements
+        st.markdown("### 🏅 Your Badges")
+        
+        if st.session_state.user_badges:
+            # Display badges in a grid
+            cols = st.columns(4)
+            for i, badge in enumerate(st.session_state.user_badges):
+                with cols[i % 4]:
+                    description = badges_info.get(badge, "Special achievement")
+                    st.markdown(f"""
+                    <div class="feature-card" style="text-align: center; padding: 1rem;">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">{badge}</div>
+                        <p style="margin: 0; font-size: 0.9rem;">{description}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+        else:
+            st.info("🎯 Attend events and participate to earn your first badges!")
+        
+        # Next badges to earn
+        st.markdown("### 🎯 Next Achievements")
+        available_badges = [badge for badge in badges_info.keys() if badge not in st.session_state.user_badges]
+        
+        for i in range(min(3, len(available_badges))):
+            badge = available_badges[i]
+            st.markdown(f"""
+            <div class="feature-card" style="opacity: 0.7; border: 2px dashed #ccc;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="font-size: 2rem;">{badge}</div>
+                    <div>
+                        <p style="margin: 0; font-weight: 600;">Coming Soon</p>
+                        <p style="margin: 0; font-size: 0.9rem; color: #666;">{badges_info[badge]}</p>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    with tab2:  # Progress
+        st.markdown("### 📊 Your Progress")
+        
+        # Level system
+        levels = [
+            {"name": "Young Lion", "min_points": 0, "max_points": 199, "icon": "🦁"},
+            {"name": "Bronze Lion", "min_points": 200, "max_points": 499, "icon": "🥉"},
+            {"name": "Silver Lion", "min_points": 500, "max_points": 999, "icon": "🥈"},
+            {"name": "Gold Lion", "min_points": 1000, "max_points": 1999, "icon": "🥇"},
+            {"name": "Legendary Lion", "min_points": 2000, "max_points": float('inf'), "icon": "👑"}
+        ]
+        
+        current_level = None
+        next_level = None
+        
+        for i, level in enumerate(levels):
+            if level["min_points"] <= st.session_state.user_points <= level["max_points"]:
+                current_level = level
+                if i < len(levels) - 1:
+                    next_level = levels[i + 1]
+                break
+        
+        if current_level:
+            if next_level:
+                progress_percentage = ((st.session_state.user_points - current_level["min_points"]) / 
+                                     (next_level["min_points"] - current_level["min_points"])) * 100
+                points_needed = next_level["min_points"] - st.session_state.user_points
+            else:
+                progress_percentage = 100
+                points_needed = 0
+            
+            st.markdown(f"""
+            <div class="feature-card">
+                <h3 style="color: #ff6b35; margin: 0 0 1rem 0;">Current Level: {current_level['icon']} {current_level['name']}</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: {progress_percentage}%;"></div>
+                </div>
+                <p style="margin: 1rem 0 0 0; text-align: center;">
+                    {f"{points_needed} points to {next_level['icon']} {next_level['name']}" if next_level else "Max level achieved! 🎉"}
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        # Points breakdown chart
+        st.markdown("### 📈 Points Sources")
+        
+        # Simulate points breakdown
+        points_sources = {
+            "Game Attendance": random.randint(200, 400),
+            "Tailgate Participation": random.randint(100, 200),
+            "RSO Events": random.randint(50, 150),
+            "Social Challenges": random.randint(30, 100),
+            "QR Check-ins": random.randint(40, 120),
+            "Other": random.randint(20, 80)
+        }
+        
+        fig = px.pie(
+            values=list(points_sources.values()),
+            names=list(points_sources.keys()),
+            title="Where Your Points Come From",
+            color_discrete_sequence=['#ff6b35', '#2a5298', '#f7931e', '#667eea', '#764ba2', '#ffecd2']
+        )
+        fig.update_layout(height=400)
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with tab3:  # Event History
+        st.markdown("### 📅 Your Event History")
+        
+        # Simulate event history
+        sample_history = [
+            {"event": "Lions vs Pepperdine Basketball", "date": "2024-02-10", "points": 75, "type": "Game Day"},
+            {"event": "Greek Row Tailgate", "date": "2024-02-08", "points": 25, "type": "Tailgate"},
+            {"event": "Service Learning Fair", "date": "2024-02-05", "points": 15, "type": "RSO Event"},
+            {"event": "Lions Den Watch Party", "date": "2024-01-28", "points": 20, "type": "Watch Party"},
+        ]
+        
+        for event in sample_history:
+            st.markdown(f"""
+            <div class="event-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="margin: 0; color: #2a5298;">{event['event']}</h4>
+                        <p style="margin: 0.25rem 0; color: #666;">📅 {event['date']} • 🎯 {event['type']}</p>
+                    </div>
+                    <div class="badge">🏆 +{event['points']} pts</div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        if len(sample_history) == 0:
+            st.info("🎯 No events attended yet. Check out the calendar to find upcoming events!")
+    
+    with tab4:  # Settings
+        st.markdown("### ⚙️ Profile Settings")
+        
+        # Notification preferences
+        st.markdown("#### 📢 Notification Preferences")
+        notify_events = st.checkbox("📅 Notify me about new events", value=True)
+        notify_prizes = st.checkbox("🎁 Notify me about new prizes", value=True)
+        notify_leaderboard = st.checkbox("🏆 Notify me about leaderboard changes", value=False)
+        
+        # Privacy settings
+        st.markdown("#### 🔒 Privacy Settings")
+        public_profile = st.checkbox("👥 Make my profile visible to other students", value=True)
+        show_real_name = st.checkbox("📛 Display my real name on leaderboard", value=False)
+        
+        # Data export
+        st.markdown("#### 📊 Data Management")
+        if st.button("📥 Download My Data"):
+            # Create sample data export
+            user_data = {
+                "user_id": st.session_state.user_id,
+                "points": st.session_state.user_points,
+                "badges": st.session_state.user_badges,
+                "events_attended": sample_history,
+                "export_date": datetime.now().isoformat()
+            }
+            
+            st.download_button(
+                label="💾 Download JSON",
+                data=json.dumps(user_data, indent=2),
+                file_name=f"lmu_spirit_data_{datetime.now().strftime('%Y%m%d')}.json",
+                mime="application/json"
+            )
+        
+        if st.button("🗑️ Delete My Account", type="secondary"):
+            st.warning("⚠️ This action cannot be undone. All your points, badges, and history will be lost.")
+            if st.button("❌ Confirm Delete", type="secondary"):
+                # In real app, this would delete from database
+                st.session_state.user_id = None
+                st.session_state.user_points = 0
+                st.session_state.user_badges = []
+                st.session_state.attended_events = []
+                st.success("Account deleted successfully.")
+                st.rerun()
+
+def show_ai_assistant():
+    """Enhanced AI assistant with LMU-specific knowledge"""
+    st.markdown("## 🤖 LMU AI Assistant")
+    st.markdown("Ask me anything about LMU! I know about campus life, academics, events, and more. 🦁")
+    
+    # Quick suggestion buttons
+    st.markdown("### 💡 Quick Questions")
+    suggestion_cols = st.columns(3)
+    
+    suggestions = [
+        "Where can I find a math tutor?",
+        "What events are happening this week?",
+        "How do I join Greek life?",
+        "Where is the counseling center?",
+        "What's the GPA requirement for study abroad?",
+        "How do I get to campus by Metro?"
+    ]
+    
+    for i, suggestion in enumerate(suggestions):
+        with suggestion_cols[i % 3]:
+            if st.button(f"💬 {suggestion}", key=f"suggestion_{i}"):
+                st.session_state.current_question = suggestion
+    
+    # Chat interface
+    st.markdown("### 💬 Chat with LMU AI")
+    
+    # Display conversation history
+    if st.session_state.conversation_history:
+        st.markdown("#### 📝 Recent Conversation")
+        for i, exchange in enumerate(st.session_state.conversation_history[-5:]):  # Show last 5
+            st.markdown(f"""
+            <div class="feature-card">
+                <p style="margin: 0 0 0.5rem 0;"><strong>🙋 You:</strong> {exchange['question']}</p>
+                <p style="margin: 0; color: #2a5298;"><strong>🤖 LMU AI:</strong> {exchange['answer']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    # Question input
+    question = st.text_input(
+        "Ask your question:",
+        placeholder="e.g., Where can I find study rooms?",
+        value=getattr(st.session_state, 'current_question', ''),
+        key="ai_question_input"
+    )
+    
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        ask_button = st.button("🚀 Ask LMU AI", type="primary", use_container_width=True)
+    with col2:
+        clear_button = st.button("🗑️ Clear Chat", use_container_width=True)
+    
+    if clear_button:
+        st.session_state.conversation_history = []
+        st.rerun()
+    
+    if ask_button and question:
+        with st.spinner("🤔 Thinking like a Lion..."):
+            time.sleep(1.5)  # Simulate thinking time
+            response = simulate_ai_response(question)
+            
+            # Add to conversation history
+            st.session_state.conversation_history.append({
+                "question": question,
+                "answer": response,
+                "timestamp": datetime.now().isoformat()
+            })
+            
+            # Award points for asking questions
+            if st.session_state.user_id:
+                st.session_state.user_points += 1
+                st.success("🏆 +1 point for asking a question!")
+            
+            # Display the response
+            st.markdown(f"""
+            <div class="feature-card" style="border-left: 5px solid #ff6b35;">
+                <p style="margin: 0 0 0.5rem 0;"><strong>🙋 You:</strong> {question}</p>
+                <p style="margin: 0; color: #2a5298;"><strong>🤖 LMU AI:</strong> {response}</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Clear the input
+            if hasattr(st.session_state, 'current_question'):
+                delattr(st.session_state, 'current_question')
+    
+    # AI Features showcase
+    st.markdown("---")
+    st.markdown("### 🧠 What I Can Help With")
+    
+    feature_cols = st.columns(2)
+    
+    with feature_cols[0]:
+        st.markdown("""
+        **📚 Academic Support:**
+        - Finding tutoring and study resources
+        - Registration and class information
+        - GPA requirements and policies
+        - Study abroad programs
+        - Academic deadlines and schedules
+        
+        **🏛️ Campus Life:**
+        - Campus building locations
+        - Dining hall hours and options
+        - Transportation and parking
+        - Campus events and activities
+        - Student organizations and clubs
+        """)
+    
+    with feature_cols[1]:
+        st.markdown("""
+        **🎯 Student Services:**
+        - Health and counseling services
+        - Career center resources
+        - Financial aid information
+        - Technology support
+        - Library services and hours
+        
+        **🦁 LMU Spirit:**
+        - Sports schedules and tickets
+        - Spirit events and traditions
+        - Greek life information
+        - School pride and culture
+        - Alumni connections
+        """)
+    
+    # Knowledge base stats
+    st.markdown("### 📊 My Knowledge Base")
+    
+    stats_cols = st.columns(4)
+    with stats_cols[0]:
+        st.metric("📄 Documents", "2,847", delta="23")
+    with stats_cols[1]:
+        st.metric("❓ Q&As", "1,256", delta="15")
+    with stats_cols[2]:
+        st.metric("🏢 Campus Locations", "450+", delta="5")
+    with stats_cols[3]:
+        st.metric("📅 Events Tracked", "95", delta="8")
+
+def show_feedback_page():
+    """Display feedback and suggestion module"""
+    st.markdown("## 💬 Feedback & Suggestions")
+    st.markdown("Help us make the LMU Campus Spirit Hub even better! Your voice matters. 🦁")
+    
+    # Feedback type selector
+    feedback_type = st.selectbox(
+        "🎯 What type of feedback would you like to share?",
+        ["General Feedback", "Bug Report", "Feature Request", "Event Suggestion", "Prize Idea", "Content Submission"]
+    )
+    
+    # Feedback form based on type
+    if feedback_type == "General Feedback":
+        st.markdown("### 💭 General Feedback")
+        rating = st.slider("⭐ Overall Rating", 1, 5, 4)
+        
+        st.markdown("**What's working well?**")
+        positive_feedback = st.text_area("Tell us what you love...", height=100)
+        
+        st.markdown("**What could be improved?**")
+        improvement_feedback = st.text_area("Share your improvement ideas...", height=100)
+        
+    elif feedback_type == "Bug Report":
+        st.markdown("### 🐛 Bug Report")
+        bug_severity = st.selectbox("🚨 Severity", ["Low", "Medium", "High", "Critical"])
+        bug_location = st.selectbox("📍 Where did this happen?", ["Calendar", "Leaderboard", "Profile", "AI Assistant", "Prize Shop", "Other"])
+        bug_description = st.text_area("🔍 Describe the bug", 
+                                     placeholder="What happened? What did you expect to happen?", 
+                                     height=150)
+        steps_to_reproduce = st.text_area("🔄 Steps to reproduce", 
+                                        placeholder="1. Go to...\n2. Click on...\n3. See error...", 
+                                        height=100)
+        
+    elif feedback_type == "Feature Request":
+        st.markdown("### ✨ Feature Request")
+        feature_category = st.selectbox("📂 Category", ["UI/UX", "Events", "Social", "Gamification", "AI Assistant", "Mobile", "Other"])
+        feature_title = st.text_input("💡 Feature Title", placeholder="Brief title for your idea")
+        feature_description = st.text_area("📝 Feature Description", 
+                                         placeholder="Describe your feature idea in detail...", 
+                                         height=150)
+        feature_priority = st.selectbox("🎯 Priority", ["Nice to have", "Important", "Critical"])
+        
+    elif feedback_type == "Event Suggestion":
+        st.markdown("### 📅 Event Suggestion")
+        event_name = st.text_input("🎉 Event Name", placeholder="e.g., Lions Late Night Study")
+        event_type = st.selectbox("🎯 Event Type", ["Game Day", "Tailgate", "Watch Party", "RSO Event", "Social", "Academic", "Service", "Other"])
+        event_description = st.text_area("📝 Event Description", height=120)
+        suggested_points = st.number_input("🏆 Suggested Points Value", min_value=5, max_value=100, value=20)
+        estimated_attendance = st.number_input("👥 Expected Attendance", min_value=10, max_value=1000, value=50)
+        
+    elif feedback_type == "Prize Idea":
+        st.markdown("### 🎁 Prize Idea")
+        prize_name = st.text_input("🏆 Prize Name", placeholder="e.g., Lunch with the Basketball Team")
+        prize_category = st.selectbox("📂 Category", ["Ultimate Experience", "Game Day", "Academic", "Leadership", "Recognition", "Merchandise", "Other"])
+        prize_description = st.text_area("📝 Prize Description", height=120)
+        suggested_points_required = st.number_input("💰 Suggested Points Required", min_value=50, max_value=2000, value=300, step=50)
+        prize_availability = st.number_input("📊 How many available?", min_value=1, max_value=50, value=1)
+        
+    else:  # Content Submission
+        st.markdown("### 📸 Content Submission")
+        content_type_detailed = st.selectbox("📋 Content Type", ["Photo", "Video", "Story", "Social Media Post", "Article", "Other"])
+        content_title = st.text_input("📰 Content Title")
+        content_description = st.text_area("📝 Content Description", height=120)
+        content_event = st.selectbox("🏷️ Related Event (if any)", ["None", "Recent Basketball Game", "Latest Tailgate", "RSO Fair", "Other"])
+    
+    # Common fields for all feedback types
+    st.markdown("---")
+    st.markdown("### 👤 Contact Information (Optional)")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        contact_name = st.text_input("📛 Your Name", placeholder="How should we credit you?")
+    with col2:
+        contact_email = st.text_input("📧 Email", placeholder="For follow-up questions")
+    
+    # Anonymous option
+    anonymous = st.checkbox("🕶️ Submit anonymously")
+    
+    # Submit button
+    if st.button("🚀 Submit Feedback", type="primary", use_container_width=True):
+        # Create feedback object (in real app, this would go to database)
+        feedback_data = {
+            "type": feedback_type,
+            "timestamp": datetime.now().isoformat(),
+            "anonymous": anonymous
+        }
+        
+        if not anonymous:
+            feedback_data["contact_name"] = contact_name
+            feedback_data["contact_email"] = contact_email
+        
+        # Add type-specific data
+        if feedback_type == "General Feedback":
+            feedback_data.update({
+                "rating": rating,
+                "positive": positive_feedback,
+                "improvements": improvement_feedback
+            })
+        elif feedback_type == "Bug Report":
+            feedback_data.update({
+                "severity": bug_severity,
+                "location": bug_location,
+                "description": bug_description,
+                "steps": steps_to_reproduce
+            })
+        # ... and so on for other types
+        
+        st.success("🎉 Thank you for your feedback! We really appreciate your input.")
+        st.balloons()
+        
+        # Award points for feedback
+        if st.session_state.user_id:
+            st.session_state.user_points += 3
+            st.success("🏆 +3 points for providing feedback!")
+        
+        # Show confirmation message based on type
+        if feedback_type == "Bug Report":
+            st.info("🔧 Our tech team will investigate this issue. If you provided contact info, we'll update you on the fix!")
+        elif feedback_type == "Feature Request":
+            st.info("💡 Our product team will review your suggestion for future updates!")
+        elif feedback_type == "Event Suggestion":
+            st.info("📅 Our events team will consider your suggestion for upcoming programming!")
+        elif feedback_type == "Prize Idea":
+            st.info("🎁 Our rewards team will evaluate your prize idea for the next prize refresh!")
+    
+    # Recent feedback summary
+    st.markdown("---")
+    st.markdown("### 📊 Community Feedback Summary")
+    
+    # Mock recent feedback stats
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric("💌 Total Feedback", "347", delta="23 this week")
+    with col2:
+        st.metric("⭐ Average Rating", "4.2", delta="0.3")
+    with col3:
+        st.metric("🔧 Bugs Fixed", "28", delta="5 this week")
+    with col4:
+        st.metric("✨ Features Added", "12", delta="2 this month")
+    
+    # Recent improvements based on feedback
+    st.markdown("### 🎯 Recent Improvements")
+    
+    improvements = [
+        {"date": "2024-02-10", "improvement": "Added QR code check-in for events", "source": "Feature Request"},
+        {"date": "2024-02-08", "improvement": "Improved mobile responsiveness", "source": "Bug Report"},
+        {"date": "2024-02-05", "improvement": "Added badge explanations", "source": "General Feedback"},
+        {"date": "2024-02-01", "improvement": "New prize: VIP Game Day Experience", "source": "Prize Idea"}
+    ]
+    
+    for improvement in improvements:
+        st.markdown(f"""
+        <div class="feature-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="margin: 0; color: #2a5298;">✅ {improvement['improvement']}</h4>
+                    <p style="margin: 0.25rem 0; color: #666;">📅 {improvement['date']}</p>
+                </div>
+                <span class="badge">💡 {improvement['source']}</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
-    # Create and launch the interface
-    interface = create_interface()
-    
-    print("🦁 Starting LMU Campus LLM...")
-    print("💡 Make sure Ollama is running with: ollama serve")
-    print("📚 Loading LLaMA 3.2 model...")
-    
-    # Launch with public sharing for testing
-    interface.launch(
-        server_name="0.0.0.0",
-        server_port=7860,
-        share=False,  # Set to True if you want a public link
-        show_api=False
-    )
+    main()
