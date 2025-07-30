@@ -29,11 +29,50 @@ from pathlib import Path
 # Advanced Streamlit components
 try:
     from streamlit_calendar import calendar
-    from streamlit_option_menu import option_menu
-    from streamlit_aggrid import AgGrid, GridOptionsBuilder
-    from streamlit_lottie import st_lottie
+    CALENDAR_AVAILABLE = True
 except ImportError:
-    st.warning("Some advanced features require additional packages. Install with: pip install streamlit-calendar streamlit-option-menu streamlit-aggrid streamlit-lottie")
+    CALENDAR_AVAILABLE = False
+
+try:
+    from streamlit_option_menu import option_menu
+    OPTION_MENU_AVAILABLE = True
+except ImportError:
+    OPTION_MENU_AVAILABLE = False
+    def option_menu(*args, **kwargs):
+        # Fallback implementation using selectbox
+        options = kwargs.get('options', args[1] if len(args) > 1 else [])
+        default_index = kwargs.get('default_index', 0)
+        if options:
+            selected = st.selectbox("Navigation", options, index=default_index)
+            return selected
+        return None
+
+try:
+    from streamlit_aggrid import AgGrid, GridOptionsBuilder
+    AGGRID_AVAILABLE = True
+except ImportError:
+    AGGRID_AVAILABLE = False
+
+try:
+    from streamlit_lottie import st_lottie
+    LOTTIE_AVAILABLE = True
+except ImportError:
+    LOTTIE_AVAILABLE = False
+
+# Show warning if some packages are missing
+missing_packages = []
+if not CALENDAR_AVAILABLE:
+    missing_packages.append("streamlit-calendar")
+if not OPTION_MENU_AVAILABLE:
+    missing_packages.append("streamlit-option-menu")
+if not AGGRID_AVAILABLE:
+    missing_packages.append("streamlit-aggrid")
+if not LOTTIE_AVAILABLE:
+    missing_packages.append("streamlit-lottie")
+
+if missing_packages:
+    st.warning(f"Some advanced features require additional packages. Install with: pip install {' '.join(missing_packages)}")
+    st.info("The app will continue to work with basic functionality.")
 
 # Page configuration
 st.set_page_config(
