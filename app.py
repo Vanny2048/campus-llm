@@ -507,17 +507,17 @@ st.markdown("""
         opacity: 0.7 !important;
     }
     
-    /* Button Styles */
+    /* Button Styles - White Buttons for Better Visibility */
     .stButton > button {
-        background: var(--gradient-gold) !important;
-        color: var(--lmu-crimson-dark) !important;
-        border: none !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
         border-radius: 20px !important;
         padding: 0.8rem 2rem !important;
         font-weight: 600 !important;
         font-size: 1.1rem !important;
         transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3) !important;
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3) !important;
         position: relative !important;
         overflow: hidden !important;
     }
@@ -529,13 +529,15 @@ st.markdown("""
         left: -100% !important;
         width: 100% !important;
         height: 100% !important;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent) !important;
+        background: linear-gradient(90deg, transparent, rgba(139, 0, 0, 0.1), transparent) !important;
         transition: left 0.6s !important;
     }
     
     .stButton > button:hover {
         transform: translateY(-4px) scale(1.05) !important;
-        box-shadow: 0 15px 40px rgba(255, 215, 0, 0.5) !important;
+        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.5) !important;
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
     }
     
     .stButton > button:hover::before {
@@ -635,25 +637,27 @@ st.markdown("""
         }
     }
     
-    /* Suggestion Pills */
+    /* Suggestion Pills - White for Better Visibility */
     .suggestion-pill {
-        background: rgba(255, 255, 255, 0.2);
+        background: #ffffff;
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        border: 2px solid #ffffff;
         border-radius: 25px;
         padding: 0.8rem 1.5rem;
         margin: 0.5rem;
-        color: white;
-        font-weight: 500;
+        color: #000000;
+        font-weight: 600;
         transition: all 0.3s ease;
         cursor: pointer;
         display: inline-block;
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
     }
     
     .suggestion-pill:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: #f8f8f8;
+        border-color: #e0e0e0;
         transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.5);
     }
     
     /* Scrollbar */
@@ -724,6 +728,57 @@ st.markdown("""
     
     .stSelectbox label, .stMultiselect label, .stDateInput label, .stTimeInput label {
         color: var(--text-white) !important;
+    }
+    
+    /* Make selectboxes and dropdowns more visible */
+    .stSelectbox > div > div > div > div {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stSelectbox > div > div > div > div:hover {
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
+    }
+    
+    .stMultiselect > div > div > div > div {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stMultiselect > div > div > div > div:hover {
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
+    }
+    
+    /* Make checkboxes and radio buttons more visible */
+    .stCheckbox > div > div > div {
+        background: #ffffff !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 5px !important;
+    }
+    
+    .stRadio > div > div > div > div {
+        background: #ffffff !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 50% !important;
+    }
+    
+    /* Make file uploader more visible */
+    .stFileUploader > div > div > div {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stFileUploader > div > div > div:hover {
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
     }
     
     .stMetric {
@@ -805,9 +860,261 @@ st.markdown("""
         color: #666666 !important;
     }
     
+    /* Make text areas more visible */
+    .stTextArea > div > div > textarea {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stTextArea > div > div > textarea:focus {
+        border-color: #e0e0e0 !important;
+        background: #f8f8f8 !important;
+    }
+    
+    .stTextArea > div > div > textarea::placeholder {
+        color: #666666 !important;
+    }
+    
+    /* Make sliders more visible */
+    .stSlider > div > div > div > div {
+        background: #ffffff !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stSlider > div > div > div > div > div {
+        background: #ffffff !important;
+    }
+    
+    /* Make number input more visible */
+    .stNumberInput > div > div > input {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stNumberInput > div > div > input:focus {
+        border-color: #e0e0e0 !important;
+        background: #f8f8f8 !important;
+    }
+    
+    /* Make date and time inputs more visible */
+    .stDateInput > div > div > input {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stDateInput > div > div > input:focus {
+        border-color: #e0e0e0 !important;
+        background: #f8f8f8 !important;
+    }
+    
+    .stTimeInput > div > div > input {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stTimeInput > div > div > input:focus {
+        border-color: #e0e0e0 !important;
+        background: #f8f8f8 !important;
+    }
+    
+    /* Make expanders and tabs more visible */
+    .streamlit-expanderHeader {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .streamlit-expanderHeader:hover {
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
+    }
+    
+    /* Make tabs more visible */
+    .stTabs > div > div > div > div > div {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stTabs > div > div > div > div > div:hover {
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
+    }
+    
+    /* Make progress bars more visible */
+    .stProgress > div > div > div > div {
+        background: #ffffff !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stProgress > div > div > div > div > div {
+        background: #ffffff !important;
+    }
+    
+    /* Make metrics more visible */
+    .stMetric > div > div > div {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stMetric > div > div > div:hover {
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
+    }
+    
+    /* Make alerts and notifications more visible */
+    .stAlert > div {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stAlert > div:hover {
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
+    }
+    
+    /* Make success/error/warning/info messages more visible */
+    .stSuccess > div, .stError > div, .stWarning > div, .stInfo > div {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stSuccess > div:hover, .stError > div:hover, .stWarning > div:hover, .stInfo > div:hover {
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
+    }
+    
+    /* Make dataframes and tables more visible */
+    .stDataFrame > div > div > div {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stDataFrame > div > div > div > div {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+    
+    .stDataFrame > div > div > div > div > div {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+    
+    /* Make any remaining interactive elements visible */
+    [data-testid*="button"], [data-testid*="input"], [data-testid*="select"], [data-testid*="checkbox"], [data-testid*="radio"] {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    [data-testid*="button"]:hover, [data-testid*="input"]:hover, [data-testid*="select"]:hover, [data-testid*="checkbox"]:hover, [data-testid*="radio"]:hover {
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
+    }
+    
+    /* Make links more visible */
+    a {
+        color: #ffffff !important;
+        text-decoration: underline !important;
+        font-weight: 600 !important;
+    }
+    
+    a:hover {
+        color: #f8f8f8 !important;
+        text-decoration: none !important;
+    }
+    
+    /* Make any remaining text elements more visible */
+    .stMarkdown a {
+        color: #ffffff !important;
+        text-decoration: underline !important;
+        font-weight: 600 !important;
+    }
+    
+    .stMarkdown a:hover {
+        color: #f8f8f8 !important;
+        text-decoration: none !important;
+    }
+    
+    /* Make tooltips more visible */
+    [data-tooltip], [title] {
+        position: relative !important;
+    }
+    
+    [data-tooltip]:hover::after, [title]:hover::after {
+        content: attr(data-tooltip) attr(title) !important;
+        position: absolute !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+        padding: 10px !important;
+        z-index: 1000 !important;
+        white-space: nowrap !important;
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    /* Make any remaining interactive elements visible */
+    .stButton, .stFormSubmitButton, .stSelectbox, .stMultiselect, .stCheckbox, .stRadio, .stSlider, .stTextInput, .stTextArea, .stNumberInput, .stDateInput, .stTimeInput, .stFileUploader {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stButton:hover, .stFormSubmitButton:hover, .stSelectbox:hover, .stMultiselect:hover, .stCheckbox:hover, .stRadio:hover, .stSlider:hover, .stTextInput:hover, .stTextArea:hover, .stNumberInput:hover, .stDateInput:hover, .stTimeInput:hover, .stFileUploader:hover {
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
+    }
+    
     /* Ensure buttons remain visible */
     .stButton > button {
-        color: white !important;
+        color: #000000 !important;
+        background: #ffffff !important;
+    }
+    
+    /* Additional button styles for all button types */
+    button[data-testid="baseButton-primary"] {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+    }
+    
+    button[data-testid="baseButton-primary"]:hover {
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
+    }
+    
+    button[data-testid="baseButton-secondary"] {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+    }
+    
+    button[data-testid="baseButton-secondary"]:hover {
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
     }
     
     /* Form styling */
@@ -816,22 +1123,24 @@ st.markdown("""
     }
     
     .stFormSubmitButton > button {
-        color: white !important;
-        background: var(--gradient-accent) !important;
-        border: none !important;
+        color: #000000 !important;
+        background: #ffffff !important;
+        border: 2px solid #ffffff !important;
         border-radius: 20px !important;
         padding: 0.8rem 2rem !important;
         font-weight: 600 !important;
         font-size: 1.1rem !important;
         transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3) !important;
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3) !important;
         position: relative !important;
         overflow: hidden !important;
     }
     
     .stFormSubmitButton > button:hover {
         transform: translateY(-4px) scale(1.05) !important;
-        box-shadow: 0 15px 40px rgba(255, 107, 53, 0.5) !important;
+        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.5) !important;
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
     }
     
     /* Ensure all form elements are visible */
