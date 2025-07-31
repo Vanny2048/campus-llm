@@ -1505,6 +1505,84 @@ def simulate_ai_response(question: str) -> str:
     
     return random.choice(default_responses)
 
+# LMU Buddy API Integration
+def call_lmu_buddy_api(question: str) -> str:
+    """
+    Call the LMU Buddy API with the user's question.
+    This function will be updated to connect to your fine-tuned Llama model.
+    """
+    try:
+        # TODO: Replace with your actual LMU Buddy API endpoint
+        # For now, we'll use a mock response that simulates the GenZ LMU Buddy
+        api_url = "https://your-lmu-buddy-api.com/api/genz-buddy"
+        
+        # Mock response for development - replace with actual API call
+        # response = requests.post(api_url, json={"prompt": question}, timeout=10)
+        # return response.json().get("answer", "Sorry, I'm having trouble connecting right now!")
+        
+        # For now, return an enhanced mock response that feels like a GenZ LMU Buddy
+        return simulate_lmu_buddy_response(question)
+        
+    except Exception as e:
+        st.error(f"Connection error: {str(e)}")
+        return "Hey! I'm having some tech issues rn, but I'll be back in a sec! 🔧"
+
+def simulate_lmu_buddy_response(question: str) -> str:
+    """
+    Simulate the LMU Buddy response with GenZ tone and LMU-specific knowledge.
+    This will be replaced by your actual fine-tuned Llama model.
+    """
+    question_lower = question.lower()
+    
+    # LMU-specific responses with GenZ tone
+    responses = {
+        "food": [
+            "Omg the best food on campus is def the Lair! Their chicken tenders are *chef's kiss* 🤌 And if you're feeling fancy, try the dining hall's pasta night - it's actually fire 🔥",
+            "The Lair is where it's at! Their burgers are lowkey amazing and the fries are always crispy. Pro tip: go during off-peak hours to avoid the line! 📍",
+            "For real food, hit up the Lair or the dining hall. The Lair has better burgers, but the dining hall has unlimited food which is perfect for when you're broke af 💸"
+        ],
+        "study": [
+            "Best study spots? The library is obvious but also try the 3rd floor of Malone - it's quiet af and has the best views! Plus there's coffee nearby ☕",
+            "For serious studying, go to the library basement. It's like a dungeon but in a good way - super quiet and no distractions. Perfect for when you need to grind 📚",
+            "The library is clutch but also check out the study rooms in Malone. They're first come first serve but worth it if you can snag one! 🎯"
+        ],
+        "events": [
+            "Check the events page! There's always something going on - from basketball games to random club meetings. The best events are usually posted on Instagram too 📱",
+            "There's literally always something happening! Basketball games are the move, and don't sleep on the random club events - they're actually fun and you get free food 🏀",
+            "Events are everywhere! The app shows everything, but also follow @lmu_events on Instagram for the latest. Basketball games are a must - the energy is unmatched! 🦁"
+        ],
+        "parking": [
+            "Parking is a nightmare ngl 😅 Try the lots near the dorms or the structure by the library. Pro tip: get here early or you'll be walking from the moon 🌙",
+            "Parking is rough but the structure by the library usually has spots. Just be ready to pay like $10 for the day. Worth it to not walk a mile though! 🚗",
+            "Parking is literally the worst part of LMU 😤 Try the lots near the dorms or just accept that you'll be walking. At least it's good exercise? 💪"
+        ],
+        "prizes": [
+            "The prizes are actually insane this year! MacBooks, AirPods, even lunch with the president. Just keep checking in to events and posting on social media - it's that easy! 🏆",
+            "Prizes are fire! You can win everything from tech to exclusive experiences. Just stay active on the app and you'll rack up points in no time! 💎",
+            "The prize game is strong this year! From laptops to exclusive events, there's something for everyone. Just keep grinding those points! 🎁"
+        ],
+        "basketball": [
+            "Basketball games are LITERALLY the best part of LMU! The energy is unmatched and the team is actually good this year. You have to go to at least one game! 🏀",
+            "Basketball games are where it's at! The student section goes crazy and the team is actually decent this year. Plus you get points for going! 🦁",
+            "Basketball games are a vibe! The student section is wild and the team is actually good. Don't miss out on the free points and the fun! 🎉"
+        ]
+    }
+    
+    # Check for keywords and return appropriate response
+    for keyword, response_list in responses.items():
+        if keyword in question_lower:
+            return random.choice(response_list)
+    
+    # Default GenZ LMU Buddy response
+    default_responses = [
+        "That's a great question! As your LMU Buddy, I'm here to help with literally anything campus-related. What else do you want to know? 🤔",
+        "Omg I love that question! LMU is the best and I know everything about it. What else are you curious about? 🦁",
+        "That's such a good question! I'm your go-to for all things LMU. What else do you want to know about campus life? 💫",
+        "Love that energy! I'm here to help you navigate LMU like a pro. What else are you wondering about? ✨"
+    ]
+    
+    return random.choice(default_responses)
+
 # Main App Function
 def main():
     # Enhanced Header with glass container
@@ -1589,7 +1667,7 @@ def main():
     st.markdown('<div class="glass-container" style="margin: 1rem 0;">', unsafe_allow_html=True)
     selected = option_menu(
         menu_title=None,
-        options=["🏠 Home", "📅 Events Calendar", "🏆 Leaderboard", "🎁 Prize Shop", "📸 Content Gallery", "👤 My Profile", "🤖 AI Assistant", "💬 Feedback"],
+        options=["🏠 Home", "📅 Events Calendar", "🏆 Leaderboard", "🎁 Prize Shop", "📸 Content Gallery", "👤 My Profile", "🦁 LMU Buddy", "💬 Feedback"],
         icons=["house", "calendar-event", "trophy", "gift", "images", "person-circle", "robot", "chat-dots"],
         menu_icon="cast",
         default_index=0,
@@ -3130,8 +3208,8 @@ def show_user_profile(events, badges_info):
 
 def show_ai_assistant():
     """Enhanced AI assistant with LMU-specific knowledge"""
-    st.markdown("## 🤖 LMU AI Assistant")
-    st.markdown("Ask me anything about LMU! I know about campus life, academics, events, and more. 🦁")
+    st.markdown("## 🦁 LMU GenZ Buddy")
+    st.markdown("Your GenZ campus companion who knows everything about LMU! Ask me anything! ✨")
     
     # Enhanced Chat Interface with realistic design
     st.markdown('<div class="glass-container">', unsafe_allow_html=True)
@@ -3238,7 +3316,7 @@ def show_ai_assistant():
             "Ask me anything about LMU!",
             placeholder="type your question here... (e.g., where's the best place to cry on campus?)",
             key="ai_question_input",
-            label_visibility="collapsed"
+            label_visibility="hidden"
         )
         
         col1, col2, col3 = st.columns([2, 1, 1])
@@ -3266,8 +3344,8 @@ def show_ai_assistant():
     # Handle sending message
     if ask_button and question:
         try:
-            # Generate response immediately
-            response = simulate_ai_response(question)
+            # Generate response using LMU Buddy API
+            response = call_lmu_buddy_api(question)
             
             # Add to conversation history
             st.session_state.conversation_history.append({
