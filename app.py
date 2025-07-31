@@ -1777,11 +1777,11 @@ def show_home_page(events, leaderboard):
                     margin-right: 1rem;
                     {gold_ring}
                 ">
-                    {person['rank']}
+                    {str(person['rank'])}
                 </div>
                 <div style="flex-grow: 1;">
-                    <div style="font-weight: 600; color: white; font-size: 18px;">{person['name']}</div>
-                    <div style="font-size: 14px; color: var(--lmu-gold); font-style: italic;">{person['points']} points</div>
+                    <div style="font-weight: 600; color: white; font-size: 18px;">{str(person['name'])}</div>
+                    <div style="font-size: 14px; color: var(--lmu-gold); font-style: italic;">{str(person['points'])} points</div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -2129,7 +2129,7 @@ def show_individual_leaderboard(leaderboard, badges_info):
             avatar_style = "border: 3px solid #CD7F32;"
         else:
             rank_style = "background: var(--glass-bg); border: 1px solid var(--glass-border);"
-            rank_icon = f"#{person['rank']}"
+            rank_icon = f"#{str(person['rank'])}"
             avatar_style = ""
         
         # Badge display
