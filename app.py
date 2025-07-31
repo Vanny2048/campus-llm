@@ -1393,29 +1393,29 @@ def show_prize_shop(prizes):
         if st.button(f"Redeem {prize['points_required']} points", key=f"redeem_{prize['id']}", disabled=not can_afford or available_count == 0):
             st.success(f"Successfully redeemed {prize['name']}!")
         st.divider()
-            
-            if not st.session_state.user_id:
-                st.info("Login to redeem prizes!")
-            elif button_disabled:
-                if available_count == 0:
-                    st.error("Sold Out")
-                else:
-                    points_needed = prize['points_required'] - st.session_state.user_points
-                    st.warning(f"Need {points_needed} more points")
+        
+        if not st.session_state.user_id:
+            st.info("Login to redeem prizes!")
+        elif button_disabled:
+            if available_count == 0:
+                st.error("Sold Out")
             else:
-                if st.button(f"🎁 Redeem Now", key=f"redeem_{prize['id']}", type="primary", use_container_width=True):
-                    # Redeem prize
-                    st.session_state.user_points -= prize['points_required']
-                    prize['claimed'] += 1  # This would be saved to database in real app
-                    
-                    st.success(f"🎉 Congratulations! You've redeemed '{prize['name']}'!")
-                    st.balloons()
-                    
-                    # Show redemption details
-                    st.info(f"📧 Check your LMU email for redemption instructions. Prize ID: {prize['id']}")
-                    
-                    time.sleep(2)
-                    st.rerun()
+                points_needed = prize['points_required'] - st.session_state.user_points
+                st.warning(f"Need {points_needed} more points")
+        else:
+            if st.button(f"🎁 Redeem Now", key=f"redeem_{prize['id']}", type="primary", use_container_width=True):
+                # Redeem prize
+                st.session_state.user_points -= prize['points_required']
+                prize['claimed'] += 1  # This would be saved to database in real app
+                
+                st.success(f"🎉 Congratulations! You've redeemed '{prize['name']}'!")
+                st.balloons()
+                
+                # Show redemption details
+                st.info(f"📧 Check your LMU email for redemption instructions. Prize ID: {prize['id']}")
+                
+                time.sleep(2)
+                st.rerun()
     
     # Prize request section
     st.markdown("---")
@@ -2014,11 +2014,6 @@ def show_feedback_page():
     # Submit button
     if st.button("Submit Feedback", type="primary"):
         st.success("Thank you for your feedback!")
-                "severity": bug_severity,
-                "location": bug_location,
-                "description": bug_description,
-                "steps": steps_to_reproduce
-            })
         # ... and so on for other types
         
         st.success("🎉 Thank you for your feedback! We really appreciate your input.")
