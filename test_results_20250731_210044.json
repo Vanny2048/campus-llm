@@ -1,0 +1,134 @@
+[
+  {
+    "test": "Server Connection",
+    "status": "PASS",
+    "details": "Server is accessible",
+    "timestamp": "2025-07-31T21:00:44.103052"
+  },
+  {
+    "test": "Home Page Loading",
+    "status": "FAIL",
+    "details": "Home page content not found",
+    "timestamp": "2025-07-31T21:00:44.104272"
+  },
+  {
+    "test": "Navigation Menu",
+    "status": "FAIL",
+    "details": "Only found: ",
+    "timestamp": "2025-07-31T21:00:44.105122"
+  },
+  {
+    "test": "Calendar Page Loading",
+    "status": "PASS",
+    "details": "Calendar page accessible",
+    "timestamp": "2025-07-31T21:00:44.106250"
+  },
+  {
+    "test": "Calendar Elements",
+    "status": "FAIL",
+    "details": "Calendar elements not found",
+    "timestamp": "2025-07-31T21:00:44.106278"
+  },
+  {
+    "test": "Leaderboard Page Loading",
+    "status": "PASS",
+    "details": "Leaderboard page accessible",
+    "timestamp": "2025-07-31T21:00:44.107410"
+  },
+  {
+    "test": "Leaderboard Elements",
+    "status": "FAIL",
+    "details": "Leaderboard elements not found",
+    "timestamp": "2025-07-31T21:00:44.107431"
+  },
+  {
+    "test": "Prizes Page Loading",
+    "status": "PASS",
+    "details": "Prizes page accessible",
+    "timestamp": "2025-07-31T21:00:44.108279"
+  },
+  {
+    "test": "Prizes Elements",
+    "status": "FAIL",
+    "details": "Prizes elements not found",
+    "timestamp": "2025-07-31T21:00:44.108294"
+  },
+  {
+    "test": "AI Assistant Page Loading",
+    "status": "PASS",
+    "details": "AI Assistant page accessible",
+    "timestamp": "2025-07-31T21:00:44.109077"
+  },
+  {
+    "test": "AI Assistant Elements",
+    "status": "PASS",
+    "details": "AI Assistant elements found",
+    "timestamp": "2025-07-31T21:00:44.109091"
+  },
+  {
+    "test": "User Profile Page Loading",
+    "status": "PASS",
+    "details": "User Profile page accessible",
+    "timestamp": "2025-07-31T21:00:44.109890"
+  },
+  {
+    "test": "User Profile Elements",
+    "status": "FAIL",
+    "details": "User Profile elements not found",
+    "timestamp": "2025-07-31T21:00:44.109933"
+  },
+  {
+    "test": "Feedback Page Loading",
+    "status": "PASS",
+    "details": "Feedback page accessible",
+    "timestamp": "2025-07-31T21:00:44.110814"
+  },
+  {
+    "test": "Feedback Elements",
+    "status": "FAIL",
+    "details": "Feedback elements not found",
+    "timestamp": "2025-07-31T21:00:44.110838"
+  },
+  {
+    "test": "Content Gallery Page Loading",
+    "status": "PASS",
+    "details": "Content Gallery page accessible",
+    "timestamp": "2025-07-31T21:00:44.112014"
+  },
+  {
+    "test": "Content Gallery Elements",
+    "status": "PASS",
+    "details": "Content Gallery elements found",
+    "timestamp": "2025-07-31T21:00:44.112040"
+  },
+  {
+    "test": "Button Elements",
+    "status": "FAIL",
+    "details": "Only found: ",
+    "timestamp": "2025-07-31T21:00:44.112932"
+  },
+  {
+    "test": "Chat Elements",
+    "status": "FAIL",
+    "details": "Only found: ",
+    "timestamp": "2025-07-31T21:00:44.114043"
+  },
+  {
+    "test": "Data Loading",
+    "status": "FAIL",
+    "details": "Only found: ",
+    "timestamp": "2025-07-31T21:00:44.115260"
+  },
+  {
+    "test": "UI Styling",
+    "status": "PASS",
+    "details": "Found styling elements: css, style, font",
+    "timestamp": "2025-07-31T21:00:44.116068"
+  },
+  {
+    "test": "Error Handling",
+    "status": "FAIL",
+    "details": "Unexpected status code: 200",
+    "timestamp": "2025-07-31T21:00:44.117205"
+  }
+]
