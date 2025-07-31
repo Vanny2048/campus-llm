@@ -85,9 +85,9 @@ st.set_page_config(
 # Custom CSS for enhanced mobile-responsive design
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&display=swap');
     
     /* Root Variables - LMU Brand Colors */
     :root {
@@ -97,12 +97,13 @@ st.markdown("""
         --lmu-gold: #FFD700;
         --lmu-gold-light: #FFE55C;
         --lmu-gold-dark: #B8860B;
-        --text-dark: #2d3748;
-        --text-light: #a0aec0;
-        --text-white: #ffffff;
+        --text-dark: #1a1a1a;
+        --text-light: #e0e0e0;
+        --text-primary: #00ff88;
+        --text-secondary: #00ccff;
         --bg-light: #000000;
-        --glass-bg: rgba(139, 0, 0, 0.8);
-        --glass-border: rgba(255, 215, 0, 0.3);
+        --glass-bg: rgba(20, 20, 20, 0.9);
+        --glass-border: rgba(0, 255, 136, 0.3);
         --shadow-soft: 0 8px 32px rgba(139, 0, 0, 0.5);
         --shadow-hover: 0 15px 45px rgba(139, 0, 0, 0.7);
         --gradient-primary: linear-gradient(135deg, var(--lmu-crimson) 0%, var(--lmu-crimson-dark) 100%);
@@ -114,12 +115,12 @@ st.markdown("""
     
     /* Global Styles */
     .main {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Rajdhani', sans-serif;
         background: var(--gradient-bg);
         background-attachment: fixed;
         min-height: 100vh;
         position: relative;
-        color: var(--text-white) !important;
+        color: var(--text-primary) !important;
     }
     
     .main::before {
@@ -147,7 +148,7 @@ st.markdown("""
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         position: relative;
         overflow: hidden;
-        color: var(--text-white) !important;
+        color: var(--text-primary) !important;
     }
     
     .glass-container::before {
@@ -173,16 +174,16 @@ st.markdown("""
     
     /* Header Styles */
     .main-header {
-        font-family: 'Poppins', sans-serif;
+        font-family: 'Orbitron', sans-serif;
         font-size: clamp(3rem, 8vw, 6rem);
         font-weight: 900;
-        background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 50%, #ffffff 100%);
+        background: linear-gradient(135deg, #00ff88 0%, #00ccff 50%, #00ff88 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         text-align: center;
         margin: 2rem 0;
-        text-shadow: 0 0 30px rgba(255,255,255,0.5);
+        text-shadow: 0 0 30px rgba(0,255,136,0.5);
         animation: headerGlow 3s ease-in-out infinite alternate;
         position: relative;
     }
@@ -199,11 +200,11 @@ st.markdown("""
     
     @keyframes headerGlow {
         0% { 
-            text-shadow: 0 0 30px rgba(255,255,255,0.5);
+            text-shadow: 0 0 30px rgba(0,255,136,0.5);
             transform: scale(1);
         }
         100% { 
-            text-shadow: 0 0 50px rgba(255,255,255,0.8), 0 0 80px rgba(255,255,255,0.3);
+            text-shadow: 0 0 50px rgba(0,255,136,0.8), 0 0 80px rgba(0,204,255,0.3);
             transform: scale(1.05);
         }
     }
@@ -1206,13 +1207,13 @@ def main():
         </p>
         <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; flex-wrap: wrap;">
             <div style="background: rgba(255,255,255,0.2); padding: 1rem 2rem; border-radius: 20px; backdrop-filter: blur(10px);">
-                <span style="font-size: 1.1rem; font-weight: 600; color: white;">🎯 Earn Points</span>
+                <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">🎯 Earn Points</span>
             </div>
             <div style="background: rgba(255,255,255,0.2); padding: 1rem 2rem; border-radius: 20px; backdrop-filter: blur(10px);">
-                <span style="font-size: 1.1rem; font-weight: 600; color: white;">🏆 Win Prizes</span>
+                <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">🏆 Win Prizes</span>
             </div>
             <div style="background: rgba(255,255,255,0.2); padding: 1rem 2rem; border-radius: 20px; backdrop-filter: blur(10px);">
-                <span style="font-size: 1.1rem; font-weight: 600; color: white;">🤖 Get Help</span>
+                <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">🤖 Get Help</span>
             </div>
         </div>
     </div>
@@ -1224,8 +1225,8 @@ def main():
     # Sidebar for user authentication and navigation
     with st.sidebar:
         st.markdown("""
-        <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 20px; margin-bottom: 2rem; backdrop-filter: blur(10px); color: white;">
-            <h3 style="color: white; margin: 0 0 1rem 0; text-align: center;">🔐 User Login</h3>
+        <div style="background: rgba(20,20,20,0.9); padding: 1.5rem; border-radius: 20px; margin-bottom: 2rem; backdrop-filter: blur(10px); color: var(--text-primary);">
+            <h3 style="color: var(--text-primary); margin: 0 0 1rem 0; text-align: center;">🔐 User Login</h3>
         """, unsafe_allow_html=True)
         
         if st.session_state.user_id is None:
@@ -1247,7 +1248,7 @@ def main():
             </div>
             """, unsafe_allow_html=True)
             
-            st.markdown('<h4 style="color: white; margin: 1.5rem 0 0.5rem 0;">Your Badges:</h4>', unsafe_allow_html=True)
+            st.markdown('<h4 style="color: var(--text-primary); margin: 1.5rem 0 0.5rem 0;">Your Badges:</h4>', unsafe_allow_html=True)
             badge_display = " ".join(st.session_state.user_badges)
             st.markdown(f'<div style="font-size: 1.3rem; text-align: center; margin-bottom: 1rem;">{badge_display}</div>', unsafe_allow_html=True)
         
@@ -1265,8 +1266,8 @@ def main():
         
         # Quick stats in sidebar
         st.markdown("""
-        <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 15px; margin-top: 1rem; backdrop-filter: blur(10px); color: white;">
-            <h4 style="color: white; margin: 0 0 1rem 0; text-align: center;">🎯 Quick Stats</h4>
+        <div style="background: rgba(20,20,20,0.9); padding: 1rem; border-radius: 15px; margin-top: 1rem; backdrop-filter: blur(10px); color: var(--text-primary);">
+            <h4 style="color: var(--text-primary); margin: 0 0 1rem 0; text-align: center;">🎯 Quick Stats</h4>
             <div style="text-align: center; color: rgba(255,255,255,0.9);">
                 <p style="margin: 0.5rem 0;">🔥 Most Active: Basketball Fans</p>
                 <p style="margin: 0.5rem 0;">⭐ Top Prize: MacBook Pro</p>
@@ -1707,7 +1708,7 @@ def show_home_page(events, leaderboard):
             opacity: 0.3;
         "></div>
         <div style="position: relative; z-index: 2;">
-            <h1 style="color: white; font-size: 36px; font-weight: bold; margin-bottom: 1rem; font-family: 'Poppins', sans-serif;">
+            <h1 style="color: var(--text-primary); font-size: 36px; font-weight: bold; margin-bottom: 1rem; font-family: 'Orbitron', sans-serif;">
                 {featured_event['title']}
             </h1>
             <p style="color: rgba(255,255,255,0.9); font-size: 18px; margin-bottom: 0.5rem;">
@@ -1780,8 +1781,8 @@ def show_home_page(events, leaderboard):
                     {str(person['rank'])}
                 </div>
                 <div style="flex-grow: 1;">
-                    <div style="font-weight: 600; color: white; font-size: 18px;">{str(person['name'])}</div>
-                    <div style="font-size: 14px; color: var(--lmu-gold); font-style: italic;">{str(person['points'])} points</div>
+                    <div style="font-weight: 600; color: var(--text-primary); font-size: 18px;">{str(person['name'])}</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); font-style: italic;">{str(person['points'])} points</div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -1820,7 +1821,7 @@ def show_home_page(events, leaderboard):
                 animation: pulse 2s infinite;
             ">📸</div>
             
-            <h3 style="color: white; font-size: 24px; margin-bottom: 1rem;">Live Spirit Challenge</h3>
+            <h3 style="color: var(--text-primary); font-size: 24px; margin-bottom: 1rem;">Live Spirit Challenge</h3>
             <p style="color: rgba(255,255,255,0.9); font-size: 18px; margin-bottom: 1.5rem;">
                 Post a game-day selfie for 200 pts! 📸
             </p>
@@ -1848,7 +1849,7 @@ def show_home_page(events, leaderboard):
         st.markdown("""
         <div class="feature-card" style="text-align: center;">
             <h3 style="color: var(--lmu-gold); margin: 0;">📅</h3>
-            <h4 style="margin: 0.5rem 0; color: white;">Upcoming Events</h4>
+                            <h4 style="margin: 0.5rem 0; color: var(--text-primary);">Upcoming Events</h4>
             <h2 style="color: var(--lmu-gold); margin: 0;">{}</h2>
         </div>
         """.format(len([e for e in events if datetime.strptime(e['date'], '%Y-%m-%d').date() >= date.today()])), 
@@ -1858,7 +1859,7 @@ def show_home_page(events, leaderboard):
         st.markdown("""
         <div class="feature-card" style="text-align: center;">
             <h3 style="color: var(--lmu-gold); margin: 0;">👥</h3>
-            <h4 style="margin: 0.5rem 0; color: white;">Active Lions</h4>
+                            <h4 style="margin: 0.5rem 0; color: var(--text-primary);">Active Lions</h4>
             <h2 style="color: var(--lmu-gold); margin: 0;">847</h2>
         </div>
         """, unsafe_allow_html=True)
@@ -1868,7 +1869,7 @@ def show_home_page(events, leaderboard):
         st.markdown(f"""
         <div class="feature-card" style="text-align: center;">
             <h3 style="color: var(--lmu-gold); margin: 0;">🎫</h3>
-            <h4 style="margin: 0.5rem 0; color: white;">Total RSVPs</h4>
+                            <h4 style="margin: 0.5rem 0; color: var(--text-primary);">Total RSVPs</h4>
             <h2 style="color: var(--lmu-gold); margin: 0;">{total_rsvps}</h2>
         </div>
         """, unsafe_allow_html=True)
@@ -1877,7 +1878,7 @@ def show_home_page(events, leaderboard):
         st.markdown("""
         <div class="feature-card" style="text-align: center;">
             <h3 style="color: var(--lmu-gold); margin: 0;">🏆</h3>
-            <h4 style="margin: 0.5rem 0; color: white;">Points Awarded</h4>
+                            <h4 style="margin: 0.5rem 0; color: var(--text-primary);">Points Awarded</h4>
             <h2 style="color: var(--lmu-gold); margin: 0;">15.2K</h2>
         </div>
         """, unsafe_allow_html=True)
@@ -2148,12 +2149,12 @@ def show_individual_leaderboard(leaderboard, badges_info):
                         align-items: center; 
                         justify-content: center; 
                         font-weight: bold; 
-                        color: white;
+                        color: var(--text-primary);
                         font-size: 1.5rem;
                         {avatar_style}
                     ">{rank_icon}</div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.3rem; color: white;">{person['name']}</h3>
+                        <h3 style="margin: 0; font-size: 1.3rem; color: var(--text-primary);">{person['name']}</h3>
                         <p style="margin: 0.25rem 0; font-size: 1rem; color: var(--lmu-gold);">
                             🏆 {person['points']:,} points • 🔥 {person['streak']} day streak
                         </p>
@@ -2292,7 +2293,7 @@ def show_prize_shop(prizes):
             Prize Shop
         </h1>
         <div style="height: 3px; background: var(--lmu-gold); width: 200px; margin: 0 auto;"></div>
-        <p style="color: white; font-size: 18px; margin-top: 1rem;">
+        <p style="color: var(--text-primary); font-size: 18px; margin-top: 1rem;">
             Earn points and redeem them for exclusive LMU experiences and rewards!
         </p>
     </div>
