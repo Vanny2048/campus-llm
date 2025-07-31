@@ -19,7 +19,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for better styling
+# Custom CSS for better styling with white buttons
 st.markdown("""
 <style>
     .main-header {
@@ -63,6 +63,75 @@ st.markdown("""
         border-radius: 0.5rem;
         padding: 1rem;
         margin: 0.5rem 0;
+    }
+    
+    /* White buttons for better visibility */
+    .stButton > button {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 20px !important;
+        padding: 0.8rem 2rem !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-4px) scale(1.05) !important;
+        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.5) !important;
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
+    }
+    
+    /* Form submit buttons */
+    .stFormSubmitButton > button {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 20px !important;
+        padding: 0.8rem 2rem !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .stFormSubmitButton > button:hover {
+        transform: translateY(-4px) scale(1.05) !important;
+        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.5) !important;
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
+    }
+    
+    /* Other interactive elements */
+    .stSelectbox > div > div > div > div,
+    .stMultiselect > div > div > div > div,
+    .stTextInput > div > div > input,
+    .stTextArea > div > div > textarea,
+    .stNumberInput > div > div > input,
+    .stDateInput > div > div > input,
+    .stTimeInput > div > div > input {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 10px !important;
+    }
+    
+    .stSelectbox > div > div > div > div:hover,
+    .stMultiselect > div > div > div > div:hover,
+    .stTextInput > div > div > input:hover,
+    .stTextArea > div > div > textarea:hover,
+    .stNumberInput > div > div > input:hover,
+    .stDateInput > div > div > input:hover,
+    .stTimeInput > div > div > input:hover {
+        background: #f8f8f8 !important;
+        border-color: #e0e0e0 !important;
     }
 </style>
 """, unsafe_allow_html=True)
