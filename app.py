@@ -1505,27 +1505,33 @@ def simulate_ai_response(question: str) -> str:
     
     return random.choice(default_responses)
 
-# LMU Buddy API Integration
+# LMU Buddy Integration with your Llama model
 def call_lmu_buddy_api(question: str) -> str:
     """
-    Call the LMU Buddy API with the user's question.
-    This function will be updated to connect to your fine-tuned Llama model.
+    Use your fine-tuned Llama model directly for LMU Buddy responses.
     """
     try:
-        # TODO: Replace with your actual LMU Buddy API endpoint
-        # For now, we'll use a mock response that simulates the GenZ LMU Buddy
-        api_url = "https://your-lmu-buddy-api.com/api/genz-buddy"
+        # Import the LLM handler
+        from src.llm_handler import LLMHandler
         
-        # Mock response for development - replace with actual API call
-        # response = requests.post(api_url, json={"prompt": question}, timeout=10)
-        # return response.json().get("answer", "Sorry, I'm having trouble connecting right now!")
+        # Initialize the LLM handler
+        llm_handler = LLMHandler()
         
-        # For now, return an enhanced mock response that feels like a GenZ LMU Buddy
+        # Generate response using your Llama model
+        response = llm_handler.generate_response(question)
+        
+        # If the response indicates an error, fallback to mock response
+        if response.startswith("🚨") or "error" in response.lower():
+            return simulate_lmu_buddy_response(question)
+        
+        return response
+        
+    except ImportError:
+        # Fallback if LLM handler is not available
         return simulate_lmu_buddy_response(question)
-        
     except Exception as e:
-        st.error(f"Connection error: {str(e)}")
-        return "Hey! I'm having some tech issues rn, but I'll be back in a sec! 🔧"
+        st.error(f"LLM Error: {str(e)}")
+        return simulate_lmu_buddy_response(question)
 
 def simulate_lmu_buddy_response(question: str) -> str:
     """
