@@ -82,747 +82,15 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for enhanced mobile-responsive design
+# Custom CSS for minimal black design
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&display=swap');
-    
-    /* Root Variables - LMU Brand Colors */
-    :root {
-        --lmu-crimson: #8B0000;
-        --lmu-crimson-light: #A52A2A;
-        --lmu-crimson-dark: #660000;
-        --lmu-gold: #FFD700;
-        --lmu-gold-light: #FFE55C;
-        --lmu-gold-dark: #B8860B;
-        --text-dark: #1a1a1a;
-        --text-light: #e0e0e0;
-        --text-primary: #00ff88;
-        --text-secondary: #00ccff;
-        --bg-light: #000000;
-        --glass-bg: rgba(20, 20, 20, 0.9);
-        --glass-border: rgba(0, 255, 136, 0.3);
-        --shadow-soft: 0 8px 32px rgba(139, 0, 0, 0.5);
-        --shadow-hover: 0 15px 45px rgba(139, 0, 0, 0.7);
-        --gradient-primary: linear-gradient(135deg, var(--lmu-crimson) 0%, var(--lmu-crimson-dark) 100%);
-        --gradient-accent: linear-gradient(135deg, var(--lmu-gold) 0%, var(--lmu-gold-dark) 100%);
-        --gradient-bg: linear-gradient(135deg, #000000 0%, #1a0000 50%, #000000 100%);
-        --gradient-crimson: linear-gradient(135deg, var(--lmu-crimson) 0%, var(--lmu-crimson-light) 100%);
-        --gradient-gold: linear-gradient(135deg, var(--lmu-gold) 0%, var(--lmu-gold-light) 100%);
-    }
-    
-    /* Global Styles */
+    /* Minimal black design - remove all decorative elements */
     .main {
-        font-family: 'Rajdhani', sans-serif;
-        background: var(--gradient-bg);
-        background-attachment: fixed;
-        min-height: 100vh;
-        position: relative;
-        color: var(--text-primary) !important;
+        background: #000000 !important;
+        color: #ffffff !important;
     }
     
-    .main::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-        opacity: 0.2;
-        z-index: -1;
-    }
-    
-    /* Glassmorphism Container */
-    .glass-container {
-        background: var(--glass-bg);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-radius: 24px;
-        border: 1px solid var(--glass-border);
-        box-shadow: var(--shadow-soft);
-        padding: 2rem;
-        margin: 1rem 0;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        position: relative;
-        overflow: hidden;
-        color: var(--text-primary) !important;
-    }
-    
-    .glass-container::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        transition: left 0.8s;
-    }
-    
-    .glass-container:hover::before {
-        left: 100%;
-    }
-    
-    .glass-container:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: var(--shadow-hover);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    /* Header Styles */
-    .main-header {
-        font-family: 'Orbitron', sans-serif;
-        font-size: clamp(3rem, 8vw, 6rem);
-        font-weight: 900;
-        background: linear-gradient(135deg, #00ff88 0%, #00ccff 50%, #00ff88 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-align: center;
-        margin: 2rem 0;
-        text-shadow: 0 0 30px rgba(0,255,136,0.5);
-        animation: headerGlow 3s ease-in-out infinite alternate;
-        position: relative;
-    }
-    
-    .main-header::after {
-        content: '🦁';
-        position: absolute;
-        right: -80px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 4rem;
-        animation: roar 2s ease-in-out infinite;
-    }
-    
-    @keyframes headerGlow {
-        0% { 
-            text-shadow: 0 0 30px rgba(0,255,136,0.5);
-            transform: scale(1);
-        }
-        100% { 
-            text-shadow: 0 0 50px rgba(0,255,136,0.8), 0 0 80px rgba(0,204,255,0.3);
-            transform: scale(1.05);
-        }
-    }
-    
-    @keyframes roar {
-        0%, 100% { transform: translateY(-50%) scale(1); }
-        50% { transform: translateY(-50%) scale(1.2) rotate(5deg); }
-    }
-    
-    /* Chat Interface */
-    .chat-container {
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(20px);
-        border-radius: 28px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        padding: 2rem;
-        margin: 2rem 0;
-        min-height: 500px;
-        position: relative;
-        overflow: hidden;
-        color: var(--text-white) !important;
-    }
-    
-    .chat-message {
-        margin: 1rem 0;
-        animation: messageSlide 0.5s ease-out;
-    }
-    
-    .user-message {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 1rem;
-    }
-    
-    .bot-message {
-        display: flex;
-        justify-content: flex-start;
-        margin-bottom: 1rem;
-    }
-    
-    .message-bubble {
-        max-width: 70%;
-        padding: 1.2rem 1.5rem;
-        border-radius: 24px;
-        font-size: 1rem;
-        line-height: 1.5;
-        position: relative;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        animation: bubblePop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-    
-    .user-bubble {
-        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-        color: white;
-        border-bottom-right-radius: 8px;
-        margin-left: auto;
-    }
-    
-    .bot-bubble {
-        background: rgba(255, 255, 255, 0.95);
-        color: #000000 !important;
-        border-bottom-left-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        font-weight: 500;
-    }
-    
-    .message-avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        margin: 0 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        font-weight: bold;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    
-    .user-avatar {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
-    
-    .bot-avatar {
-        background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
-        color: #2d3748;
-        animation: bounce 2s ease-in-out infinite;
-    }
-    
-    @keyframes messageSlide {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    @keyframes bubblePop {
-        0% {
-            opacity: 0;
-            transform: scale(0.3);
-        }
-        50% {
-            transform: scale(1.05);
-        }
-        100% {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-    
-    @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% {
-            transform: translateY(0);
-        }
-        40% {
-            transform: translateY(-6px);
-        }
-        60% {
-            transform: translateY(-3px);
-        }
-    }
-    
-    /* Typing Indicator */
-    .typing-indicator {
-        display: flex;
-        align-items: center;
-        padding: 1rem 1.5rem;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 24px;
-        border-bottom-left-radius: 8px;
-        max-width: 80px;
-        margin: 1rem 0;
-        animation: messageSlide 0.3s ease-out;
-    }
-    
-    .typing-dots {
-        display: flex;
-        gap: 4px;
-    }
-    
-    .typing-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--text-light);
-        animation: typingDot 1.4s ease-in-out infinite both;
-    }
-    
-    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-    .typing-dot:nth-child(3) { animation-delay: 0; }
-    
-    @keyframes typingDot {
-        0%, 80%, 100% {
-            transform: scale(0);
-            opacity: 0.5;
-        }
-        40% {
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
-    
-    /* Enhanced Cards */
-    .feature-card {
-        background: var(--glass-bg);
-        backdrop-filter: blur(16px);
-        border-radius: 24px;
-        padding: 2.5rem;
-        margin: 1.5rem 0;
-        border: 1px solid var(--glass-border);
-        box-shadow: var(--shadow-soft);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        position: relative;
-        overflow: hidden;
-        color: var(--text-white) !important;
-    }
-    
-    .feature-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--gradient-gold);
-        border-radius: 24px 24px 0 0;
-    }
-    
-    .feature-card:hover {
-        transform: translateY(-12px) rotateX(5deg);
-        box-shadow: 0 25px 60px rgba(31, 38, 135, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.4);
-    }
-    
-    /* Points Display */
-    .points-display {
-        background: var(--gradient-gold);
-        color: var(--lmu-crimson-dark);
-        padding: 2rem;
-        border-radius: 28px;
-        text-align: center;
-        font-weight: 800;
-        font-size: 1.8rem;
-        box-shadow: 0 12px 40px rgba(255, 215, 0, 0.4);
-        margin: 1.5rem 0;
-        position: relative;
-        overflow: hidden;
-        animation: pointsGlow 2s ease-in-out infinite alternate;
-    }
-    
-    .points-display::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.3), transparent);
-        animation: rotate 3s linear infinite;
-    }
-    
-    @keyframes pointsGlow {
-        from { 
-            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.4);
-            transform: scale(1);
-        }
-        to { 
-            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.7);
-            transform: scale(1.05);
-        }
-    }
-    
-    @keyframes rotate {
-        to { transform: rotate(360deg); }
-    }
-    
-    /* Badges */
-    .badge {
-        display: inline-block;
-        background: var(--gradient-crimson);
-        color: white;
-        padding: 0.8rem 1.5rem;
-        border-radius: 50px;
-        font-size: 1rem;
-        font-weight: 600;
-        margin: 0.5rem;
-        box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .badge::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-        transition: left 0.6s;
-    }
-    
-    .badge:hover {
-        transform: translateY(-4px) scale(1.1);
-        box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6);
-    }
-    
-    .badge:hover::before {
-        left: 100%;
-    }
-    
-    /* Input Styles */
-    .stTextInput > div > div > input {
-        background: rgba(255, 255, 255, 0.95) !important;
-        border: 2px solid rgba(255, 255, 255, 0.3) !important;
-        border-radius: 20px !important;
-        padding: 1rem 1.5rem !important;
-        font-size: 1.1rem !important;
-        transition: all 0.3s ease !important;
-        backdrop-filter: blur(10px) !important;
-        color: var(--text-dark) !important;
-    }
-    
-    .stTextInput > div > div > input:focus {
-        border: 2px solid var(--lmu-gold) !important;
-        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3) !important;
-        transform: scale(1.02) !important;
-    }
-    
-    .stTextInput > div > div > input::placeholder {
-        color: var(--text-light) !important;
-        opacity: 0.7 !important;
-    }
-    
-    /* Button Styles - White Buttons for Better Visibility */
-    .stButton > button {
-        background: #ffffff !important;
-        color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 20px !important;
-        padding: 0.8rem 2rem !important;
-        font-weight: 600 !important;
-        font-size: 1.1rem !important;
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3) !important;
-        position: relative !important;
-        overflow: hidden !important;
-    }
-    
-    .stButton > button::before {
-        content: '' !important;
-        position: absolute !important;
-        top: 0 !important;
-        left: -100% !important;
-        width: 100% !important;
-        height: 100% !important;
-        background: linear-gradient(90deg, transparent, rgba(139, 0, 0, 0.1), transparent) !important;
-        transition: left 0.6s !important;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-4px) scale(1.05) !important;
-        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.5) !important;
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    .stButton > button:hover::before {
-        left: 100% !important;
-    }
-    
-    /* Sidebar Enhancements */
-    .css-1d391kg {
-        background: rgba(255, 255, 255, 0.1) !important;
-        backdrop-filter: blur(20px) !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
-    }
-    
-    /* Leaderboard */
-    .leaderboard-item {
-        background: var(--glass-bg);
-        backdrop-filter: blur(12px);
-        border-radius: 20px;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        display: flex;
-        align-items: center;
-        box-shadow: var(--shadow-soft);
-        transition: all 0.3s ease;
-        border: 1px solid var(--glass-border);
-        position: relative;
-        overflow: hidden;
-        color: var(--text-white) !important;
-    }
-    
-    .leaderboard-item::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        transition: left 0.8s;
-    }
-    
-    .leaderboard-item:hover {
-        transform: translateX(8px) scale(1.02);
-        box-shadow: var(--shadow-hover);
-    }
-    
-    .leaderboard-item:hover::before {
-        left: 100%;
-    }
-    
-    .rank-1 { 
-        border-left: 6px solid #FFD700;
-        background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, var(--glass-bg) 100%);
-    }
-    .rank-2 { 
-        border-left: 6px solid #C0C0C0;
-        background: linear-gradient(135deg, rgba(192, 192, 192, 0.1) 0%, var(--glass-bg) 100%);
-    }
-    .rank-3 { 
-        border-left: 6px solid #CD7F32;
-        background: linear-gradient(135deg, rgba(205, 127, 50, 0.1) 0%, var(--glass-bg) 100%);
-    }
-    
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-        .main-header {
-            font-size: clamp(2rem, 8vw, 4rem);
-        }
-        
-        .main-header::after {
-            right: -40px;
-            font-size: 2.5rem;
-        }
-        
-        .glass-container,
-        .feature-card {
-            padding: 1.5rem;
-            margin: 1rem 0;
-            border-radius: 20px;
-        }
-        
-        .points-display {
-            font-size: 1.4rem;
-            padding: 1.5rem;
-        }
-        
-        .message-bubble {
-            max-width: 85%;
-            padding: 1rem 1.2rem;
-        }
-        
-        .message-avatar {
-            width: 40px;
-            height: 40px;
-            font-size: 1.2rem;
-            margin: 0 8px;
-        }
-    }
-    
-    /* Suggestion Pills - White for Better Visibility */
-    .suggestion-pill {
-        background: #ffffff;
-        backdrop-filter: blur(10px);
-        border: 2px solid #ffffff;
-        border-radius: 25px;
-        padding: 0.8rem 1.5rem;
-        margin: 0.5rem;
-        color: #000000;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        display: inline-block;
-        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
-    }
-    
-    .suggestion-pill:hover {
-        background: #f8f8f8;
-        border-color: #e0e0e0;
-        transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.5);
-    }
-    
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-        width: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: var(--gradient-accent);
-        border-radius: 10px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #f7931e 0%, #ff6b35 100%);
-    }
-    
-    /* Loading Animation */
-    .loading-spinner {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 3px solid rgba(255,255,255,.3);
-        border-radius: 50%;
-        border-top-color: #fff;
-        animation: spin 1s ease-in-out infinite;
-    }
-    
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-    
-    /* Fix for Streamlit text elements */
-    .stMarkdown, .stText, .stWrite {
-        color: var(--text-white) !important;
-    }
-    
-    /* Fix for Streamlit containers */
-    .stContainer {
-        color: var(--text-white) !important;
-    }
-    
-    /* Fix for Streamlit columns */
-    .stColumn {
-        color: var(--text-white) !important;
-    }
-    
-    /* Comprehensive Streamlit element fixes */
-    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6 {
-        color: var(--text-white) !important;
-    }
-    
-    .stMarkdown p, .stMarkdown div, .stMarkdown span {
-        color: var(--text-white) !important;
-    }
-    
-    .stSelectbox, .stMultiselect, .stDateInput, .stTimeInput {
-        color: var(--text-white) !important;
-    }
-    
-    .stSelectbox > div > div > div {
-        color: var(--text-white) !important;
-    }
-    
-    .stSelectbox label, .stMultiselect label, .stDateInput label, .stTimeInput label {
-        color: var(--text-white) !important;
-    }
-    
-    /* Make selectboxes and dropdowns more visible */
-    .stSelectbox > div > div > div > div {
-        background: #ffffff !important;
-        color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
-    }
-    
-    .stSelectbox > div > div > div > div:hover {
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    .stMultiselect > div > div > div > div {
-        background: #ffffff !important;
-        color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
-    }
-    
-    .stMultiselect > div > div > div > div:hover {
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    /* Make checkboxes and radio buttons more visible */
-    .stCheckbox > div > div > div {
-        background: #ffffff !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 5px !important;
-    }
-    
-    .stRadio > div > div > div > div {
-        background: #ffffff !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 50% !important;
-    }
-    
-    /* Make file uploader more visible */
-    .stFileUploader > div > div > div {
-        background: #ffffff !important;
-        color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
-    }
-    
-    .stFileUploader > div > div > div:hover {
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    .stMetric {
-        color: var(--text-white) !important;
-    }
-    
-    .stMetric label {
-        color: var(--text-white) !important;
-    }
-    
-    .stMetric div[data-testid="metric-container"] {
-        color: var(--text-white) !important;
-    }
-    
-    .stDataFrame {
-        color: var(--text-white) !important;
-    }
-    
-    .stDataFrame th, .stDataFrame td {
-        color: var(--text-white) !important;
-    }
-    
-    .stAlert {
-        color: var(--text-white) !important;
-    }
-    
-    .stAlert div {
-        color: var(--text-white) !important;
-    }
-    
-    .stSuccess, .stError, .stWarning, .stInfo {
-        color: var(--text-white) !important;
-    }
-    
-    .stSuccess div, .stError div, .stWarning div, .stInfo div {
-        color: var(--text-white) !important;
-    }
-    
-    /* Fix for all text elements */
-    * {
-        color: var(--text-white) !important;
-    }
-    
-    /* Ensure page background is black */
     .stApp {
         background: #000000 !important;
     }
@@ -831,340 +99,173 @@ st.markdown("""
         background: #000000 !important;
     }
     
-    /* Ensure sidebar is also styled */
-    .css-1d391kg {
-        background: rgba(0, 0, 0, 0.8) !important;
-        backdrop-filter: blur(20px) !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+    /* Make all text white */
+    * {
+        color: #ffffff !important;
     }
     
-    /* Fix for any remaining white backgrounds */
-    .stApp > header {
-        background: #000000 !important;
-    }
-    
-    .stApp > footer {
-        background: #000000 !important;
-    }
-    
-    /* Override for specific elements that need different colors */
-    .bot-bubble {
-        color: #000000 !important;
-    }
-    
+    /* Make inputs and buttons visible */
     .stTextInput > div > div > input {
+        background: #ffffff !important;
         color: #000000 !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    .stTextInput > div > div > input::placeholder {
-        color: #666666 !important;
+    .stButton > button {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    /* Make text areas more visible */
+    .stSelectbox > div > div > div > div {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
+    }
+    
+    .stCheckbox > div > div > div {
+        background: #ffffff !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 3px !important;
+    }
+    
+    .stRadio > div > div > div > div {
+        background: #ffffff !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 50% !important;
+    }
+    
     .stTextArea > div > div > textarea {
         background: #ffffff !important;
         color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    .stTextArea > div > div > textarea:focus {
-        border-color: #e0e0e0 !important;
-        background: #f8f8f8 !important;
-    }
-    
-    .stTextArea > div > div > textarea::placeholder {
-        color: #666666 !important;
-    }
-    
-    /* Make sliders more visible */
-    .stSlider > div > div > div > div {
-        background: #ffffff !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
-    }
-    
-    .stSlider > div > div > div > div > div {
-        background: #ffffff !important;
-    }
-    
-    /* Make number input more visible */
     .stNumberInput > div > div > input {
         background: #ffffff !important;
         color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    .stNumberInput > div > div > input:focus {
-        border-color: #e0e0e0 !important;
-        background: #f8f8f8 !important;
-    }
-    
-    /* Make date and time inputs more visible */
     .stDateInput > div > div > input {
         background: #ffffff !important;
         color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
-    }
-    
-    .stDateInput > div > div > input:focus {
-        border-color: #e0e0e0 !important;
-        background: #f8f8f8 !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
     .stTimeInput > div > div > input {
         background: #ffffff !important;
         color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    .stTimeInput > div > div > input:focus {
-        border-color: #e0e0e0 !important;
-        background: #f8f8f8 !important;
-    }
-    
-    /* Make expanders and tabs more visible */
-    .streamlit-expanderHeader {
+    .stFileUploader > div > div > div {
         background: #ffffff !important;
         color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    .streamlit-expanderHeader:hover {
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    /* Make tabs more visible */
-    .stTabs > div > div > div > div > div {
+    .stSlider > div > div > div > div {
         background: #ffffff !important;
-        color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    .stTabs > div > div > div > div > div:hover {
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    /* Make progress bars more visible */
     .stProgress > div > div > div > div {
         background: #ffffff !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    .stProgress > div > div > div > div > div {
-        background: #ffffff !important;
-    }
-    
-    /* Make metrics more visible */
     .stMetric > div > div > div {
         background: #ffffff !important;
         color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    .stMetric > div > div > div:hover {
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    /* Make alerts and notifications more visible */
     .stAlert > div {
         background: #ffffff !important;
         color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    .stAlert > div:hover {
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    /* Make success/error/warning/info messages more visible */
     .stSuccess > div, .stError > div, .stWarning > div, .stInfo > div {
         background: #ffffff !important;
         color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    .stSuccess > div:hover, .stError > div:hover, .stWarning > div:hover, .stInfo > div:hover {
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    /* Make dataframes and tables more visible */
     .stDataFrame > div > div > div {
         background: #ffffff !important;
         color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    .stDataFrame > div > div > div > div {
+    .streamlit-expanderHeader {
         background: #ffffff !important;
         color: #000000 !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    .stDataFrame > div > div > div > div > div {
+    .stTabs > div > div > div > div > div {
         background: #ffffff !important;
         color: #000000 !important;
+        border: 1px solid #ffffff !important;
+        border-radius: 5px !important;
     }
     
-    /* Make any remaining interactive elements visible */
-    [data-testid*="button"], [data-testid*="input"], [data-testid*="select"], [data-testid*="checkbox"], [data-testid*="radio"] {
-        background: #ffffff !important;
-        color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
+    /* Sidebar styling */
+    .css-1d391kg {
+        background: #000000 !important;
+        border-right: 1px solid #ffffff !important;
     }
     
-    [data-testid*="button"]:hover, [data-testid*="input"]:hover, [data-testid*="select"]:hover, [data-testid*="checkbox"]:hover, [data-testid*="radio"]:hover {
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
+    /* Remove all decorative elements */
+    .glass-container, .feature-card, .points-display, .badge, .leaderboard-item, .chat-container, .message-bubble, .typing-indicator {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        animation: none !important;
     }
     
-    /* Make links more visible */
+    /* Remove all gradients and animations */
+    * {
+        background-image: none !important;
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    /* Make links visible */
     a {
         color: #ffffff !important;
         text-decoration: underline !important;
-        font-weight: 600 !important;
     }
     
-    a:hover {
-        color: #f8f8f8 !important;
-        text-decoration: none !important;
+    /* Ensure all form elements are functional */
+    button, input, select, textarea {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #ffffff !important;
     }
     
-    /* Make any remaining text elements more visible */
-    .stMarkdown a {
+    /* Override any remaining styling */
+    .stMarkdown, .stText, .stWrite, .stContainer, .stColumn {
         color: #ffffff !important;
-        text-decoration: underline !important;
-        font-weight: 600 !important;
-    }
-    
-    .stMarkdown a:hover {
-        color: #f8f8f8 !important;
-        text-decoration: none !important;
-    }
-    
-    /* Make tooltips more visible */
-    [data-tooltip], [title] {
-        position: relative !important;
-    }
-    
-    [data-tooltip]:hover::after, [title]:hover::after {
-        content: attr(data-tooltip) attr(title) !important;
-        position: absolute !important;
-        background: #ffffff !important;
-        color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
-        padding: 10px !important;
-        z-index: 1000 !important;
-        white-space: nowrap !important;
-        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3) !important;
-    }
-    
-    /* Make any remaining interactive elements visible */
-    .stButton, .stFormSubmitButton, .stSelectbox, .stMultiselect, .stCheckbox, .stRadio, .stSlider, .stTextInput, .stTextArea, .stNumberInput, .stDateInput, .stTimeInput, .stFileUploader {
-        background: #ffffff !important;
-        color: #000000 !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 10px !important;
-    }
-    
-    .stButton:hover, .stFormSubmitButton:hover, .stSelectbox:hover, .stMultiselect:hover, .stCheckbox:hover, .stRadio:hover, .stSlider:hover, .stTextInput:hover, .stTextArea:hover, .stNumberInput:hover, .stDateInput:hover, .stTimeInput:hover, .stFileUploader:hover {
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    /* Ensure buttons remain visible */
-    .stButton > button {
-        color: #000000 !important;
-        background: #ffffff !important;
-    }
-    
-    /* Additional button styles for all button types */
-    button[data-testid="baseButton-primary"] {
-        background: #ffffff !important;
-        color: #000000 !important;
-        border: 2px solid #ffffff !important;
-    }
-    
-    button[data-testid="baseButton-primary"]:hover {
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    button[data-testid="baseButton-secondary"] {
-        background: #ffffff !important;
-        color: #000000 !important;
-        border: 2px solid #ffffff !important;
-    }
-    
-    button[data-testid="baseButton-secondary"]:hover {
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    /* Form styling */
-    .stForm {
-        color: var(--text-white) !important;
-    }
-    
-    .stFormSubmitButton > button {
-        color: #000000 !important;
-        background: #ffffff !important;
-        border: 2px solid #ffffff !important;
-        border-radius: 20px !important;
-        padding: 0.8rem 2rem !important;
-        font-weight: 600 !important;
-        font-size: 1.1rem !important;
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3) !important;
-        position: relative !important;
-        overflow: hidden !important;
-    }
-    
-    .stFormSubmitButton > button:hover {
-        transform: translateY(-4px) scale(1.05) !important;
-        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.5) !important;
-        background: #f8f8f8 !important;
-        border-color: #e0e0e0 !important;
-    }
-    
-    /* Ensure all form elements are visible */
-    .stForm > div {
-        color: var(--text-white) !important;
-    }
-    
-    /* Fix for Streamlit metrics */
-    .stMetric {
-        color: var(--text-white) !important;
-    }
-    
-    .stMetric > div > div > div {
-        color: var(--text-white) !important;
-    }
-    
-    /* Fix for Streamlit success/error messages */
-    .stSuccess, .stError, .stWarning, .stInfo {
-        color: var(--text-white) !important;
-        background: rgba(255, 255, 255, 0.1) !important;
-        backdrop-filter: blur(10px) !important;
-        border-radius: 15px !important;
-        padding: 1rem !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        background: transparent !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -1591,117 +692,56 @@ def simulate_lmu_buddy_response(question: str) -> str:
 
 # Main App Function
 def main():
-    # Enhanced Header with glass container
-    st.markdown("""
-    <div class="glass-container" style="text-align: center; margin: 2rem 0;">
-        <h1 class="main-header">LMU Campus Spirit Hub</h1>
-        <p style="font-size: 1.3rem; color: rgba(255,255,255,0.9); margin-bottom: 1rem; font-weight: 500;">
-            Your ultimate platform for campus engagement, spirit points, and Lion pride!
-        </p>
-        <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; flex-wrap: wrap;">
-            <div style="background: rgba(255,255,255,0.2); padding: 1rem 2rem; border-radius: 20px; backdrop-filter: blur(10px);">
-                <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">🎯 Earn Points</span>
-            </div>
-            <div style="background: rgba(255,255,255,0.2); padding: 1rem 2rem; border-radius: 20px; backdrop-filter: blur(10px);">
-                <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">🏆 Win Prizes</span>
-            </div>
-            <div style="background: rgba(255,255,255,0.2); padding: 1rem 2rem; border-radius: 20px; backdrop-filter: blur(10px);">
-                <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">🤖 Get Help</span>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    # Simple header
+    st.title("LMU Campus Spirit Hub")
+    st.write("Your platform for campus engagement, spirit points, and Lion pride!")
     
     # Load data
     events, prizes, leaderboard, badges_info = load_mock_data()
     
     # Sidebar for user authentication and navigation
     with st.sidebar:
-        st.markdown("""
-        <div style="background: rgba(20,20,20,0.9); padding: 1.5rem; border-radius: 20px; margin-bottom: 2rem; backdrop-filter: blur(10px); color: var(--text-primary);">
-            <h3 style="color: var(--text-primary); margin: 0 0 1rem 0; text-align: center;">🔐 User Login</h3>
-        """, unsafe_allow_html=True)
+        st.header("User Login")
         
         if st.session_state.user_id is None:
             user_input = st.text_input("Enter your Student ID or Email:", placeholder="e.g., jdoe@lion.lmu.edu")
-            if st.button("🚀 Join the Spirit Squad", type="primary", use_container_width=True):
+            if st.button("Join the Spirit Squad", type="primary", use_container_width=True):
                 if user_input:
                     st.session_state.user_id = user_input
                     st.session_state.user_points = random.randint(150, 800)
                     st.session_state.user_badges = random.sample(list(badges_info.keys()), random.randint(2, 5))
-                    st.success(f"Welcome to the Lion pride, {user_input.split('@')[0].title()}! 🦁")
+                    st.success(f"Welcome, {user_input.split('@')[0].title()}!")
                     st.rerun()
         else:
-            st.success(f"Welcome back, {st.session_state.user_id.split('@')[0].title()}! 🦁")
+            st.success(f"Welcome back, {st.session_state.user_id.split('@')[0].title()}!")
+            st.write(f"Points: {st.session_state.user_points}")
+            st.write(f"Badges: {', '.join(st.session_state.user_badges)}")
             
-            # Enhanced user stats display
-            st.markdown(f"""
-            <div class="points-display" style="margin: 1rem 0;">
-                💰 {st.session_state.user_points} Spirit Points
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown('<h4 style="color: var(--text-primary); margin: 1.5rem 0 0.5rem 0;">Your Badges:</h4>', unsafe_allow_html=True)
-            badge_display = " ".join(st.session_state.user_badges)
-            st.markdown(f'<div style="font-size: 1.3rem; text-align: center; margin-bottom: 1rem;">{badge_display}</div>', unsafe_allow_html=True)
-        
             # Logout button
-            if st.button("🚪 Logout", use_container_width=True):
+            if st.button("Logout", use_container_width=True):
                 st.session_state.user_id = None
                 st.session_state.user_points = 0
                 st.session_state.user_badges = []
                 st.session_state.conversation_history = []
-                st.success("See you later, Lion! 🦁")
+                st.success("See you later!")
                 time.sleep(1)
                 st.rerun()
         
-        st.markdown("</div>", unsafe_allow_html=True)
-        
-        # Quick stats in sidebar
-        st.markdown("""
-        <div style="background: rgba(20,20,20,0.9); padding: 1rem; border-radius: 15px; margin-top: 1rem; backdrop-filter: blur(10px); color: var(--text-primary);">
-            <h4 style="color: var(--text-primary); margin: 0 0 1rem 0; text-align: center;">🎯 Quick Stats</h4>
-            <div style="text-align: center; color: rgba(255,255,255,0.9);">
-                <p style="margin: 0.5rem 0;">🔥 Most Active: Basketball Fans</p>
-                <p style="margin: 0.5rem 0;">⭐ Top Prize: MacBook Pro</p>
-                <p style="margin: 0.5rem 0;">🎉 Next Event: First Friday</p>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        # Quick stats
+        st.header("Quick Stats")
+        st.write("Most Active: Basketball Fans")
+        st.write("Top Prize: MacBook Pro")
+        st.write("Next Event: First Friday")
     
-    # Enhanced Main navigation
-    st.markdown('<div class="glass-container" style="margin: 1rem 0;">', unsafe_allow_html=True)
+    # Simple navigation
     selected = option_menu(
         menu_title=None,
         options=["🏠 Home", "📅 Events Calendar", "🏆 Leaderboard", "🎁 Prize Shop", "📸 Content Gallery", "👤 My Profile", "🦁 LMU Buddy", "💬 Feedback"],
         icons=["house", "calendar-event", "trophy", "gift", "images", "person-circle", "robot", "chat-dots"],
         menu_icon="cast",
         default_index=0,
-        orientation="horizontal",
-        styles={
-            "container": {"padding": "1rem!important", "background-color": "transparent", "border-radius": "20px"},
-            "icon": {"color": "#FFD700", "font-size": "20px"},
-            "nav-link": {
-                "font-size": "14px", 
-                "text-align": "center", 
-                "margin": "0px", 
-                "padding": "0.8rem 1rem",
-                "border-radius": "15px",
-                "background-color": "rgba(255,255,255,0.1)",
-                "backdrop-filter": "blur(10px)",
-                "transition": "all 0.3s ease",
-                "--hover-color": "rgba(255,255,255,0.2)",
-                "color": "white"
-            },
-            "nav-link-selected": {
-                "background": "linear-gradient(135deg, #8B0000 0%, #A52A2A 100%)", 
-                "color": "white",
-                "transform": "scale(1.05)",
-                "box-shadow": "0 4px 15px rgba(139, 0, 0, 0.4)"
-            },
-        }
+        orientation="horizontal"
     )
-    st.markdown("</div>", unsafe_allow_html=True)
     
     # Page content based on selection
     if selected == "🏠 Home":
@@ -1716,7 +756,7 @@ def main():
         show_content_gallery()
     elif selected == "👤 My Profile":
         show_user_profile(events, badges_info)
-    elif selected == "🤖 AI Assistant":
+    elif selected == "🦁 LMU Buddy":
         show_ai_assistant()
     elif selected == "💬 Feedback":
         show_feedback_page()
@@ -2064,72 +1104,23 @@ def show_checkin_modal(event):
     """.format(event=event), unsafe_allow_html=True)
 
 def show_home_page(events, leaderboard):
-    """Display the home page with LMU branding and enhanced user experience"""
+    """Display the home page"""
     
     # Get user's first name for greeting
-    user_name = "Lion" if st.session_state.user_id is None else st.session_state.user_id.split('@')[0].title()
+    user_name = "User" if st.session_state.user_id is None else st.session_state.user_id.split('@')[0].title()
     
     # Greeting Section
-    st.markdown(f"""
-    <div style="margin-bottom: 2rem;">
-        <h2 style="color: var(--lmu-gold); font-family: 'Poppins', cursive; font-size: 24px; margin-bottom: 0.5rem;">
-            Hi, {user_name}! Ready to roar? 🦁
-        </h2>
-        <div style="height: 3px; background: var(--lmu-gold); width: 100px; margin-bottom: 2rem;"></div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.header(f"Hi, {user_name}!")
     
-    # Next Up Event Carousel Card (800x300px equivalent)
+    # Featured Event
     featured_event = events[0]  # Basketball game
-    st.markdown(f"""
-    <div style="
-        background: var(--lmu-crimson); 
-        border-radius: 20px; 
-        padding: 2rem; 
-        margin-bottom: 2rem;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(139, 0, 0, 0.3);
-    ">
-        <div style="
-            position: absolute; 
-            top: 0; 
-            right: 0; 
-            width: 200px; 
-            height: 200px; 
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="rgba(255,215,0,0.1)"/><text x="50" y="55" text-anchor="middle" fill="rgba(255,215,0,0.3)" font-size="40">🏀</text></svg>');
-            opacity: 0.3;
-        "></div>
-        <div style="position: relative; z-index: 2;">
-            <h1 style="color: var(--text-primary); font-size: 36px; font-weight: bold; margin-bottom: 1rem; font-family: 'Orbitron', sans-serif;">
-                {featured_event['title']}
-            </h1>
-            <p style="color: rgba(255,255,255,0.9); font-size: 18px; margin-bottom: 0.5rem;">
-                📅 {featured_event['date']} at {featured_event['time']}
-            </p>
-            <p style="color: rgba(255,255,255,0.9); font-size: 18px; margin-bottom: 1.5rem;">
-                📍 {featured_event['location']}
-            </p>
-            <button style="
-                background: var(--lmu-gold); 
-                color: var(--lmu-crimson-dark); 
-                border: none; 
-                padding: 1rem 2rem; 
-                border-radius: 10px; 
-                font-weight: bold; 
-                font-size: 16px;
-                box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-                cursor: pointer;
-                transition: all 0.3s ease;
-            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onclick="window.parent.postMessage({type: 'rsvp_click', event: 'basketball'}, '*')">
-                RSVP + Add to Calendar
-            </button>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.subheader("Featured Event")
+    st.write(f"**{featured_event['title']}**")
+    st.write(f"Date: {featured_event['date']} at {featured_event['time']}")
+    st.write(f"Location: {featured_event['location']}")
     
-    # Two-column layout for leaderboard teaser and spirit challenge
-    col1, col2 = st.columns([1, 1])
+    if st.button("RSVP + Add to Calendar"):
+        st.success("RSVP successful!")
     
     with col1:
         # Leaderboard Teaser Panel
@@ -2187,108 +1178,6 @@ def show_home_page(events, leaderboard):
             </div>
         </div>
         """, unsafe_allow_html=True)
-    
-    with col2:
-        # Live Spirit Challenge Card
-        st.markdown("""
-        <div style="
-            background: linear-gradient(135deg, #8B0000 0%, #A52A2A 100%); 
-            border-radius: 20px; 
-            padding: 1.5rem; 
-            margin-bottom: 1rem;
-            position: relative;
-            overflow: hidden;
-            min-height: 250px;
-        ">
-            <div style="
-                position: absolute; 
-                top: -10px; 
-                right: -10px; 
-                width: 60px; 
-                height: 60px; 
-                background: var(--lmu-gold); 
-                border-radius: 50%; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                font-size: 24px;
-                animation: pulse 2s infinite;
-            ">📸</div>
-            
-            <h3 style="color: var(--text-primary); font-size: 24px; margin-bottom: 1rem;">Live Spirit Challenge</h3>
-            <p style="color: rgba(255,255,255,0.9); font-size: 18px; margin-bottom: 1.5rem;">
-                Post a game-day selfie for 200 pts! 📸
-            </p>
-            <button style="
-                background: var(--lmu-gold); 
-                color: var(--lmu-crimson-dark); 
-                border: none; 
-                padding: 0.8rem 1.5rem; 
-                border-radius: 10px; 
-                font-weight: bold; 
-                font-size: 16px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                Upload Now
-            </button>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Quick stats row
-    st.markdown("---")
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        st.markdown("""
-        <div class="feature-card" style="text-align: center;">
-            <h3 style="color: var(--lmu-gold); margin: 0;">📅</h3>
-                            <h4 style="margin: 0.5rem 0; color: var(--text-primary);">Upcoming Events</h4>
-            <h2 style="color: var(--lmu-gold); margin: 0;">{}</h2>
-        </div>
-        """.format(len([e for e in events if datetime.strptime(e['date'], '%Y-%m-%d').date() >= date.today()])), 
-        unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown("""
-        <div class="feature-card" style="text-align: center;">
-            <h3 style="color: var(--lmu-gold); margin: 0;">👥</h3>
-                            <h4 style="margin: 0.5rem 0; color: var(--text-primary);">Active Lions</h4>
-            <h2 style="color: var(--lmu-gold); margin: 0;">847</h2>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col3:
-        total_rsvps = sum(event.get('rsvp_count', 0) for event in events)
-        st.markdown(f"""
-        <div class="feature-card" style="text-align: center;">
-            <h3 style="color: var(--lmu-gold); margin: 0;">🎫</h3>
-                            <h4 style="margin: 0.5rem 0; color: var(--text-primary);">Total RSVPs</h4>
-            <h2 style="color: var(--lmu-gold); margin: 0;">{total_rsvps}</h2>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col4:
-        st.markdown("""
-        <div class="feature-card" style="text-align: center;">
-            <h3 style="color: var(--lmu-gold); margin: 0;">🏆</h3>
-                            <h4 style="margin: 0.5rem 0; color: var(--text-primary);">Points Awarded</h4>
-            <h2 style="color: var(--lmu-gold); margin: 0;">15.2K</h2>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Add pulse animation for the challenge card
-    st.markdown("""
-    <style>
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-    }
-    </style>
-    """, unsafe_allow_html=True)
-    
-    # RSVP Modal
     if st.session_state.show_rsvp_modal and st.session_state.selected_event:
         show_rsvp_modal(st.session_state.selected_event)
     
@@ -2306,69 +1195,42 @@ def show_home_page(events, leaderboard):
 
 def show_calendar_page(events):
     """Display interactive calendar with events"""
-    st.markdown("## 📅 Interactive Event Calendar")
-    st.markdown("Click on events to see details, RSVP, and get QR codes for check-in!")
+    st.header("Event Calendar")
     
-    # Calendar view selector
-    view_option = st.selectbox("📊 Calendar View", ["Month", "Week", "List"], index=0)
+    # Filter options
+    col1, col2 = st.columns(2)
+    with col1:
+        event_type_filter = st.selectbox("Filter by Type", ["All", "Game Day", "Tailgate", "Watch Party", "RSO Event"])
+    with col2:
+        date_filter = st.date_input("From Date", value=date.today())
     
-    if view_option == "List":
-        # List view of events
-        st.markdown("### 📋 Event List View")
+    # Apply filters
+    filtered_events = events
+    if event_type_filter != "All":
+        filtered_events = [e for e in filtered_events if e['type'] == event_type_filter]
+    
+    filtered_events = [e for e in filtered_events if datetime.strptime(e['date'], '%Y-%m-%d').date() >= date_filter]
+    
+    # Display filtered events
+    for event in filtered_events:
+        st.subheader(event['title'])
+        st.write(f"Location: {event['location']}")
+        st.write(f"Date: {event['date']} at {event['time']}")
+        st.write(f"Type: {event['type']} • Points: {event['points']}")
+        st.write(f"Description: {event['description']}")
         
-        # Filter options
         col1, col2, col3 = st.columns(3)
         with col1:
-            event_type_filter = st.selectbox("🎯 Filter by Type", ["All", "Game Day", "Tailgate", "Watch Party", "RSO Event"])
+            if st.button(f"RSVP", key=f"rsvp_{event['id']}"):
+                st.success(f"RSVP confirmed for {event['title']}!")
         with col2:
-            date_filter = st.date_input("📅 From Date", value=date.today())
+            if event.get('qr_checkin') and st.button(f"Check-In", key=f"checkin_{event['id']}"):
+                st.session_state.show_checkin_modal = True
+                st.session_state.selected_event = event
+                st.rerun()
         with col3:
-            points_filter = st.slider("🏆 Minimum Points", 0, 100, 0)
-        
-        # Apply filters
-        filtered_events = events
-        if event_type_filter != "All":
-            filtered_events = [e for e in filtered_events if e['type'] == event_type_filter]
-        
-        filtered_events = [e for e in filtered_events if datetime.strptime(e['date'], '%Y-%m-%d').date() >= date_filter]
-        filtered_events = [e for e in filtered_events if e['points'] >= points_filter]
-        
-        # Display filtered events
-        for event in filtered_events:
-            col_a, col_b = st.columns([3, 1])
-            
-            with col_a:
-                st.markdown(f"""
-                <div class="event-card">
-                    <h4 style="margin: 0; color: #ff6b35;">{event['title']}</h4>
-                    <p style="margin: 0.5rem 0; color: #666;">
-                        📍 {event['location']} • 📅 {event['date']} • ⏰ {event['time']}
-                    </p>
-                    <p style="margin: 0.5rem 0;">{event['description']}</p>
-                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                        <span class="badge">🎯 {event['type']}</span>
-                        <span class="badge">🏆 {event['points']} Points</span>
-                        <span class="badge">👥 {event['rsvp_count']}/{event['max_capacity']}</span>
-                        {f'<span class="badge">📱 QR Check-in</span>' if event.get('qr_checkin') else ''}
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            with col_b:
-                st.markdown("<br>", unsafe_allow_html=True)
-                if st.button(f"🎫 RSVP", key=f"rsvp_{event['id']}", use_container_width=True):
-                    st.success(f"✅ RSVP confirmed for {event['title']}!")
-                    # Add to calendar functionality could be implemented here
-                
-                if event.get('qr_checkin') and st.button(f"📱 Check-In", key=f"checkin_{event['id']}", use_container_width=True):
-                    st.session_state.show_checkin_modal = True
-                    st.session_state.selected_event = event
-                    st.rerun()
-                
-                # Add to personal calendar
-                if st.button(f"📆 Add to Calendar", key=f"cal_{event['id']}", use_container_width=True):
-                    # Create calendar event data
-                    cal_data = f"""BEGIN:VCALENDAR
+            if st.button(f"Add to Calendar", key=f"cal_{event['id']}"):
+                cal_data = f"""BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//LMU Campus Spirit Hub//EN
 BEGIN:VEVENT
@@ -2380,52 +1242,14 @@ DESCRIPTION:{event['description']}
 LOCATION:{event['location']}
 END:VEVENT
 END:VCALENDAR"""
-                    
-                    st.download_button(
-                        label="📥 Download .ics file",
-                        data=cal_data,
-                        file_name=f"{event['title'].replace(' ', '_')}.ics",
-                        mime="text/calendar"
-                    )
-    
-    else:
-        # Try to show calendar component if available
-        try:
-            calendar_events = create_calendar_events(events)
-            
-            st.markdown('<div class="calendar-container">', unsafe_allow_html=True)
-            
-            calendar_options = {
-                "editable": "true",
-                "navLinks": "true",
-                "selectable": "true",
-            }
-            
-            calendar_component = calendar(
-                events=calendar_events,
-                options=calendar_options,
-                custom_css="""
-                .fc-event-past {
-                    opacity: 0.6;
-                }
-                .fc-event {
-                    font-size: 0.85em;
-                    border-radius: 5px;
-                }
-                """
-            )
-            
-            st.markdown('</div>', unsafe_allow_html=True)
-            
-            # Handle calendar interactions
-            if calendar_component.get('eventClick'):
-                event_clicked = calendar_component['eventClick']['event']
-                st.info(f"🎯 Selected: {event_clicked['title']}")
                 
-        except:
-            st.info("📅 Interactive calendar component not available. Showing list view instead.")
-            # Fallback to a simple calendar visualization
-            show_simple_calendar(events)
+                st.download_button(
+                    label="Download .ics file",
+                    data=cal_data,
+                    file_name=f"{event['title'].replace(' ', '_')}.ics",
+                    mime="text/calendar"
+                )
+        st.divider()
     
     # Check-in Modal
     if st.session_state.show_checkin_modal and st.session_state.selected_event:
@@ -2475,18 +1299,11 @@ def show_simple_calendar(events):
     st.markdown(cal_html, unsafe_allow_html=True)
 
 def show_leaderboard_page(leaderboard, badges_info):
-    """Display dynamic leaderboard with LMU branding and enhanced user experience"""
-    st.markdown("""
-    <div style="text-align: center; margin-bottom: 2rem;">
-        <h1 style="color: var(--lmu-crimson); font-size: 30px; font-weight: bold; margin-bottom: 0.5rem;">
-            Spirit Leaderboard
-        </h1>
-        <div style="height: 3px; background: var(--lmu-gold); width: 200px; margin: 0 auto;"></div>
-    </div>
-    """, unsafe_allow_html=True)
+    """Display leaderboard"""
+    st.header("Leaderboard")
     
     # Leaderboard tabs
-    tab1, tab2, tab3 = st.tabs(["Individuals", "Orgs", "Dorms"])
+    tab1, tab2, tab3 = st.tabs(["Individuals", "Organizations", "Dorms"])
     
     with tab1:
         show_individual_leaderboard(leaderboard, badges_info)
@@ -2500,69 +1317,16 @@ def show_leaderboard_page(leaderboard, badges_info):
 def show_individual_leaderboard(leaderboard, badges_info):
     """Display individual student leaderboard"""
     # Filter dropdown
-    col1, col2 = st.columns([1, 3])
-    with col1:
-        time_filter = st.selectbox("📊 Time Period", ["Weekly", "Monthly", "All-Time"], index=0)
+    time_filter = st.selectbox("Time Period", ["Weekly", "Monthly", "All-Time"], index=0)
     
     # Get individual leaders
     individual_leaders = [person for person in leaderboard if person['type'] == 'Individual']
     
-    # Display rankings with enhanced styling
-    for i, person in enumerate(individual_leaders):
-        # Determine rank styling
-        if person['rank'] == 1:
-            rank_style = "background: linear-gradient(135deg, var(--lmu-gold), #FFA500); color: var(--lmu-crimson-dark);"
-            rank_icon = "👑"
-            avatar_style = "border: 4px solid var(--lmu-gold);"
-        elif person['rank'] == 2:
-            rank_style = "background: linear-gradient(135deg, #C0C0C0, #A8A8A8); color: #333;"
-            rank_icon = "🥈"
-            avatar_style = "border: 3px solid #C0C0C0;"
-        elif person['rank'] == 3:
-            rank_style = "background: linear-gradient(135deg, #CD7F32, #B87333); color: white;"
-            rank_icon = "🥉"
-            avatar_style = "border: 3px solid #CD7F32;"
-        else:
-            rank_style = "background: var(--glass-bg); border: 1px solid var(--glass-border);"
-            rank_icon = f"#{str(person['rank'])}"
-            avatar_style = ""
-        
-        # Badge display
-        badge_display = " ".join(person['badges'])
-        
-        st.markdown(f"""
-        <div style="{rank_style} border-radius: 20px; padding: 1.5rem; margin: 1rem 0; box-shadow: var(--shadow-soft);">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-                <div style="display: flex; align-items: center; gap: 1.5rem;">
-                    <div style="
-                        width: 60px; 
-                        height: 60px; 
-                        border-radius: 50%; 
-                        background: var(--gradient-crimson); 
-                        display: flex; 
-                        align-items: center; 
-                        justify-content: center; 
-                        font-weight: bold; 
-                        color: var(--text-primary);
-                        font-size: 1.5rem;
-                        {avatar_style}
-                    ">{rank_icon}</div>
-                    <div>
-                        <h3 style="margin: 0; font-size: 1.3rem; color: var(--text-primary);">{person['name']}</h3>
-                        <p style="margin: 0.25rem 0; font-size: 1rem; color: var(--lmu-gold);">
-                            🏆 {person['points']:,} points • 🔥 {person['streak']} day streak
-                        </p>
-                        <div style="font-size: 1.2rem; margin-top: 0.5rem;">{badge_display}</div>
-                    </div>
-                </div>
-                <div style="text-align: right;">
-                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.8);">
-                        Recent: +{random.randint(50, 200)} pts
-                    </div>
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+    # Display rankings
+    for person in individual_leaders:
+        st.write(f"{person['rank']}. {person['name']} - {person['points']} points ({person['streak']} day streak)")
+        st.write(f"Badges: {', '.join(person['badges'])}")
+        st.divider()
 
 def show_org_leaderboard(leaderboard, badges_info):
     """Display organization leaderboard"""
@@ -2574,136 +1338,28 @@ def show_org_leaderboard(leaderboard, badges_info):
         return
     
     for person in rso_leaders:
-        st.markdown(f"""
-        <div style="
-            background: var(--glass-bg); 
-            border: 1px solid var(--glass-border); 
-            border-radius: 20px; 
-            padding: 1.5rem; 
-            margin: 1rem 0; 
-            box-shadow: var(--shadow-soft);
-        ">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-                <div style="display: flex; align-items: center; gap: 1.5rem;">
-                    <div style="
-                        width: 60px; 
-                        height: 60px; 
-                        border-radius: 50%; 
-                        background: var(--gradient-crimson); 
-                        display: flex; 
-                        align-items: center; 
-                        justify-content: center; 
-                        font-weight: bold; 
-                        color: white;
-                        font-size: 1.5rem;
-                    ">#{person['rank']}</div>
-                    <div>
-                        <h3 style="margin: 0; font-size: 1.3rem; color: white;">{person['name']}</h3>
-                        <p style="margin: 0.25rem 0; font-size: 1rem; color: var(--lmu-gold);">
-                            🏆 {person['points']:,} points • 🔥 {person['streak']} day streak
-                        </p>
-                        <div style="font-size: 1.2rem; margin-top: 0.5rem;">{" ".join(person['badges'])}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.write(f"{person['rank']}. {person['name']} - {person['points']} points ({person['streak']} day streak)")
+        st.write(f"Badges: {', '.join(person['badges'])}")
+        st.divider()
 
 def show_dorm_leaderboard(leaderboard, badges_info):
     """Display dorm leaderboard"""
-    st.info("Dorm leaderboard coming soon! 🏠")
-    st.markdown("""
-    <div style="
-        background: var(--glass-bg); 
-        border: 1px solid var(--glass-border); 
-        border-radius: 20px; 
-        padding: 2rem; 
-        text-align: center;
-        color: white;
-    ">
-        <h3 style="color: var(--lmu-gold);">🏠 Dorm Spirit Competition</h3>
-        <p>Compete with your dorm mates for the most spirited residence hall!</p>
-        <p style="color: var(--lmu-gold); font-weight: bold;">Launching Spring 2024</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    for person in filtered_leaderboard[:5]:  # Top 5 for chart
-        person_points = []
-        cumulative = 0
-        for date in dates:
-            daily_points = random.randint(0, 25)
-            cumulative += daily_points
-            person_points.append(cumulative)
-        
-        points_data.append({
-            'Name': person['name'],
-            'Dates': dates,
-            'Points': person_points
-        })
-    
-    # Create plotly chart
-    fig = go.Figure()
-    
-    colors = ['#ff6b35', '#2a5298', '#f7931e', '#667eea', '#764ba2']
-    for i, data in enumerate(points_data):
-        fig.add_trace(go.Scatter(
-            x=data['Dates'],
-            y=data['Points'],
-            mode='lines+markers',
-            name=data['Name'],
-            line=dict(color=colors[i % len(colors)], width=3),
-            marker=dict(size=6)
-        ))
-    
-    fig.update_layout(
-        title="📈 Points Progression Over Time",
-        xaxis_title="Date",
-        yaxis_title="Cumulative Points",
-        height=400,
-        hovermode='x unified',
-        legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01)
-    )
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-    # Badge explanation
-    with st.expander("🏅 Badge Guide - What Do They Mean?"):
-        cols = st.columns(3)
-        badges_list = list(badges_info.items())
-        
-        for i, col in enumerate(cols):
-            with col:
-                start_idx = i * (len(badges_list) // 3)
-                end_idx = (i + 1) * (len(badges_list) // 3) if i < 2 else len(badges_list)
-                
-                for badge, description in badges_list[start_idx:end_idx]:
-                    st.markdown(f"**{badge}** {description}")
+    st.info("Dorm leaderboard coming soon!")
+    st.write("Compete with your dorm mates for the most spirited residence hall!")
+    st.write("Launching Spring 2024")
 
 def show_prize_shop(prizes):
-    """Display prize showcase with LMU branding and enhanced user experience"""
-    st.markdown("""
-    <div style="text-align: center; margin-bottom: 2rem;">
-        <h1 style="color: var(--lmu-crimson); font-size: 30px; font-weight: bold; margin-bottom: 0.5rem;">
-            Prize Shop
-        </h1>
-        <div style="height: 3px; background: var(--lmu-gold); width: 200px; margin: 0 auto;"></div>
-        <p style="color: var(--text-primary); font-size: 18px; margin-top: 1rem;">
-            Earn points and redeem them for exclusive LMU experiences and rewards!
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    """Display prize shop"""
+    st.header("Prize Shop")
+    st.write("Earn points and redeem them for exclusive LMU experiences and rewards!")
     
     # User points display
     if st.session_state.user_id:
-        st.markdown(f"""
-        <div class="points-display">
-            💰 You have {st.session_state.user_points} points to spend!
-        </div>
-        """, unsafe_allow_html=True)
+        st.write(f"You have {st.session_state.user_points} points to spend!")
     
     # Prize categories
     categories = list(set(prize['category'] for prize in prizes))
-    selected_category = st.selectbox("🎯 Browse by Category", ["All Categories"] + categories)
+    selected_category = st.selectbox("Browse by Category", ["All Categories"] + categories)
     
     # Filter prizes
     if selected_category != "All Categories":
@@ -2712,7 +1368,7 @@ def show_prize_shop(prizes):
         filtered_prizes = prizes
     
     # Sort options
-    sort_option = st.selectbox("📊 Sort by", ["Points (Low to High)", "Points (High to Low)", "Availability", "Category"])
+    sort_option = st.selectbox("Sort by", ["Points (Low to High)", "Points (High to Low)", "Availability", "Category"])
     
     if sort_option == "Points (Low to High)":
         filtered_prizes = sorted(filtered_prizes, key=lambda x: x['points_required'])
@@ -2728,49 +1384,15 @@ def show_prize_shop(prizes):
         available_count = prize['available'] - prize['claimed']
         can_afford = st.session_state.user_points >= prize['points_required'] if st.session_state.user_id else False
         
-        # Prize availability styling
-        if available_count == 0:
-            card_style = "background: var(--glass-bg); opacity: 0.6; border: 2px dashed var(--glass-border);"
-            availability_text = "🚫 Sold Out"
-            button_disabled = True
-        elif available_count <= 2:
-            card_style = "background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1)); border: 2px solid var(--lmu-gold);"
-            availability_text = f"⚡ Only {available_count} left!"
-            button_disabled = False
-        else:
-            card_style = "background: var(--glass-bg); border: 2px solid var(--glass-border);"
-            availability_text = f"✅ {available_count} available"
-            button_disabled = False
+        st.subheader(prize['name'])
+        st.write(f"Category: {prize['category']}")
+        st.write(f"Description: {prize['description']}")
+        st.write(f"Points Required: {prize['points_required']}")
+        st.write(f"Available: {available_count}")
         
-        # Disable if user can't afford
-        if not can_afford and st.session_state.user_id:
-            card_style += " opacity: 0.7;"
-            button_disabled = True
-        
-        col1, col2 = st.columns([3, 1])
-        
-        with col1:
-            st.markdown(f"""
-            <div style="{card_style} border-radius: 20px; padding: 2rem; margin: 1rem 0; position: relative;">
-                <div style="position: absolute; top: 15px; right: 20px; font-size: 3rem;">{prize['image']}</div>
-                <h3 style="color: var(--lmu-crimson); margin: 0 0 0.5rem 0;">{prize['name']}</h3>
-                <p style="color: var(--lmu-gold); font-weight: 600; margin: 0 0 1rem 0;">{prize['category']}</p>
-                <p style="margin: 0 0 1rem 0; line-height: 1.5; color: white;">{prize['description']}</p>
-                
-                <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1.5rem;">
-                    <span style="background: var(--lmu-crimson); color: white; padding: 0.5rem 1rem; border-radius: 25px; font-weight: 600;">
-                        💰 {prize['points_required']} points
-                    </span>
-                    <span style="background: {'#28a745' if available_count > 2 else '#ffc107' if available_count > 0 else '#dc3545'}; 
-                                 color: white; padding: 0.5rem 1rem; border-radius: 25px; font-weight: 600;">
-                        {availability_text}
-                    </span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown("<br>" * 4, unsafe_allow_html=True)
+        if st.button(f"Redeem {prize['points_required']} points", key=f"redeem_{prize['id']}", disabled=not can_afford or available_count == 0):
+            st.success(f"Successfully redeemed {prize['name']}!")
+        st.divider()
             
             if not st.session_state.user_id:
                 st.info("Login to redeem prizes!")
@@ -2809,17 +1431,17 @@ def show_prize_shop(prizes):
             st.success("🙌 Thank you for your suggestion! Our team will review it and consider adding it to the prize shop.")
 
 def show_content_gallery():
-    """Display content gallery with photos, videos, and social posts"""
-    st.markdown("## 📸 Content Gallery")
-    st.markdown("Relive the best moments from LMU events and get hyped for what's coming next!")
+    """Display content gallery"""
+    st.header("Content Gallery")
+    st.write("Relive the best moments from LMU events!")
     
     # Content type tabs
-    content_tabs = st.tabs(["📷 Event Photos", "🎥 Video Highlights", "📱 Social Posts", "🎨 Submit Content"])
+    content_tabs = st.tabs(["Event Photos", "Video Highlights", "Social Posts", "Submit Content"])
     
     with content_tabs[0]:  # Event Photos
-        st.markdown("### 📷 Latest Event Photos")
+        st.subheader("Latest Event Photos")
         
-        # Sample photo data (in real app, this would come from a database)
+        # Sample photo data
         photo_albums = [
             {
                 "title": "Basketball vs Pepperdine - Red Sea Night",
@@ -2989,53 +1611,29 @@ def show_content_gallery():
             st.balloons()
 
 def show_user_profile(events, badges_info):
-    """Display user profile with progress tracking and stats"""
+    """Display user profile"""
     if not st.session_state.user_id:
-        st.warning("🔐 Please log in to view your profile!")
+        st.warning("Please log in to view your profile!")
         return
     
-    st.markdown(f"## 👤 {st.session_state.user_id.split('@')[0].title()}'s Profile")
+    st.header(f"{st.session_state.user_id.split('@')[0].title()}'s Profile")
     
     # Profile stats overview
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.markdown(f"""
-        <div class="feature-card" style="text-align: center;">
-            <h3 style="color: #ff6b35; margin: 0;">🏆</h3>
-            <h2 style="color: #2a5298; margin: 0.5rem 0;">{st.session_state.user_points}</h2>
-            <p style="margin: 0;">Spirit Points</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.metric("Spirit Points", st.session_state.user_points)
     
     with col2:
         events_attended = len(st.session_state.attended_events)
-        st.markdown(f"""
-        <div class="feature-card" style="text-align: center;">
-            <h3 style="color: #ff6b35; margin: 0;">📅</h3>
-            <h2 style="color: #2a5298; margin: 0.5rem 0;">{events_attended}</h2>
-            <p style="margin: 0;">Events Attended</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.metric("Events Attended", events_attended)
     
     with col3:
-        st.markdown(f"""
-        <div class="feature-card" style="text-align: center;">
-            <h3 style="color: #ff6b35; margin: 0;">🏅</h3>
-            <h2 style="color: #2a5298; margin: 0.5rem 0;">{len(st.session_state.user_badges)}</h2>
-            <p style="margin: 0;">Badges Earned</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.metric("Badges Earned", len(st.session_state.user_badges))
     
     with col4:
         current_streak = random.randint(3, 15)  # Simulated
-        st.markdown(f"""
-        <div class="feature-card" style="text-align: center;">
-            <h3 style="color: #ff6b35; margin: 0;">🔥</h3>
-            <h2 style="color: #2a5298; margin: 0.5rem 0;">{current_streak}</h2>
-            <p style="margin: 0;">Day Streak</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.metric("Day Streak", current_streak)
     
     # Main profile content
     tab1, tab2, tab3, tab4 = st.tabs(["🏆 Achievements", "📊 Progress", "📅 Event History", "⚙️ Settings"])
@@ -3217,101 +1815,29 @@ def show_ai_assistant():
     st.markdown("## 🦁 LMU GenZ Buddy")
     st.markdown("Your GenZ campus companion who knows everything about LMU! Ask me anything! ✨")
     
-    # Enhanced Chat Interface with realistic design
-    st.markdown('<div class="glass-container">', unsafe_allow_html=True)
-    st.markdown("### 💡 Quick Questions")
-    st.markdown('<p style="color: rgba(255,255,255,0.8); margin-bottom: 1.5rem;">Try these popular questions or ask your own!</p>', unsafe_allow_html=True)
-    
-    # Suggestion pills
+    # Quick questions
+    st.subheader("Quick Questions")
     suggestions = [
-        "what even is campus llm?",
-        "what's happening on campus this week?", 
-        "what should i eat rn?",
-        "how do i email my prof when i fumbled an assignment?",
-        "i feel like i'm failing everything",
-        "where can i study?",
-        "what events are coming up?",
-        "how do i join greek life?"
+        "What's happening on campus this week?",
+        "Where can I study?",
+        "What events are coming up?",
+        "How do I join Greek life?"
     ]
     
-    # Display suggestions as pills
-    cols = st.columns(4)
-    for i, suggestion in enumerate(suggestions):
-        with cols[i % 4]:
-            if st.button(suggestion, key=f"pill_{i}", help="Click to ask this question"):
-                st.session_state.current_question = suggestion
-                st.rerun()
+    for suggestion in suggestions:
+        if st.button(suggestion, key=f"pill_{suggestion}"):
+            st.session_state.current_question = suggestion
+            st.rerun()
     
-    st.markdown("</div>", unsafe_allow_html=True)
-    
-    # Main chat container
-    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-    
-    # Initialize typing state
-    if 'show_typing' not in st.session_state:
-        st.session_state.show_typing = False
-    
-    # Display conversation history with realistic chat bubbles
+    # Display conversation history
     if st.session_state.conversation_history:
-        st.markdown('<div style="max-height: 400px; overflow-y: auto; padding: 1rem 0; margin-bottom: 2rem;">', unsafe_allow_html=True)
-        
-        for exchange in st.session_state.conversation_history[-10:]:  # Show last 10 messages
-            # User message
-            st.markdown(f"""
-            <div class="user-message chat-message">
-                <div class="message-bubble user-bubble">
-                    {exchange['question']}
-                </div>
-                <div class="message-avatar user-avatar">
-                    You
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Bot message
-            st.markdown(f"""
-            <div class="bot-message chat-message">
-                <div class="message-avatar bot-avatar">
-                    🤖
-                </div>
-                <div class="message-bubble bot-bubble">
-                    {exchange['answer']}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.subheader("Recent Conversation")
+        for exchange in st.session_state.conversation_history[-5:]:  # Show last 5 messages
+            st.write(f"**You:** {exchange['question']}")
+            st.write(f"**Assistant:** {exchange['answer']}")
+            st.divider()
     else:
-        # Welcome message when no conversation
-        st.markdown("""
-        <div class="bot-message chat-message" style="margin-bottom: 2rem;">
-            <div class="message-avatar bot-avatar">
-                🤖
-            </div>
-            <div class="message-bubble bot-bubble">
-                hey! i'm your campus ai assistant. basically that friend who's been at lmu forever and knows all the tea. ask me anything about campus life, events, food, studying, or just how to survive the bluff! 
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Show typing indicator when bot is "thinking"
-    if st.session_state.show_typing:
-        st.markdown("""
-        <div class="bot-message chat-message">
-            <div class="message-avatar bot-avatar">
-                🤖
-            </div>
-            <div class="typing-indicator">
-                <div class="typing-dots">
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    st.markdown("</div>", unsafe_allow_html=True)
+        st.write("Hey! I'm your campus AI assistant. Ask me anything about campus life, events, food, studying, or just how to survive the bluff!")
     
     # Input section
     st.markdown('<div class="glass-container" style="margin-top: 1rem;">', unsafe_allow_html=True)
@@ -3447,104 +1973,47 @@ def show_ai_assistant():
 
 def show_feedback_page():
     """Display feedback and suggestion module"""
-    st.markdown("## 💬 Feedback & Suggestions")
-    st.markdown("Help us make the LMU Campus Spirit Hub even better! Your voice matters. 🦁")
+    st.header("Feedback & Suggestions")
+    st.write("Help us make the LMU Campus Spirit Hub even better!")
     
     # Feedback type selector
     feedback_type = st.selectbox(
-        "🎯 What type of feedback would you like to share?",
-        ["General Feedback", "Bug Report", "Feature Request", "Event Suggestion", "Prize Idea", "Content Submission"]
+        "What type of feedback would you like to share?",
+        ["General Feedback", "Bug Report", "Feature Request", "Event Suggestion", "Prize Idea"]
     )
     
-    # Feedback form based on type
+    # Simple feedback form
     if feedback_type == "General Feedback":
-        st.markdown("### 💭 General Feedback")
-        rating = st.slider("⭐ Overall Rating", 1, 5, 4)
-        
-        st.markdown("**What's working well?**")
-        positive_feedback = st.text_area("Tell us what you love...", height=100)
-        
-        st.markdown("**What could be improved?**")
-        improvement_feedback = st.text_area("Share your improvement ideas...", height=100)
+        rating = st.slider("Overall Rating", 1, 5, 4)
+        positive_feedback = st.text_area("What's working well?", height=100)
+        improvement_feedback = st.text_area("What could be improved?", height=100)
         
     elif feedback_type == "Bug Report":
-        st.markdown("### 🐛 Bug Report")
-        bug_severity = st.selectbox("🚨 Severity", ["Low", "Medium", "High", "Critical"])
-        bug_location = st.selectbox("📍 Where did this happen?", ["Calendar", "Leaderboard", "Profile", "AI Assistant", "Prize Shop", "Other"])
-        bug_description = st.text_area("🔍 Describe the bug", 
-                                     placeholder="What happened? What did you expect to happen?", 
-                                     height=150)
-        steps_to_reproduce = st.text_area("🔄 Steps to reproduce", 
-                                        placeholder="1. Go to...\n2. Click on...\n3. See error...", 
-                                        height=100)
+        bug_severity = st.selectbox("Severity", ["Low", "Medium", "High", "Critical"])
+        bug_location = st.selectbox("Where did this happen?", ["Calendar", "Leaderboard", "Profile", "AI Assistant", "Prize Shop", "Other"])
+        bug_description = st.text_area("Describe the bug", height=150)
         
     elif feedback_type == "Feature Request":
-        st.markdown("### ✨ Feature Request")
-        feature_category = st.selectbox("📂 Category", ["UI/UX", "Events", "Social", "Gamification", "AI Assistant", "Mobile", "Other"])
-        feature_title = st.text_input("💡 Feature Title", placeholder="Brief title for your idea")
-        feature_description = st.text_area("📝 Feature Description", 
-                                         placeholder="Describe your feature idea in detail...", 
-                                         height=150)
-        feature_priority = st.selectbox("🎯 Priority", ["Nice to have", "Important", "Critical"])
+        feature_title = st.text_input("Feature Title")
+        feature_description = st.text_area("Feature Description", height=150)
         
     elif feedback_type == "Event Suggestion":
-        st.markdown("### 📅 Event Suggestion")
-        event_name = st.text_input("🎉 Event Name", placeholder="e.g., Lions Late Night Study")
-        event_type = st.selectbox("🎯 Event Type", ["Game Day", "Tailgate", "Watch Party", "RSO Event", "Social", "Academic", "Service", "Other"])
-        event_description = st.text_area("📝 Event Description", height=120)
-        suggested_points = st.number_input("🏆 Suggested Points Value", min_value=5, max_value=100, value=20)
-        estimated_attendance = st.number_input("👥 Expected Attendance", min_value=10, max_value=1000, value=50)
+        event_name = st.text_input("Event Name")
+        event_description = st.text_area("Event Description", height=120)
         
     elif feedback_type == "Prize Idea":
-        st.markdown("### 🎁 Prize Idea")
-        prize_name = st.text_input("🏆 Prize Name", placeholder="e.g., Lunch with the Basketball Team")
-        prize_category = st.selectbox("📂 Category", ["Ultimate Experience", "Game Day", "Academic", "Leadership", "Recognition", "Merchandise", "Other"])
-        prize_description = st.text_area("📝 Prize Description", height=120)
-        suggested_points_required = st.number_input("💰 Suggested Points Required", min_value=50, max_value=2000, value=300, step=50)
-        prize_availability = st.number_input("📊 How many available?", min_value=1, max_value=50, value=1)
-        
-    else:  # Content Submission
-        st.markdown("### 📸 Content Submission")
-        content_type_detailed = st.selectbox("📋 Content Type", ["Photo", "Video", "Story", "Social Media Post", "Article", "Other"])
-        content_title = st.text_input("📰 Content Title")
-        content_description = st.text_area("📝 Content Description", height=120)
-        content_event = st.selectbox("🏷️ Related Event (if any)", ["None", "Recent Basketball Game", "Latest Tailgate", "RSO Fair", "Other"])
+        prize_name = st.text_input("Prize Name")
+        prize_description = st.text_area("Prize Description", height=120)
     
-    # Common fields for all feedback types
-    st.markdown("---")
-    st.markdown("### 👤 Contact Information (Optional)")
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        contact_name = st.text_input("📛 Your Name", placeholder="How should we credit you?")
-    with col2:
-        contact_email = st.text_input("📧 Email", placeholder="For follow-up questions")
-    
-    # Anonymous option
-    anonymous = st.checkbox("🕶️ Submit anonymously")
+    # Contact information
+    st.subheader("Contact Information (Optional)")
+    contact_name = st.text_input("Your Name")
+    contact_email = st.text_input("Email")
+    anonymous = st.checkbox("Submit anonymously")
     
     # Submit button
-    if st.button("🚀 Submit Feedback", type="primary", use_container_width=True):
-        # Create feedback object (in real app, this would go to database)
-        feedback_data = {
-            "type": feedback_type,
-            "timestamp": datetime.now().isoformat(),
-            "anonymous": anonymous
-        }
-        
-        if not anonymous:
-            feedback_data["contact_name"] = contact_name
-            feedback_data["contact_email"] = contact_email
-        
-        # Add type-specific data
-        if feedback_type == "General Feedback":
-            feedback_data.update({
-                "rating": rating,
-                "positive": positive_feedback,
-                "improvements": improvement_feedback
-            })
-        elif feedback_type == "Bug Report":
-            feedback_data.update({
+    if st.button("Submit Feedback", type="primary"):
+        st.success("Thank you for your feedback!")
                 "severity": bug_severity,
                 "location": bug_location,
                 "description": bug_description,
