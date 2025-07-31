@@ -606,6 +606,90 @@ def simulate_ai_response(question: str) -> str:
     
     return random.choice(default_responses)
 
+# LMU Buddy Integration with your Llama model
+def call_lmu_buddy_api(question: str) -> str:
+    """
+    Use your fine-tuned Llama model directly for LMU Buddy responses.
+    """
+    try:
+        # Import the LLM handler
+        from src.llm_handler import LLMHandler
+        
+        # Initialize the LLM handler
+        llm_handler = LLMHandler()
+        
+        # Generate response using your Llama model
+        response = llm_handler.generate_response(question)
+        
+        # If the response indicates an error, fallback to mock response
+        if response.startswith("🚨") or "error" in response.lower():
+            return simulate_lmu_buddy_response(question)
+        
+        return response
+        
+    except ImportError:
+        # Fallback if LLM handler is not available
+        return simulate_lmu_buddy_response(question)
+    except Exception as e:
+        st.error(f"LLM Error: {str(e)}")
+        return simulate_lmu_buddy_response(question)
+
+def simulate_lmu_buddy_response(question: str) -> str:
+    """
+    Simulate the LMU Buddy response with GenZ tone and LMU-specific knowledge.
+    This will be replaced by your actual fine-tuned Llama model.
+    """
+    question_lower = question.lower()
+    
+    # LMU-specific responses with GenZ tone
+    responses = {
+        "food": [
+            "Omg the best food on campus is def the Lair! Their chicken tenders are *chef's kiss* 🤌 And if you're feeling fancy, try the dining hall's pasta night - it's actually fire 🔥",
+            "The Lair is where it's at! Their burgers are lowkey amazing and the fries are always crispy. Pro tip: go during off-peak hours to avoid the line! 📍",
+            "For real food, hit up the Lair or the dining hall. The Lair has better burgers, but the dining hall has unlimited food which is perfect for when you're broke af 💸"
+        ],
+        "study": [
+            "Best study spots? The library is obvious but also try the 3rd floor of Malone - it's quiet af and has the best views! Plus there's coffee nearby ☕",
+            "For serious studying, go to the library basement. It's like a dungeon but in a good way - super quiet and no distractions. Perfect for when you need to grind 📚",
+            "The library is clutch but also check out the study rooms in Malone. They're first come first serve but worth it if you can snag one! 🎯"
+        ],
+        "events": [
+            "Check the events page! There's always something going on - from basketball games to random club meetings. The best events are usually posted on Instagram too 📱",
+            "There's literally always something happening! Basketball games are the move, and don't sleep on the random club events - they're actually fun and you get free food 🏀",
+            "Events are everywhere! The app shows everything, but also follow @lmu_events on Instagram for the latest. Basketball games are a must - the energy is unmatched! 🦁"
+        ],
+        "parking": [
+            "Parking is a nightmare ngl 😅 Try the lots near the dorms or the structure by the library. Pro tip: get here early or you'll be walking from the moon 🌙",
+            "Parking is rough but the structure by the library usually has spots. Just be ready to pay like $10 for the day. Worth it to not walk a mile though! 🚗",
+            "Parking is literally the worst part of LMU 😤 Try the lots near the dorms or just accept that you'll be walking. At least it's good exercise? 💪"
+        ],
+        "prizes": [
+            "The prizes are actually insane this year! MacBooks, AirPods, even lunch with the president. Just keep checking in to events and posting on social media - it's that easy! 🏆",
+            "Prizes are fire! You can win everything from tech to exclusive experiences. Just stay active on the app and you'll rack up points in no time! 💎",
+            "The prize game is strong this year! From laptops to exclusive events, there's something for everyone. Just keep grinding those points! 🎁"
+        ],
+        "basketball": [
+            "Basketball games are LITERALLY the best part of LMU! The energy is unmatched and the team is actually good this year. You have to go to at least one game! 🏀",
+            "Basketball games are where it's at! The student section goes crazy and the team is actually decent this year. Plus you get points for going! 🦁",
+            "Basketball games are a vibe! The student section is wild and the team is actually good. Don't miss out on the free points and the fun! 🎉"
+        ]
+    }
+    
+    # Check for keywords and return appropriate response
+    for keyword, response_list in responses.items():
+        if keyword in question_lower:
+            return random.choice(response_list)
+    
+    # Default GenZ LMU Buddy response
+    default_responses = [
+        "That's a great question! As your LMU Buddy, I'm here to help with literally anything campus-related. What else do you want to know? 🤔",
+        "Omg I love that question! LMU is the best and I know everything about it. What else are you curious about? 🦁",
+        "That's such a good question! I'm your go-to for all things LMU. What else do you want to know about campus life? 💫",
+        "Love that energy! I'm here to help you navigate LMU like a pro. What else are you wondering about? ✨"
+    ]
+    
+    return random.choice(default_responses)
+
 # Main App Function
 def main():
     # Simple header
@@ -652,7 +736,7 @@ def main():
     # Simple navigation
     selected = option_menu(
         menu_title=None,
-        options=["Home", "Events Calendar", "Leaderboard", "Prize Shop", "Content Gallery", "My Profile", "AI Assistant", "Feedback"],
+        options=["🏠 Home", "📅 Events Calendar", "🏆 Leaderboard", "🎁 Prize Shop", "📸 Content Gallery", "👤 My Profile", "🦁 LMU Buddy", "💬 Feedback"],
         icons=["house", "calendar-event", "trophy", "gift", "images", "person-circle", "robot", "chat-dots"],
         menu_icon="cast",
         default_index=0,
@@ -660,21 +744,21 @@ def main():
     )
     
     # Page content based on selection
-    if selected == "Home":
+    if selected == "🏠 Home":
         show_home_page(events, leaderboard)
-    elif selected == "Events Calendar":
+    elif selected == "📅 Events Calendar":
         show_calendar_page(events)
-    elif selected == "Leaderboard":
+    elif selected == "🏆 Leaderboard":
         show_leaderboard_page(leaderboard, badges_info)
-    elif selected == "Prize Shop":
+    elif selected == "🎁 Prize Shop":
         show_prize_shop(prizes)
-    elif selected == "Content Gallery":
+    elif selected == "📸 Content Gallery":
         show_content_gallery()
-    elif selected == "My Profile":
+    elif selected == "👤 My Profile":
         show_user_profile(events, badges_info)
-    elif selected == "AI Assistant":
+    elif selected == "🦁 LMU Buddy":
         show_ai_assistant()
-    elif selected == "Feedback":
+    elif selected == "💬 Feedback":
         show_feedback_page()
 
 def show_rsvp_modal(event):
@@ -1038,34 +1122,62 @@ def show_home_page(events, leaderboard):
     if st.button("RSVP + Add to Calendar"):
         st.success("RSVP successful!")
     
-    # Leaderboard preview
-    st.subheader("Top Leaders")
-    individual_leaders = [person for person in leaderboard if person['type'] == 'Individual'][:5]
-    for person in individual_leaders:
-        st.write(f"{person['rank']}. {person['name']} - {person['points']} points")
-    
-    # Spirit Challenge
-    st.subheader("Spirit Challenge")
-    st.write("Post a game-day selfie for 200 points!")
-    if st.button("Upload Now"):
-        st.success("Upload successful!")
-    
-    # Quick stats
-    st.subheader("Quick Stats")
-    col1, col2, col3, col4 = st.columns(4)
-    
     with col1:
-        st.metric("Upcoming Events", len([e for e in events if datetime.strptime(e['date'], '%Y-%m-%d').date() >= date.today()]))
-    
-    with col2:
-        st.metric("Active Users", 847)
-    
-    with col3:
-        total_rsvps = sum(event.get('rsvp_count', 0) for event in events)
-        st.metric("Total RSVPs", total_rsvps)
-    
-    with col4:
-        st.metric("Points Awarded", "15.2K")
+        # Leaderboard Teaser Panel
+        st.markdown("""
+        <div style="
+            background: var(--glass-bg); 
+            border-radius: 20px; 
+            padding: 1.5rem; 
+            margin-bottom: 1rem;
+            border: 1px solid var(--glass-border);
+        ">
+            <h3 style="color: var(--lmu-gold); margin-bottom: 1rem; font-size: 20px;">🏆 Top Lions</h3>
+        """, unsafe_allow_html=True)
+        
+        # Top 5 leaderboard preview with circular avatars
+        individual_leaders = [person for person in leaderboard if person['type'] == 'Individual'][:5]
+        
+        for i, person in enumerate(individual_leaders):
+            gold_ring = "border: 3px solid var(--lmu-gold);" if person['rank'] <= 3 else ""
+            html_content = f"""
+            <div style="
+                display: flex; 
+                align-items: center; 
+                margin-bottom: 1rem; 
+                padding: 0.5rem; 
+                border-radius: 15px;
+                background: rgba(255,255,255,0.1);
+            ">
+                <div style="
+                    width: 50px; 
+                    height: 50px; 
+                    border-radius: 50%; 
+                    background: var(--gradient-crimson); 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    font-weight: bold; 
+                    color: white;
+                    margin-right: 1rem;
+                    {gold_ring}
+                ">
+                    {str(person['rank'])}
+                </div>
+                <div style="flex-grow: 1;">
+                    <div style="font-weight: 600; color: var(--text-primary); font-size: 18px;">{str(person['name'])}</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); font-style: italic;">{str(person['points'])} points</div>
+                </div>
+            </div>
+            """
+            st.markdown(html_content, unsafe_allow_html=True)
+        
+        st.markdown("""
+            <div style="text-align: center; margin-top: 1rem;">
+                <span style="color: var(--lmu-gold); font-size: 14px;">Tap to see full leaderboard</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     if st.session_state.show_rsvp_modal and st.session_state.selected_event:
         show_rsvp_modal(st.session_state.selected_event)
     
@@ -1281,29 +1393,29 @@ def show_prize_shop(prizes):
         if st.button(f"Redeem {prize['points_required']} points", key=f"redeem_{prize['id']}", disabled=not can_afford or available_count == 0):
             st.success(f"Successfully redeemed {prize['name']}!")
         st.divider()
-            
-            if not st.session_state.user_id:
-                st.info("Login to redeem prizes!")
-            elif button_disabled:
-                if available_count == 0:
-                    st.error("Sold Out")
-                else:
-                    points_needed = prize['points_required'] - st.session_state.user_points
-                    st.warning(f"Need {points_needed} more points")
+        
+        if not st.session_state.user_id:
+            st.info("Login to redeem prizes!")
+        elif button_disabled:
+            if available_count == 0:
+                st.error("Sold Out")
             else:
-                if st.button(f"🎁 Redeem Now", key=f"redeem_{prize['id']}", type="primary", use_container_width=True):
-                    # Redeem prize
-                    st.session_state.user_points -= prize['points_required']
-                    prize['claimed'] += 1  # This would be saved to database in real app
-                    
-                    st.success(f"🎉 Congratulations! You've redeemed '{prize['name']}'!")
-                    st.balloons()
-                    
-                    # Show redemption details
-                    st.info(f"📧 Check your LMU email for redemption instructions. Prize ID: {prize['id']}")
-                    
-                    time.sleep(2)
-                    st.rerun()
+                points_needed = prize['points_required'] - st.session_state.user_points
+                st.warning(f"Need {points_needed} more points")
+        else:
+            if st.button(f"🎁 Redeem Now", key=f"redeem_{prize['id']}", type="primary", use_container_width=True):
+                # Redeem prize
+                st.session_state.user_points -= prize['points_required']
+                prize['claimed'] += 1  # This would be saved to database in real app
+                
+                st.success(f"🎉 Congratulations! You've redeemed '{prize['name']}'!")
+                st.balloons()
+                
+                # Show redemption details
+                st.info(f"📧 Check your LMU email for redemption instructions. Prize ID: {prize['id']}")
+                
+                time.sleep(2)
+                st.rerun()
     
     # Prize request section
     st.markdown("---")
@@ -1699,9 +1811,9 @@ def show_user_profile(events, badges_info):
                 st.rerun()
 
 def show_ai_assistant():
-    """AI assistant"""
-    st.header("LMU AI Assistant")
-    st.write("Ask me anything about LMU! I know about campus life, academics, events, and more.")
+    """Enhanced AI assistant with LMU-specific knowledge"""
+    st.markdown("## 🦁 LMU GenZ Buddy")
+    st.markdown("Your GenZ campus companion who knows everything about LMU! Ask me anything! ✨")
     
     # Quick questions
     st.subheader("Quick Questions")
@@ -1733,10 +1845,10 @@ def show_ai_assistant():
     # Use form for better input handling
     with st.form(key="chat_form", clear_on_submit=True):
         question = st.text_input(
-            "",
+            "Ask me anything about LMU!",
             placeholder="type your question here... (e.g., where's the best place to cry on campus?)",
             key="ai_question_input",
-            label_visibility="collapsed"
+            label_visibility="hidden"
         )
         
         col1, col2, col3 = st.columns([2, 1, 1])
@@ -1764,8 +1876,8 @@ def show_ai_assistant():
     # Handle sending message
     if ask_button and question:
         try:
-            # Generate response immediately
-            response = simulate_ai_response(question)
+            # Generate response using LMU Buddy API
+            response = call_lmu_buddy_api(question)
             
             # Add to conversation history
             st.session_state.conversation_history.append({
@@ -1902,11 +2014,6 @@ def show_feedback_page():
     # Submit button
     if st.button("Submit Feedback", type="primary"):
         st.success("Thank you for your feedback!")
-                "severity": bug_severity,
-                "location": bug_location,
-                "description": bug_description,
-                "steps": steps_to_reproduce
-            })
         # ... and so on for other types
         
         st.success("🎉 Thank you for your feedback! We really appreciate your input.")
