@@ -89,23 +89,27 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
     
-    /* Root Variables */
+    /* Root Variables - LMU Brand Colors */
     :root {
-        --primary-blue: #1e3c72;
-        --secondary-blue: #2a5298;
-        --accent-orange: #ff6b35;
-        --accent-gold: #f7931e;
+        --lmu-crimson: #8B0000;
+        --lmu-crimson-light: #A52A2A;
+        --lmu-crimson-dark: #660000;
+        --lmu-gold: #FFD700;
+        --lmu-gold-light: #FFE55C;
+        --lmu-gold-dark: #B8860B;
         --text-dark: #2d3748;
         --text-light: #a0aec0;
         --text-white: #ffffff;
         --bg-light: #000000;
-        --glass-bg: rgba(0, 0, 0, 0.7);
-        --glass-border: rgba(255, 255, 255, 0.2);
-        --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.5);
-        --shadow-hover: 0 15px 45px rgba(0, 0, 0, 0.7);
-        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-        --gradient-bg: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+        --glass-bg: rgba(139, 0, 0, 0.8);
+        --glass-border: rgba(255, 215, 0, 0.3);
+        --shadow-soft: 0 8px 32px rgba(139, 0, 0, 0.5);
+        --shadow-hover: 0 15px 45px rgba(139, 0, 0, 0.7);
+        --gradient-primary: linear-gradient(135deg, var(--lmu-crimson) 0%, var(--lmu-crimson-dark) 100%);
+        --gradient-accent: linear-gradient(135deg, var(--lmu-gold) 0%, var(--lmu-gold-dark) 100%);
+        --gradient-bg: linear-gradient(135deg, #000000 0%, #1a0000 50%, #000000 100%);
+        --gradient-crimson: linear-gradient(135deg, var(--lmu-crimson) 0%, var(--lmu-crimson-light) 100%);
+        --gradient-gold: linear-gradient(135deg, var(--lmu-gold) 0%, var(--lmu-gold-light) 100%);
     }
     
     /* Global Styles */
@@ -391,7 +395,7 @@ st.markdown("""
         left: 0;
         right: 0;
         height: 4px;
-        background: var(--gradient-accent);
+        background: var(--gradient-gold);
         border-radius: 24px 24px 0 0;
     }
     
@@ -403,14 +407,14 @@ st.markdown("""
     
     /* Points Display */
     .points-display {
-        background: var(--gradient-accent);
-        color: white;
+        background: var(--gradient-gold);
+        color: var(--lmu-crimson-dark);
         padding: 2rem;
         border-radius: 28px;
         text-align: center;
         font-weight: 800;
         font-size: 1.8rem;
-        box-shadow: 0 12px 40px rgba(255, 107, 53, 0.4);
+        box-shadow: 0 12px 40px rgba(255, 215, 0, 0.4);
         margin: 1.5rem 0;
         position: relative;
         overflow: hidden;
@@ -430,11 +434,11 @@ st.markdown("""
     
     @keyframes pointsGlow {
         from { 
-            box-shadow: 0 12px 40px rgba(255, 107, 53, 0.4);
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.4);
             transform: scale(1);
         }
         to { 
-            box-shadow: 0 20px 60px rgba(255, 107, 53, 0.7);
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.7);
             transform: scale(1.05);
         }
     }
@@ -446,14 +450,14 @@ st.markdown("""
     /* Badges */
     .badge {
         display: inline-block;
-        background: var(--gradient-primary);
+        background: var(--gradient-crimson);
         color: white;
         padding: 0.8rem 1.5rem;
         border-radius: 50px;
         font-size: 1rem;
         font-weight: 600;
         margin: 0.5rem;
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
@@ -492,8 +496,8 @@ st.markdown("""
     }
     
     .stTextInput > div > div > input:focus {
-        border: 2px solid var(--accent-orange) !important;
-        box-shadow: 0 0 20px rgba(255, 107, 53, 0.3) !important;
+        border: 2px solid var(--lmu-gold) !important;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3) !important;
         transform: scale(1.02) !important;
     }
     
@@ -504,15 +508,15 @@ st.markdown("""
     
     /* Button Styles */
     .stButton > button {
-        background: var(--gradient-accent) !important;
-        color: white !important;
+        background: var(--gradient-gold) !important;
+        color: var(--lmu-crimson-dark) !important;
         border: none !important;
         border-radius: 20px !important;
         padding: 0.8rem 2rem !important;
         font-weight: 600 !important;
         font-size: 1.1rem !important;
         transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3) !important;
+        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3) !important;
         position: relative !important;
         overflow: hidden !important;
     }
@@ -530,7 +534,7 @@ st.markdown("""
     
     .stButton > button:hover {
         transform: translateY(-4px) scale(1.05) !important;
-        box-shadow: 0 15px 40px rgba(255, 107, 53, 0.5) !important;
+        box-shadow: 0 15px 40px rgba(255, 215, 0, 0.5) !important;
     }
     
     .stButton > button:hover::before {
@@ -866,6 +870,12 @@ if 'attended_events' not in st.session_state:
     st.session_state.attended_events = []
 if 'conversation_history' not in st.session_state:
     st.session_state.conversation_history = []
+if 'show_rsvp_modal' not in st.session_state:
+    st.session_state.show_rsvp_modal = False
+if 'selected_event' not in st.session_state:
+    st.session_state.selected_event = None
+if 'show_checkin_modal' not in st.session_state:
+    st.session_state.show_checkin_modal = False
 
 # Load mock data and configurations
 @st.cache_data
@@ -1276,7 +1286,7 @@ def main():
         orientation="horizontal",
         styles={
             "container": {"padding": "1rem!important", "background-color": "transparent", "border-radius": "20px"},
-            "icon": {"color": "#ff6b35", "font-size": "20px"},
+            "icon": {"color": "#FFD700", "font-size": "20px"},
             "nav-link": {
                 "font-size": "14px", 
                 "text-align": "center", 
@@ -1290,10 +1300,10 @@ def main():
                 "color": "white"
             },
             "nav-link-selected": {
-                "background": "linear-gradient(135deg, #ff6b35 0%, #f7931e 100%)", 
+                "background": "linear-gradient(135deg, #8B0000 0%, #A52A2A 100%)", 
                 "color": "white",
                 "transform": "scale(1.05)",
-                "box-shadow": "0 4px 15px rgba(255, 107, 53, 0.4)"
+                "box-shadow": "0 4px 15px rgba(139, 0, 0, 0.4)"
             },
         }
     )
@@ -1317,18 +1327,529 @@ def main():
     elif selected == "💬 Feedback":
         show_feedback_page()
 
+def show_rsvp_modal(event):
+    """Display RSVP confirmation modal"""
+    st.markdown("""
+    <div style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">
+        <div style="
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        ">
+            <div style="
+                width: 100%;
+                height: 150px;
+                background: var(--lmu-crimson);
+                border-radius: 15px;
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 4rem;
+            ">🏀</div>
+            
+            <h2 style="color: var(--lmu-crimson); font-size: 24px; text-align: center; margin-bottom: 1rem;">
+                {event['title']}
+            </h2>
+            
+            <p style="color: #666; font-size: 16px; text-align: center; margin-bottom: 0.5rem;">
+                📅 {event['date']} at {event['time']}
+            </p>
+            <p style="color: #666; font-size: 16px; text-align: center; margin-bottom: 1.5rem;">
+                📍 {event['location']}
+            </p>
+            
+            <div style="
+                background: var(--lmu-gold);
+                color: var(--lmu-crimson-dark);
+                padding: 1rem;
+                border-radius: 10px;
+                text-align: center;
+                font-weight: bold;
+                font-size: 18px;
+                margin-bottom: 1.5rem;
+            ">
+                🏆 Earn {event['points']} Spirit Points for attending!
+            </div>
+            
+            <p style="color: #333; font-size: 18px; text-align: center; margin-bottom: 2rem; font-weight: bold;">
+                Are you sure you want to RSVP?
+            </p>
+            
+            <div style="display: flex; gap: 1rem;">
+                <button style="
+                    flex: 1;
+                    background: var(--lmu-gold);
+                    color: var(--lmu-crimson-dark);
+                    border: none;
+                    padding: 1rem;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    font-size: 16px;
+                    cursor: pointer;
+                " onclick="window.parent.postMessage({type: 'rsvp_confirm'}, '*')">
+                    Yes, RSVP Me!
+                </button>
+                <button style="
+                    flex: 1;
+                    background: transparent;
+                    color: var(--lmu-crimson);
+                    border: 2px solid var(--lmu-crimson);
+                    padding: 1rem;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    font-size: 16px;
+                    cursor: pointer;
+                " onclick="window.parent.postMessage({type: 'rsvp_cancel'}, '*')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+    """.format(event=event), unsafe_allow_html=True)
+
+def show_checkin_modal(event):
+    """Display check-in confirmation modal with live spirit meter"""
+    st.markdown("""
+    <div style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(165, 42, 42, 0.9) 100%);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">
+        <div style="
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            text-align: center;
+        ">
+            <div style="
+                width: 80px;
+                height: 80px;
+                background: #4CAF50;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 3rem;
+                margin: 0 auto 1.5rem;
+                animation: checkmarkPulse 1s ease-in-out;
+            ">✅</div>
+            
+            <h2 style="color: var(--lmu-crimson); font-size: 36px; margin-bottom: 1rem; font-weight: bold;">
+                You're Checked In!
+            </h2>
+            
+            <div style="
+                background: var(--lmu-gold);
+                color: var(--lmu-crimson-dark);
+                padding: 1rem;
+                border-radius: 10px;
+                font-weight: bold;
+                font-size: 20px;
+                margin-bottom: 2rem;
+                animation: confetti 0.5s ease-out;
+            ">
+                +350 Spirit Points awarded 🎉
+            </div>
+            
+            <h3 style="color: #333; font-size: 18px; margin-bottom: 1rem; font-weight: bold;">
+                Current Spirit Meter:
+            </h3>
+            
+            <div style="
+                width: 100%;
+                height: 30px;
+                background: #f0f0f0;
+                border-radius: 15px;
+                overflow: hidden;
+                margin-bottom: 2rem;
+                position: relative;
+            ">
+                <div style="
+                    width: 75%;
+                    height: 100%;
+                    background: var(--lmu-gold);
+                    border-radius: 15px;
+                    animation: fillBar 2s ease-out;
+                "></div>
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 75%;
+                    transform: translateY(-50%);
+                    color: var(--lmu-crimson-dark);
+                    font-weight: bold;
+                    font-size: 14px;
+                ">75% Loudest</div>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <button style="
+                    background: var(--lmu-gold);
+                    color: var(--lmu-crimson-dark);
+                    border: none;
+                    padding: 1rem;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    font-size: 16px;
+                    cursor: pointer;
+                " onclick="window.parent.postMessage({type: 'upload_selfie'}, '*')">
+                    📸 Upload Your Game-Day Selfie
+                </button>
+                
+                <button style="
+                    background: transparent;
+                    color: var(--lmu-crimson);
+                    border: 2px solid var(--lmu-crimson);
+                    padding: 1rem;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    font-size: 16px;
+                    cursor: pointer;
+                " onclick="window.parent.postMessage({type: 'share_social'}, '*')">
+                    📤 Share to Social
+                </button>
+                
+                <button style="
+                    background: transparent;
+                    color: #666;
+                    border: none;
+                    padding: 0.5rem;
+                    font-style: italic;
+                    font-size: 14px;
+                    cursor: pointer;
+                    text-decoration: underline;
+                " onclick="window.parent.postMessage({type: 'back_to_game'}, '*')">
+                    ← Back to Game Day Zone
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+    @keyframes checkmarkPulse {
+        0% { transform: scale(0); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+    
+    @keyframes confetti {
+        0% { transform: scale(0) rotate(0deg); }
+        50% { transform: scale(1.2) rotate(180deg); }
+        100% { transform: scale(1) rotate(360deg); }
+    }
+    
+    @keyframes fillBar {
+        0% { width: 0%; }
+        100% { width: 75%; }
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    """Display RSVP confirmation modal"""
+    st.markdown("""
+    <div style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">
+        <div style="
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        ">
+            <div style="
+                width: 100%;
+                height: 150px;
+                background: var(--lmu-crimson);
+                border-radius: 15px;
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 4rem;
+            ">🏀</div>
+            
+            <h2 style="color: var(--lmu-crimson); font-size: 24px; text-align: center; margin-bottom: 1rem;">
+                {event['title']}
+            </h2>
+            
+            <p style="color: #666; font-size: 16px; text-align: center; margin-bottom: 0.5rem;">
+                📅 {event['date']} at {event['time']}
+            </p>
+            <p style="color: #666; font-size: 16px; text-align: center; margin-bottom: 1.5rem;">
+                📍 {event['location']}
+            </p>
+            
+            <div style="
+                background: var(--lmu-gold);
+                color: var(--lmu-crimson-dark);
+                padding: 1rem;
+                border-radius: 10px;
+                text-align: center;
+                font-weight: bold;
+                font-size: 18px;
+                margin-bottom: 1.5rem;
+            ">
+                🏆 Earn {event['points']} Spirit Points for attending!
+            </div>
+            
+            <p style="color: #333; font-size: 18px; text-align: center; margin-bottom: 2rem; font-weight: bold;">
+                Are you sure you want to RSVP?
+            </p>
+            
+            <div style="display: flex; gap: 1rem;">
+                <button style="
+                    flex: 1;
+                    background: var(--lmu-gold);
+                    color: var(--lmu-crimson-dark);
+                    border: none;
+                    padding: 1rem;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    font-size: 16px;
+                    cursor: pointer;
+                " onclick="window.parent.postMessage({type: 'rsvp_confirm'}, '*')">
+                    Yes, RSVP Me!
+                </button>
+                <button style="
+                    flex: 1;
+                    background: transparent;
+                    color: var(--lmu-crimson);
+                    border: 2px solid var(--lmu-crimson);
+                    padding: 1rem;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    font-size: 16px;
+                    cursor: pointer;
+                " onclick="window.parent.postMessage({type: 'rsvp_cancel'}, '*')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+    """.format(event=event), unsafe_allow_html=True)
+
 def show_home_page(events, leaderboard):
-    """Display the home page with quick stats and upcoming events"""
+    """Display the home page with LMU branding and enhanced user experience"""
+    
+    # Get user's first name for greeting
+    user_name = "Lion" if st.session_state.user_id is None else st.session_state.user_id.split('@')[0].title()
+    
+    # Greeting Section
+    st.markdown(f"""
+    <div style="margin-bottom: 2rem;">
+        <h2 style="color: var(--lmu-gold); font-family: 'Poppins', cursive; font-size: 24px; margin-bottom: 0.5rem;">
+            Hi, {user_name}! Ready to roar? 🦁
+        </h2>
+        <div style="height: 3px; background: var(--lmu-gold); width: 100px; margin-bottom: 2rem;"></div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Next Up Event Carousel Card (800x300px equivalent)
+    featured_event = events[0]  # Basketball game
+    st.markdown(f"""
+    <div style="
+        background: var(--lmu-crimson); 
+        border-radius: 20px; 
+        padding: 2rem; 
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(139, 0, 0, 0.3);
+    ">
+        <div style="
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            width: 200px; 
+            height: 200px; 
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="rgba(255,215,0,0.1)"/><text x="50" y="55" text-anchor="middle" fill="rgba(255,215,0,0.3)" font-size="40">🏀</text></svg>');
+            opacity: 0.3;
+        "></div>
+        <div style="position: relative; z-index: 2;">
+            <h1 style="color: white; font-size: 36px; font-weight: bold; margin-bottom: 1rem; font-family: 'Poppins', sans-serif;">
+                {featured_event['title']}
+            </h1>
+            <p style="color: rgba(255,255,255,0.9); font-size: 18px; margin-bottom: 0.5rem;">
+                📅 {featured_event['date']} at {featured_event['time']}
+            </p>
+            <p style="color: rgba(255,255,255,0.9); font-size: 18px; margin-bottom: 1.5rem;">
+                📍 {featured_event['location']}
+            </p>
+            <button style="
+                background: var(--lmu-gold); 
+                color: var(--lmu-crimson-dark); 
+                border: none; 
+                padding: 1rem 2rem; 
+                border-radius: 10px; 
+                font-weight: bold; 
+                font-size: 16px;
+                box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+                cursor: pointer;
+                transition: all 0.3s ease;
+            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" onclick="window.parent.postMessage({type: 'rsvp_click', event: 'basketball'}, '*')">
+                RSVP + Add to Calendar
+            </button>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Two-column layout for leaderboard teaser and spirit challenge
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        # Leaderboard Teaser Panel
+        st.markdown("""
+        <div style="
+            background: var(--glass-bg); 
+            border-radius: 20px; 
+            padding: 1.5rem; 
+            margin-bottom: 1rem;
+            border: 1px solid var(--glass-border);
+        ">
+            <h3 style="color: var(--lmu-gold); margin-bottom: 1rem; font-size: 20px;">🏆 Top Lions</h3>
+        """, unsafe_allow_html=True)
+        
+        # Top 5 leaderboard preview with circular avatars
+        individual_leaders = [person for person in leaderboard if person['type'] == 'Individual'][:5]
+        
+        for i, person in enumerate(individual_leaders):
+            gold_ring = "border: 3px solid var(--lmu-gold);" if person['rank'] <= 3 else ""
+            st.markdown(f"""
+            <div style="
+                display: flex; 
+                align-items: center; 
+                margin-bottom: 1rem; 
+                padding: 0.5rem; 
+                border-radius: 15px;
+                background: rgba(255,255,255,0.1);
+            ">
+                <div style="
+                    width: 50px; 
+                    height: 50px; 
+                    border-radius: 50%; 
+                    background: var(--gradient-crimson); 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    font-weight: bold; 
+                    color: white;
+                    margin-right: 1rem;
+                    {gold_ring}
+                ">
+                    {person['rank']}
+                </div>
+                <div style="flex-grow: 1;">
+                    <div style="font-weight: 600; color: white; font-size: 18px;">{person['name']}</div>
+                    <div style="font-size: 14px; color: var(--lmu-gold); font-style: italic;">{person['points']} points</div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("""
+            <div style="text-align: center; margin-top: 1rem;">
+                <span style="color: var(--lmu-gold); font-size: 14px;">Tap to see full leaderboard</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        # Live Spirit Challenge Card
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #8B0000 0%, #A52A2A 100%); 
+            border-radius: 20px; 
+            padding: 1.5rem; 
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 250px;
+        ">
+            <div style="
+                position: absolute; 
+                top: -10px; 
+                right: -10px; 
+                width: 60px; 
+                height: 60px; 
+                background: var(--lmu-gold); 
+                border-radius: 50%; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                font-size: 24px;
+                animation: pulse 2s infinite;
+            ">📸</div>
+            
+            <h3 style="color: white; font-size: 24px; margin-bottom: 1rem;">Live Spirit Challenge</h3>
+            <p style="color: rgba(255,255,255,0.9); font-size: 18px; margin-bottom: 1.5rem;">
+                Post a game-day selfie for 200 pts! 📸
+            </p>
+            <button style="
+                background: var(--lmu-gold); 
+                color: var(--lmu-crimson-dark); 
+                border: none; 
+                padding: 0.8rem 1.5rem; 
+                border-radius: 10px; 
+                font-weight: bold; 
+                font-size: 16px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                Upload Now
+            </button>
+        </div>
+        """, unsafe_allow_html=True)
     
     # Quick stats row
+    st.markdown("---")
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
         st.markdown("""
         <div class="feature-card" style="text-align: center;">
-            <h3 style="color: #ff6b35; margin: 0;">📅</h3>
-            <h4 style="margin: 0.5rem 0;">Upcoming Events</h4>
-            <h2 style="color: #2a5298; margin: 0;">{}</h2>
+            <h3 style="color: var(--lmu-gold); margin: 0;">📅</h3>
+            <h4 style="margin: 0.5rem 0; color: white;">Upcoming Events</h4>
+            <h2 style="color: var(--lmu-gold); margin: 0;">{}</h2>
         </div>
         """.format(len([e for e in events if datetime.strptime(e['date'], '%Y-%m-%d').date() >= date.today()])), 
         unsafe_allow_html=True)
@@ -1336,9 +1857,9 @@ def show_home_page(events, leaderboard):
     with col2:
         st.markdown("""
         <div class="feature-card" style="text-align: center;">
-            <h3 style="color: #ff6b35; margin: 0;">👥</h3>
-            <h4 style="margin: 0.5rem 0;">Active Lions</h4>
-            <h2 style="color: #2a5298; margin: 0;">847</h2>
+            <h3 style="color: var(--lmu-gold); margin: 0;">👥</h3>
+            <h4 style="margin: 0.5rem 0; color: white;">Active Lions</h4>
+            <h2 style="color: var(--lmu-gold); margin: 0;">847</h2>
         </div>
         """, unsafe_allow_html=True)
     
@@ -1346,125 +1867,47 @@ def show_home_page(events, leaderboard):
         total_rsvps = sum(event.get('rsvp_count', 0) for event in events)
         st.markdown(f"""
         <div class="feature-card" style="text-align: center;">
-            <h3 style="color: #ff6b35; margin: 0;">🎫</h3>
-            <h4 style="margin: 0.5rem 0;">Total RSVPs</h4>
-            <h2 style="color: #2a5298; margin: 0;">{total_rsvps}</h2>
+            <h3 style="color: var(--lmu-gold); margin: 0;">🎫</h3>
+            <h4 style="margin: 0.5rem 0; color: white;">Total RSVPs</h4>
+            <h2 style="color: var(--lmu-gold); margin: 0;">{total_rsvps}</h2>
         </div>
         """, unsafe_allow_html=True)
     
     with col4:
         st.markdown("""
         <div class="feature-card" style="text-align: center;">
-            <h3 style="color: #ff6b35; margin: 0;">🏆</h3>
-            <h4 style="margin: 0.5rem 0;">Points Awarded</h4>
-            <h2 style="color: #2a5298; margin: 0;">15.2K</h2>
+            <h3 style="color: var(--lmu-gold); margin: 0;">🏆</h3>
+            <h4 style="margin: 0.5rem 0; color: white;">Points Awarded</h4>
+            <h2 style="color: var(--lmu-gold); margin: 0;">15.2K</h2>
         </div>
         """, unsafe_allow_html=True)
     
-    st.markdown("---")
+    # Add pulse animation for the challenge card
+    st.markdown("""
+    <style>
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    </style>
+    """, unsafe_allow_html=True)
     
-    # Main content area
-    left_col, right_col = st.columns([2, 1])
+    # RSVP Modal
+    if st.session_state.show_rsvp_modal and st.session_state.selected_event:
+        show_rsvp_modal(st.session_state.selected_event)
     
-    with left_col:
-        st.markdown("## 🔥 Trending This Week")
-        
-        # Featured event
-        featured_event = events[0]  # Basketball game
-        st.markdown(f"""
-        <div class="feature-card">
-            <div style="display: flex; justify-content: space-between; align-items: start;">
-                <div>
-                    <h3 style="color: #ff6b35; margin: 0;">{featured_event['title']}</h3>
-                    <p style="color: #666; margin: 0.5rem 0;"><strong>📍 {featured_event['location']}</strong></p>
-                    <p style="color: #666; margin: 0.5rem 0;">📅 {featured_event['date']} at {featured_event['time']}</p>
-                    <p style="margin: 1rem 0;">{featured_event['description']}</p>
-                    <div style="display: flex; gap: 1rem; align-items: center;">
-                        <span class="badge">🏆 {featured_event['points']} Points</span>
-                        <span class="badge">👥 {featured_event['rsvp_count']} Going</span>
-                    </div>
-                </div>
-                <div style="font-size: 4rem;">🏀</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # RSVP and QR Code
-        col_a, col_b = st.columns(2)
-        with col_a:
-            if st.button("🎫 RSVP for Basketball Game", type="primary", use_container_width=True):
-                st.success("🎉 You're registered! See you at the game!")
-                st.balloons()
-        
-        with col_b:
-            if st.button("📱 Generate Check-in QR", use_container_width=True):
-                qr_buf = generate_qr_code(featured_event['id'], st.session_state.user_id)
-                st.image(qr_buf, width=200, caption="Scan at the event for instant points!")
-        
-        # Upcoming events list
-        st.markdown("### 📋 All Upcoming Events")
-        
-        for event in events[1:]:
-            event_date = datetime.strptime(event['date'], '%Y-%m-%d').date()
-            if event_date >= date.today():
-                st.markdown(f"""
-                <div class="event-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <h4 style="margin: 0; color: #2a5298;">{event['title']}</h4>
-                            <p style="margin: 0.25rem 0; color: #666;">📍 {event['location']} • 📅 {event['date']} • ⏰ {event['time']}</p>
-                            <p style="margin: 0.5rem 0;">{event['description']}</p>
-                        </div>
-                        <div style="text-align: right;">
-                            <div class="badge">🏆 {event['points']} pts</div>
-                            <p style="margin: 0.25rem 0; font-size: 0.9rem;">👥 {event['rsvp_count']} going</p>
-                        </div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-    
-    with right_col:
-        st.markdown("## 🏆 Top Lions This Week")
-        
-        # Top 5 leaderboard preview
-        individual_leaders = [person for person in leaderboard if person['type'] == 'Individual'][:5]
-        
-        for i, person in enumerate(individual_leaders):
-            rank_class = f"rank-{person['rank']}" if person['rank'] <= 3 else ""
-            badge_display = " ".join(person['badges'])
-            
-            st.markdown(f"""
-            <div class="leaderboard-item {rank_class}">
-                <div style="display: flex; align-items: center; width: 100%;">
-                    <div style="font-size: 1.5rem; margin-right: 1rem;">#{person['rank']}</div>
-                    <div style="flex-grow: 1;">
-                        <div style="font-weight: 600;">{person['name']}</div>
-                        <div style="font-size: 0.9rem; color: #666;">{person['points']} points • 🔥{person['streak']} streak</div>
-                        <div style="font-size: 1rem;">{badge_display}</div>
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        if st.button("🏆 View Full Leaderboard", use_container_width=True):
-            st.switch_page("🏆 Leaderboard")
-        
-        st.markdown("---")
-        
-        # Quick AI Assistant
-        st.markdown("## 🤖 Quick Ask")
-        quick_question = st.text_input("Ask me anything about LMU!", placeholder="Where can I find a math tutor?")
-        
-        if quick_question:
-            with st.spinner("🦁 Thinking..."):
-                time.sleep(1)
-                response = simulate_ai_response(quick_question)
-                st.markdown(f"""
-                <div class="feature-card">
-                    <p style="margin: 0;"><strong>🤖 LMU AI:</strong></p>
-                    <p style="margin: 0.5rem 0 0 0;">{response}</p>
-                </div>
-                """, unsafe_allow_html=True)
+    # Check if RSVP button was clicked (using JavaScript message)
+    st.markdown("""
+    <script>
+    window.addEventListener('message', function(event) {
+        if (event.data.type === 'rsvp_click') {
+            // This will be handled by Streamlit's rerun mechanism
+            window.location.reload();
+        }
+    });
+    </script>
+    """, unsafe_allow_html=True)
 
 def show_calendar_page(events):
     """Display interactive calendar with events"""
@@ -1522,11 +1965,10 @@ def show_calendar_page(events):
                     st.success(f"✅ RSVP confirmed for {event['title']}!")
                     # Add to calendar functionality could be implemented here
                 
-                if event.get('qr_checkin') and st.button(f"📱 QR Code", key=f"qr_{event['id']}", use_container_width=True):
-                    with st.expander("📱 Event Check-in QR Code"):
-                        qr_buf = generate_qr_code(event['id'], st.session_state.user_id)
-                        st.image(qr_buf, width=200)
-                        st.markdown("**Instructions:** Show this QR code at the event entrance for instant check-in and points!")
+                if event.get('qr_checkin') and st.button(f"📱 Check-In", key=f"checkin_{event['id']}", use_container_width=True):
+                    st.session_state.show_checkin_modal = True
+                    st.session_state.selected_event = event
+                    st.rerun()
                 
                 # Add to personal calendar
                 if st.button(f"📆 Add to Calendar", key=f"cal_{event['id']}", use_container_width=True):
@@ -1589,6 +2031,10 @@ END:VCALENDAR"""
             st.info("📅 Interactive calendar component not available. Showing list view instead.")
             # Fallback to a simple calendar visualization
             show_simple_calendar(events)
+    
+    # Check-in Modal
+    if st.session_state.show_checkin_modal and st.session_state.selected_event:
+        show_checkin_modal(st.session_state.selected_event)
 
 def show_simple_calendar(events):
     """Fallback simple calendar display"""
@@ -1634,89 +2080,157 @@ def show_simple_calendar(events):
     st.markdown(cal_html, unsafe_allow_html=True)
 
 def show_leaderboard_page(leaderboard, badges_info):
-    """Display dynamic leaderboard with real-time updates"""
-    st.markdown("## 🏆 Spirit Leaderboard")
-    st.markdown("Live rankings updated every minute! Compete for the top spot and earn exclusive badges.")
+    """Display dynamic leaderboard with LMU branding and enhanced user experience"""
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h1 style="color: var(--lmu-crimson); font-size: 30px; font-weight: bold; margin-bottom: 0.5rem;">
+            Spirit Leaderboard
+        </h1>
+        <div style="height: 3px; background: var(--lmu-gold); width: 200px; margin: 0 auto;"></div>
+    </div>
+    """, unsafe_allow_html=True)
     
-    # Leaderboard type selector
-    leaderboard_type = st.selectbox("🎯 View Rankings", ["Individual Students", "RSOs & Organizations", "Combined"])
+    # Leaderboard tabs
+    tab1, tab2, tab3 = st.tabs(["Individuals", "Orgs", "Dorms"])
     
-    # Filter leaderboard based on selection
-    if leaderboard_type == "Individual Students":
-        filtered_leaderboard = [person for person in leaderboard if person['type'] == 'Individual']
-    elif leaderboard_type == "RSOs & Organizations":
-        filtered_leaderboard = [person for person in leaderboard if person['type'] == 'RSO']
-    else:
-        filtered_leaderboard = leaderboard
+    with tab1:
+        show_individual_leaderboard(leaderboard, badges_info)
     
-    # Display statistics
-    col1, col2, col3 = st.columns(3)
+    with tab2:
+        show_org_leaderboard(leaderboard, badges_info)
     
+    with tab3:
+        show_dorm_leaderboard(leaderboard, badges_info)
+
+def show_individual_leaderboard(leaderboard, badges_info):
+    """Display individual student leaderboard"""
+    # Filter dropdown
+    col1, col2 = st.columns([1, 3])
     with col1:
-        total_participants = len([p for p in leaderboard if p['type'] == 'Individual'])
-        st.metric("👥 Active Students", total_participants, delta=12)
+        time_filter = st.selectbox("📊 Time Period", ["Weekly", "Monthly", "All-Time"], index=0)
     
-    with col2:
-        total_orgs = len([p for p in leaderboard if p['type'] == 'RSO'])
-        st.metric("🏛️ Participating RSOs", total_orgs, delta=2)
+    # Get individual leaders
+    individual_leaders = [person for person in leaderboard if person['type'] == 'Individual']
     
-    with col3:
-        total_points = sum(person['points'] for person in leaderboard)
-        st.metric("🏆 Total Points Awarded", f"{total_points:,}", delta=245)
-    
-    # Main leaderboard display
-    st.markdown("### 🥇 Current Rankings")
-    
-    for i, person in enumerate(filtered_leaderboard):
-        # Determine medal/rank styling
+    # Display rankings with enhanced styling
+    for i, person in enumerate(individual_leaders):
+        # Determine rank styling
         if person['rank'] == 1:
-            rank_style = "background: linear-gradient(135deg, #FFD700, #FFA500); color: #333;"
-            rank_icon = "🥇"
+            rank_style = "background: linear-gradient(135deg, var(--lmu-gold), #FFA500); color: var(--lmu-crimson-dark);"
+            rank_icon = "👑"
+            avatar_style = "border: 4px solid var(--lmu-gold);"
         elif person['rank'] == 2:
             rank_style = "background: linear-gradient(135deg, #C0C0C0, #A8A8A8); color: #333;"
             rank_icon = "🥈"
+            avatar_style = "border: 3px solid #C0C0C0;"
         elif person['rank'] == 3:
             rank_style = "background: linear-gradient(135deg, #CD7F32, #B87333); color: white;"
             rank_icon = "🥉"
+            avatar_style = "border: 3px solid #CD7F32;"
         else:
-            rank_style = "background: white; border: 2px solid #e9ecef;"
+            rank_style = "background: var(--glass-bg); border: 1px solid var(--glass-border);"
             rank_icon = f"#{person['rank']}"
+            avatar_style = ""
         
         # Badge display
         badge_display = " ".join(person['badges'])
         
-        # Streak indicator
-        streak_color = "#ff6b35" if person['streak'] >= 10 else "#2a5298" if person['streak'] >= 5 else "#666"
-        
         st.markdown(f"""
-        <div style="{rank_style} border-radius: 15px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+        <div style="{rank_style} border-radius: 20px; padding: 1.5rem; margin: 1rem 0; box-shadow: var(--shadow-soft);">
             <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div style="display: flex; align-items: center; gap: 1.5rem;">
-                    <div style="font-size: 2rem; font-weight: bold;">{rank_icon}</div>
+                    <div style="
+                        width: 60px; 
+                        height: 60px; 
+                        border-radius: 50%; 
+                        background: var(--gradient-crimson); 
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center; 
+                        font-weight: bold; 
+                        color: white;
+                        font-size: 1.5rem;
+                        {avatar_style}
+                    ">{rank_icon}</div>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.3rem;">{person['name']}</h3>
-                        <p style="margin: 0.25rem 0; font-size: 1rem; opacity: 0.8;">
-                            🏆 {person['points']:,} points • 
-                            <span style="color: {streak_color};">🔥 {person['streak']} day streak</span>
+                        <h3 style="margin: 0; font-size: 1.3rem; color: white;">{person['name']}</h3>
+                        <p style="margin: 0.25rem 0; font-size: 1rem; color: var(--lmu-gold);">
+                            🏆 {person['points']:,} points • 🔥 {person['streak']} day streak
                         </p>
                         <div style="font-size: 1.2rem; margin-top: 0.5rem;">{badge_display}</div>
                     </div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-size: 0.9rem; opacity: 0.8;">
-                        {person['type']}
+                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.8);">
+                        Recent: +{random.randint(50, 200)} pts
                     </div>
                 </div>
             </div>
         </div>
         """, unsafe_allow_html=True)
+
+def show_org_leaderboard(leaderboard, badges_info):
+    """Display organization leaderboard"""
+    # Get RSO leaders
+    rso_leaders = [person for person in leaderboard if person['type'] == 'RSO']
     
-    # Points progress chart
-    st.markdown("### 📊 Points Progression")
+    if not rso_leaders:
+        st.info("No organization data available yet.")
+        return
     
-    # Create sample data for points over time
-    dates = pd.date_range(start='2024-01-01', end='2024-02-15', freq='D')
-    points_data = []
+    for person in rso_leaders:
+        st.markdown(f"""
+        <div style="
+            background: var(--glass-bg); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 20px; 
+            padding: 1.5rem; 
+            margin: 1rem 0; 
+            box-shadow: var(--shadow-soft);
+        ">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <div style="
+                        width: 60px; 
+                        height: 60px; 
+                        border-radius: 50%; 
+                        background: var(--gradient-crimson); 
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center; 
+                        font-weight: bold; 
+                        color: white;
+                        font-size: 1.5rem;
+                    ">#{person['rank']}</div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.3rem; color: white;">{person['name']}</h3>
+                        <p style="margin: 0.25rem 0; font-size: 1rem; color: var(--lmu-gold);">
+                            🏆 {person['points']:,} points • 🔥 {person['streak']} day streak
+                        </p>
+                        <div style="font-size: 1.2rem; margin-top: 0.5rem;">{" ".join(person['badges'])}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+def show_dorm_leaderboard(leaderboard, badges_info):
+    """Display dorm leaderboard"""
+    st.info("Dorm leaderboard coming soon! 🏠")
+    st.markdown("""
+    <div style="
+        background: var(--glass-bg); 
+        border: 1px solid var(--glass-border); 
+        border-radius: 20px; 
+        padding: 2rem; 
+        text-align: center;
+        color: white;
+    ">
+        <h3 style="color: var(--lmu-gold);">🏠 Dorm Spirit Competition</h3>
+        <p>Compete with your dorm mates for the most spirited residence hall!</p>
+        <p style="color: var(--lmu-gold); font-weight: bold;">Launching Spring 2024</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     for person in filtered_leaderboard[:5]:  # Top 5 for chart
         person_points = []
@@ -1771,9 +2285,18 @@ def show_leaderboard_page(leaderboard, badges_info):
                     st.markdown(f"**{badge}** {description}")
 
 def show_prize_shop(prizes):
-    """Display prize showcase with categories and detailed descriptions"""
-    st.markdown("## 🎁 Prize Shop")
-    st.markdown("Earn points and redeem them for exclusive LMU experiences and rewards!")
+    """Display prize showcase with LMU branding and enhanced user experience"""
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h1 style="color: var(--lmu-crimson); font-size: 30px; font-weight: bold; margin-bottom: 0.5rem;">
+            Prize Shop
+        </h1>
+        <div style="height: 3px; background: var(--lmu-gold); width: 200px; margin: 0 auto;"></div>
+        <p style="color: white; font-size: 18px; margin-top: 1rem;">
+            Earn points and redeem them for exclusive LMU experiences and rewards!
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
     # User points display
     if st.session_state.user_id:
@@ -1812,15 +2335,15 @@ def show_prize_shop(prizes):
         
         # Prize availability styling
         if available_count == 0:
-            card_style = "background: #f8f9fa; opacity: 0.6; border: 2px dashed #ccc;"
+            card_style = "background: var(--glass-bg); opacity: 0.6; border: 2px dashed var(--glass-border);"
             availability_text = "🚫 Sold Out"
             button_disabled = True
         elif available_count <= 2:
-            card_style = "background: linear-gradient(135deg, #fff3cd, #ffeaa7); border: 2px solid #ff6b35;"
+            card_style = "background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1)); border: 2px solid var(--lmu-gold);"
             availability_text = f"⚡ Only {available_count} left!"
             button_disabled = False
         else:
-            card_style = "background: linear-gradient(135deg, #ffecd2, #fcb69f); border: 2px solid #ff6b35;"
+            card_style = "background: var(--glass-bg); border: 2px solid var(--glass-border);"
             availability_text = f"✅ {available_count} available"
             button_disabled = False
         
@@ -1835,12 +2358,12 @@ def show_prize_shop(prizes):
             st.markdown(f"""
             <div style="{card_style} border-radius: 20px; padding: 2rem; margin: 1rem 0; position: relative;">
                 <div style="position: absolute; top: 15px; right: 20px; font-size: 3rem;">{prize['image']}</div>
-                <h3 style="color: #2a5298; margin: 0 0 0.5rem 0;">{prize['name']}</h3>
-                <p style="color: #ff6b35; font-weight: 600; margin: 0 0 1rem 0;">{prize['category']}</p>
-                <p style="margin: 0 0 1rem 0; line-height: 1.5;">{prize['description']}</p>
+                <h3 style="color: var(--lmu-crimson); margin: 0 0 0.5rem 0;">{prize['name']}</h3>
+                <p style="color: var(--lmu-gold); font-weight: 600; margin: 0 0 1rem 0;">{prize['category']}</p>
+                <p style="margin: 0 0 1rem 0; line-height: 1.5; color: white;">{prize['description']}</p>
                 
                 <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1.5rem;">
-                    <span style="background: #2a5298; color: white; padding: 0.5rem 1rem; border-radius: 25px; font-weight: 600;">
+                    <span style="background: var(--lmu-crimson); color: white; padding: 0.5rem 1rem; border-radius: 25px; font-weight: 600;">
                         💰 {prize['points_required']} points
                     </span>
                     <span style="background: {'#28a745' if available_count > 2 else '#ffc107' if available_count > 0 else '#dc3545'}; 
