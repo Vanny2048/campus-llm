@@ -1122,6 +1122,9 @@ def show_home_page(events, leaderboard):
     if st.button("RSVP + Add to Calendar"):
         st.success("RSVP successful!")
     
+    # Create columns for layout
+    col1, col2 = st.columns(2)
+    
     with col1:
         # Leaderboard Teaser Panel
         st.markdown("""
