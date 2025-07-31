@@ -2065,7 +2065,7 @@ def show_home_page(events, leaderboard):
         
         for i, person in enumerate(individual_leaders):
             gold_ring = "border: 3px solid var(--lmu-gold);" if person['rank'] <= 3 else ""
-            st.markdown(f"""
+            html_content = f"""
             <div style="
                 display: flex; 
                 align-items: center; 
@@ -2094,7 +2094,8 @@ def show_home_page(events, leaderboard):
                     <div style="font-size: 14px; color: var(--text-secondary); font-style: italic;">{str(person['points'])} points</div>
                 </div>
             </div>
-            """, unsafe_allow_html=True)
+            """
+            st.markdown(html_content, unsafe_allow_html=True)
         
         st.markdown("""
             <div style="text-align: center; margin-top: 1rem;">
@@ -3234,7 +3235,7 @@ def show_ai_assistant():
     # Use form for better input handling
     with st.form(key="chat_form", clear_on_submit=True):
         question = st.text_input(
-            "",
+            "Ask me anything about LMU!",
             placeholder="type your question here... (e.g., where's the best place to cry on campus?)",
             key="ai_question_input",
             label_visibility="collapsed"
